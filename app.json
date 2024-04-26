@@ -1,4 +1,7 @@
 {
   "name": "KesiGoods",
-  "displayName": "KesiGoods"
+  "displayName": "KesiGoods",
+  "plugins": [
+    "expo-localization"
+  ]
 }
