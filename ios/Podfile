@@ -48,6 +48,9 @@ target 'KesiGoods' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  # WatermelonDB dependency
+  pod 'simdjson', path: '../node_modules/@nozbe/simdjson', modular_headers: true
+
   target 'KesiGoodsTests' do
     inherit! :complete
     # Pods for testing
