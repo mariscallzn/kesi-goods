@@ -16,6 +16,7 @@
     "@react-navigation/native-stack": "^6.9.26",
     "expo": "^50.0.0",
     "expo-localization": "~14.8.4",
+    "expo-status-bar": "~1.11.1",
     "i18n-js": "^4.4.3",
     "react": "18.2.0",
     "react-native": "0.73.6",

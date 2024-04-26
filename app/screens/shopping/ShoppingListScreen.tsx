@@ -1,12 +1,13 @@
-import {View, Text} from 'react-native';
 import React, {FC} from 'react';
+import {Text} from 'react-native';
 import {ShoppingStackScreenProps} from '../../routes/ShoppingNavigator';
+import {Screen} from '../../components/Screen';
 
 const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = () => {
   return (
-    <View>
+    <Screen safeAreaEdges={['top', 'bottom']}>
       <Text>ShoppingListScreen</Text>
-    </View>
+    </Screen>
   );
 };
 
