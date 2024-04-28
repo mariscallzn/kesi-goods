@@ -1,13 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
-import storesListReducer from '../screens/stores/storesListSlice';
+import storesReducer from '../screens/stores/storesSlice';
 import shoppingListReducer from '../screens/shopping/shoppingListSlice';
 import productsReducer from '../screens/products/productsSlice';
 
 //#region Redux STORE
 export const store = configureStore({
   reducer: {
-    stores: storesListReducer,
+    stores: storesReducer,
     shopping: shoppingListReducer,
     products: productsReducer,
   },

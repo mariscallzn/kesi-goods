@@ -12,26 +12,26 @@ import {Columns, Tables} from './schema';
 
 //Docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions
 
-//#region DAOShoppingLists
-const ShoppingListsColumns = Columns.shoppingLists;
-export class DAOShoppingLists extends Model {
-  static table = Tables.shoppingLists;
+//#region DAOStores
+const DAOStoresColumns = Columns.stores;
+export class DAOStores extends Model {
+  static table = Tables.stores;
   static associations = associations([
     Tables.shoppingListItems,
-    {type: 'has_many', foreignKey: Columns.shoppingListItems.shoppingListId},
+    {type: 'has_many', foreignKey: Columns.shoppingListItems.storeId},
   ]);
 
-  @text(ShoppingListsColumns.name)
+  @text(DAOStoresColumns.name)
   name!: string;
-  @date(ShoppingListsColumns.createdAt) createdAt!: Date;
-  @date(ShoppingListsColumns.updatedAt) updatedAt!: Date;
+  @date(DAOStoresColumns.createdAt) createdAt!: Date;
+  @date(DAOStoresColumns.updatedAt) updatedAt!: Date;
 
   @children(Tables.shoppingListItems)
   shoppingListItems!: Query<DAOShoppingListItems>;
 
-  @writer async updateShoppingList(name: string): Promise<DAOShoppingLists> {
-    return await this.update(_shoppingList => {
-      _shoppingList.name = name;
+  @writer async updateStore(name: string): Promise<DAOStores> {
+    return await this.update(_store => {
+      _store.name = name;
     });
   }
 }
@@ -42,8 +42,8 @@ const ShoppingListItemsColumns = Columns.shoppingListItems;
 export class DAOShoppingListItems extends Model {
   static table = Tables.shoppingListItems;
   static associations = associations([
-    Tables.shoppingLists,
-    {type: 'belongs_to', key: Columns.shoppingListItems.shoppingListId},
+    Tables.stores,
+    {type: 'belongs_to', key: Columns.shoppingListItems.storeId},
   ]);
 
   @relation(Tables.products, ShoppingListItemsColumns.productId)
@@ -52,19 +52,16 @@ export class DAOShoppingListItems extends Model {
   @relation(Tables.categories, ShoppingListItemsColumns.categoryId)
   category!: Relation<DAOCategories>;
 
-  @text(ShoppingListItemsColumns.shoppingListId)
-  shoppingListId!: string;
+  @text(ShoppingListItemsColumns.storeId)
+  storeId!: string;
   @field(ShoppingListItemsColumns.quantity) quantity!: number;
   @text(ShoppingListItemsColumns.unit) unit!: string;
   @field(ShoppingListItemsColumns.checked) checked!: boolean;
   @date(ShoppingListItemsColumns.createdAt) createdAt!: Date;
   @date(ShoppingListItemsColumns.updatedAt) updatedAt!: Date;
 
-  @immutableRelation(
-    Tables.shoppingLists,
-    ShoppingListItemsColumns.shoppingListId,
-  )
-  shoppingList!: Relation<DAOShoppingLists>;
+  @immutableRelation(Tables.stores, ShoppingListItemsColumns.storeId)
+  store!: Relation<DAOStores>;
 
   @writer async updateShoppingListItem(
     checked: boolean,

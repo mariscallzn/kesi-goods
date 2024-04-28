@@ -6,11 +6,11 @@ import {
   DAOCategories,
   DAOProducts,
   DAOShoppingListItems,
-  DAOShoppingLists,
+  DAOStores,
 } from './models';
 
 const adapter = new SQLiteAdapter({
-  dbName: 'KesiShopDB',
+  dbName: 'KesiGoodsDB',
   schema: schema,
   //   migrations: migrations,
   jsi: Platform.OS === 'ios',
@@ -21,12 +21,7 @@ const adapter = new SQLiteAdapter({
 
 const database = new Database({
   adapter: adapter,
-  modelClasses: [
-    DAOShoppingLists,
-    DAOShoppingListItems,
-    DAOProducts,
-    DAOCategories,
-  ],
+  modelClasses: [DAOStores, DAOShoppingListItems, DAOProducts, DAOCategories],
 });
 
 export default database;

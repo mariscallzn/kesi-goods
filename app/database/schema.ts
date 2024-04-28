@@ -8,24 +8,24 @@ import {
   DAOCategories,
   DAOProducts,
   DAOShoppingListItems,
-  DAOShoppingLists,
+  DAOStores,
 } from './models';
 
 export const Tables = {
-  shoppingLists: tableName<DAOShoppingLists>('shopping_lists'),
+  stores: tableName<DAOStores>('shopping_lists'),
   shoppingListItems: tableName<DAOShoppingListItems>('shopping_list_items'),
   products: tableName<DAOProducts>('products'),
   categories: tableName<DAOCategories>('categories'),
 };
 
 export const Columns = {
-  shoppingLists: {
+  stores: {
     name: columnName('name'),
     createdAt: columnName('created_at'),
     updatedAt: columnName('updated_at'),
   },
   shoppingListItems: {
-    shoppingListId: columnName('shopping_list_id'),
+    storeId: columnName('store_id'),
     productId: columnName('product_id'),
     categoryId: columnName('category_id'),
     quantity: columnName('quantity'),
@@ -50,18 +50,18 @@ export default appSchema({
   version: 1,
   tables: [
     tableSchema({
-      name: Tables.shoppingLists,
+      name: Tables.stores,
       columns: [
-        {name: Columns.shoppingLists.name, type: 'string'},
-        {name: Columns.shoppingLists.createdAt, type: 'number'},
-        {name: Columns.shoppingLists.updatedAt, type: 'number'},
+        {name: Columns.stores.name, type: 'string'},
+        {name: Columns.stores.createdAt, type: 'number'},
+        {name: Columns.stores.updatedAt, type: 'number'},
       ],
     }),
     tableSchema({
       name: Tables.shoppingListItems,
       columns: [
         {
-          name: Columns.shoppingListItems.shoppingListId,
+          name: Columns.shoppingListItems.storeId,
           type: 'string',
           isIndexed: true,
         },
