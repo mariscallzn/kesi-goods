@@ -12,6 +12,7 @@ import {
   useSafeAreaInsetsStyle,
 } from '../utils/useSafeAreaInsetsStyle';
 import {StatusBar, StatusBarProps} from 'expo-status-bar';
+import {useTheme} from 'react-native-paper';
 
 //#region Constants
 const isIos = Platform.OS === 'ios';
@@ -39,20 +40,30 @@ type ScreenProps = {
    * Pass any additional props directly to the KeyboardAvoidingView component.
    */
   keyboardAvoidingViewProps?: KeyboardAvoidingViewProps;
+  /**
+   * Background color
+   */
+  backgroundColor?: string;
 };
 //#endregion
 
-export const Screen: FC<ScreenProps> = ({
-  children,
-  safeAreaEdges,
-  statusBarProps,
-  keyboardOffset = 0,
-  keyboardAvoidingViewProps,
-}) => {
-  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
+export const Screen: FC<ScreenProps> = (props: ScreenProps) => {
   const colorScheme = useColorScheme();
+  const {colors} = useTheme();
+
+  const {
+    children,
+    safeAreaEdges,
+    statusBarProps,
+    keyboardOffset = 0,
+    keyboardAvoidingViewProps,
+    backgroundColor = colors.background,
+  } = props;
+
+  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
+
   return (
-    <View style={[$containerStyle, $containerInsets]}>
+    <View style={[$containerStyle, $containerInsets, {backgroundColor}]}>
       <StatusBar
         style={colorScheme === 'dark' ? 'light' : 'dark'}
         {...statusBarProps}
