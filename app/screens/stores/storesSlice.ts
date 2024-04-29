@@ -4,8 +4,8 @@ import {
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
-import {Store} from './model/storesRepository';
 import {appComponent} from '../../di/appComponent';
+import {Store} from '../../model/types';
 
 interface StoresState {
   stores: Store[];
@@ -56,7 +56,7 @@ export const fetchStores = createAsyncThunk(
   'stores/fetchStores',
   async (_, {rejectWithValue}) => {
     try {
-      return await appComponent.storesRepository().fetch();
+      return await appComponent.storesService().getStores();
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -67,7 +67,7 @@ export const createOrUpdateStore = createAsyncThunk(
   'stores/createOrUpdateStores',
   async (store: Store, {rejectWithValue}) => {
     try {
-      return await appComponent.storesRepository().addOrUpdate(store);
+      return await appComponent.storesService().createOrUpdate(store);
     } catch (error) {
       return rejectWithValue(error);
     }

@@ -2,30 +2,75 @@ import {Database} from '@nozbe/watermelondb';
 import {
   DatabaseStoresRepository,
   StoresRepository,
-} from '../screens/stores/model/storesRepository';
+} from '../model/storesRepository';
 import database from '../database/database';
+import {
+  StoresService,
+  StoresServiceImpl,
+} from '../screens/stores/storesService';
+import {
+  ShoppingListService,
+  ShoppingListServiceImpl,
+} from '../screens/shopping/shoppingListService';
+import {
+  DatabaseShoppingListRepository,
+  ShoppingListRepository,
+} from '../model/shoppingListRepository';
+import {
+  DatabaseProductRepository,
+  ProductRepository,
+} from '../model/productRepository';
+import {
+  CategoryRepository,
+  DatabaseCategoryRepository,
+} from '../model/categoryRepository';
 
 export interface AppComponent {
-  storesRepository(): StoresRepository;
+  storesService(): StoresService;
+  shoppingListService(): ShoppingListService;
 }
 
 class AppModule {
   private readonly database: Database;
 
-  constructor(database: Database) {
-    this.database = database;
+  constructor(_database: Database) {
+    this.database = _database;
   }
 
   private providesDatabase(): Database {
     return this.database;
   }
 
-  private providesStoresRepository(database: Database): StoresRepository {
-    return new DatabaseStoresRepository(database);
+  private providesStoresRepository(_database: Database): StoresRepository {
+    return new DatabaseStoresRepository(_database);
   }
 
-  getStoresRepository(): StoresRepository {
-    return this.providesStoresRepository(this.providesDatabase());
+  private providesShoppingListRepository(
+    _database: Database,
+  ): ShoppingListRepository {
+    return new DatabaseShoppingListRepository(_database);
+  }
+
+  private providesProductRepository(_database: Database): ProductRepository {
+    return new DatabaseProductRepository(_database);
+  }
+
+  private providesCategoryRepository(_database: Database): CategoryRepository {
+    return new DatabaseCategoryRepository(_database);
+  }
+
+  getStoresService(): StoresService {
+    return new StoresServiceImpl(
+      this.providesStoresRepository(this.providesDatabase()),
+    );
+  }
+
+  getShoppingListService(): ShoppingListService {
+    return new ShoppingListServiceImpl(
+      this.providesShoppingListRepository(this.providesDatabase()),
+      this.providesProductRepository(this.providesDatabase()),
+      this.providesCategoryRepository(this.providesDatabase()),
+    );
   }
 }
 
@@ -36,8 +81,12 @@ class AppComponentProd implements AppComponent {
     this.appModule = appModule;
   }
 
-  storesRepository(): StoresRepository {
-    return this.appModule.getStoresRepository();
+  storesService(): StoresService {
+    return this.appModule.getStoresService();
+  }
+
+  shoppingListService(): ShoppingListService {
+    return this.appModule.getShoppingListService();
   }
 }
 

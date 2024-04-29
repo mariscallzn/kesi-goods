@@ -1,13 +1,7 @@
 import {Database} from '@nozbe/watermelondb';
-import {DAOStores} from '../../../database/models';
-import {Tables} from '../../../database/schema';
-
-export type Store = {
-  id: string;
-  name: string;
-  checkedItems?: number;
-  totalItems?: number;
-};
+import {DAOStores} from '../database/models';
+import {Tables} from '../database/schema';
+import {Store} from './types';
 
 export interface StoresRepository {
   fetch(): Promise<Store[]>;
