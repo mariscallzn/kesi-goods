@@ -44,8 +44,9 @@ export class StoresServiceImpl implements StoresService {
     //TODO: fetch and build suggestions
     // try {
     await new Promise(resolve => {
-      setTimeout(resolve, 2000);
+      setTimeout(resolve, 1);
     });
+
     return {
       stores: ['Walmart', 'DollarTree', 'Home Depot', 'Walgreens', 'CVS'],
       misc: ['Shopping', 'Goods', 'Groceries', '04/12/2024'],

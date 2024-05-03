@@ -19,12 +19,19 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       {selectBottomSheet.metadata?.type === bottomSheetTypes.create ? (
         <CreateList
           action={action => {
-            dispatch(
-              createOrUpdateStore({
-                name: action.metadata.value as string,
-                id: '',
-              }),
-            );
+            switch (action.metadata.type) {
+              case 'close':
+                dispatch(hideBottomSheet());
+                break;
+              default:
+                dispatch(
+                  createOrUpdateStore({
+                    name: action.metadata.value as string,
+                    id: '',
+                  }),
+                );
+                break;
+            }
           }}
         />
       ) : null}

@@ -29,8 +29,10 @@ const es = {
     topBarTitle: 'Hola! 👋',
     addList: 'Agregar',
     CreateBottomSheet: {
-      newList: 'New list',
-      create: 'Create',
+      createList: 'Crear lista',
+      newList: 'Nueva lista',
+      create: 'CREAR',
+      suggestions: 'Sugerencias',
     },
   },
 };

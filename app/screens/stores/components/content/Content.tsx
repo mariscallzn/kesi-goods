@@ -10,6 +10,7 @@ const Content: React.FC<ScreenContentProps> = ({action}) => {
 
   return selector.stores.length > 0 ? (
     <FlatList
+      contentContainerStyle={$flatList}
       data={selector.stores}
       keyExtractor={item => item.id}
       // eslint-disable-next-line react/no-unstable-nested-components
@@ -21,6 +22,10 @@ const Content: React.FC<ScreenContentProps> = ({action}) => {
   ) : (
     <Text>TODO: Create empty component</Text>
   );
+};
+
+const $flatList: ViewStyle = {
+  paddingBottom: 150,
 };
 
 const $itemSeparator: ViewStyle = {
