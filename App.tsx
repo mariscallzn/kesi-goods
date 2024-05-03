@@ -11,6 +11,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {ViewStyle, useColorScheme} from 'react-native';
 import {KesiDarkTheme, KesiLightTheme} from './app/theme/theme';
 
+//💡 Unlock a year of premium if users goes through all X adds 💡
 function App(): React.JSX.Element {
   const colorScheme = useColorScheme();
   return (

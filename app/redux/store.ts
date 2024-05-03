@@ -1,6 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
-import storesReducer from '../screens/stores/storesSlice';
+import storesReducer from '../screens/stores/redux-slice/storesSlice';
 import shoppingListReducer from '../screens/shopping/shoppingListSlice';
 import productsReducer from '../screens/products/productsSlice';
 

@@ -20,11 +20,10 @@ import {useTheme} from 'react-native-paper';
 export type BottomSheetProps = ViewProps & {
   dismissed?: () => void;
   isVisible: boolean;
-  setIsVisible: (isVisible: boolean) => void;
   maxHeight: MaxHeight;
 };
 
-type MaxHeight = 25 | 50 | 85;
+export type MaxHeight = 25 | 50 | 85;
 //#endregion
 
 //#region Component
@@ -32,7 +31,6 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   children,
   dismissed,
   isVisible,
-  setIsVisible,
   maxHeight,
 }) => {
   const _sheetHeight = Dimensions.get('window').height;
@@ -62,13 +60,12 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       restDisplacementThreshold: 100,
     }).start(() => {
       _setIsVisible(false);
-      setIsVisible(false);
       dismissed?.();
       //Reset values to allow the bottom sheet to start over fresh
       translateY.setValue(_sheetHeight);
       setSheetHeight(0);
     });
-  }, [dismissed, setIsVisible, sheetHeight, translateY, _sheetHeight]);
+  }, [dismissed, sheetHeight, translateY, _sheetHeight]);
 
   useEffect(() => {
     setPanResponder(

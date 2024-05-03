@@ -1,9 +1,9 @@
 import React from 'react';
 import {Text} from 'react-native';
+import {UnknownMetadata} from '../utils/types';
 
 export interface Action {
-  triggeredBy: string;
-  extras?: {[key: string]: unknown};
+  metadata: UnknownMetadata;
 }
 
 export interface UIModelProps {
@@ -12,11 +12,13 @@ export interface UIModelProps {
   action?: (action: Action) => void;
 }
 
+export type UIModelType<T extends UIModelProps> = {[key: string]: React.FC<T>};
+
 export const multiViewRenderer = <T extends UIModelProps>(
-  subscribedViews: Map<string, React.FC<T>>,
+  subscribedViews: UIModelType<T>,
   uiModel: T,
 ): React.JSX.Element => {
-  const CustomView = subscribedViews.get(uiModel.type);
+  const CustomView = subscribedViews[uiModel.type];
   if (!CustomView) {
     return __DEV__ ? (
       <Text>The {uiModel.type} is not registered in subscribedViews</Text>

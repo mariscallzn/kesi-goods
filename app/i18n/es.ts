@@ -25,9 +25,13 @@ const es = {
     },
     pkg: 'paq',
   },
-  ShoppingListsScreen: {
-    addShoppingList: 'Lista de compras',
-    listName: 'Nombre de la lista',
+  StoreScreen: {
+    topBarTitle: 'Hola! 👋',
+    addList: 'Agregar',
+    CreateBottomSheet: {
+      newList: 'New list',
+      create: 'Create',
+    },
   },
 };
 

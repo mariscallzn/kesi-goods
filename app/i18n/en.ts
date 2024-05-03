@@ -25,9 +25,13 @@ const en = {
     },
     pkg: 'pkg',
   },
-  ShoppingListsScreen: {
-    addShoppingList: 'Shopping list',
-    listName: 'List name',
+  StoreScreen: {
+    topBarTitle: 'Hello! 👋',
+    addList: 'Add',
+    CreateBottomSheet: {
+      newList: 'New list',
+      create: 'Create',
+    },
   },
 };
 export default en;

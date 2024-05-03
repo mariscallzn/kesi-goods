@@ -1,9 +1,13 @@
 import {StoresRepository} from '../../model/storesRepository';
 import {Store} from '../../model/types';
+import {getUUID} from '../../utils/misc';
+import {VIEW_ID} from './components/content/types';
+import {ListSuggestions, UIStore} from './types';
 
 export interface StoresService {
-  getStores(): Promise<Store[]>;
-  createOrUpdate(store: Store): Promise<Store>;
+  getStores(): Promise<UIStore[]>;
+  createOrUpdate(store: Store): Promise<UIStore>;
+  fetchListSuggestions(): Promise<ListSuggestions>;
 }
 
 export class StoresServiceImpl implements StoresService {
@@ -12,19 +16,42 @@ export class StoresServiceImpl implements StoresService {
   constructor(storesRepository: StoresRepository) {
     this.storesRepository = storesRepository;
   }
-  getStores(): Promise<Store[]> {
+  async getStores(): Promise<UIStore[]> {
     try {
-      return this.storesRepository.fetch();
+      return (await this.storesRepository.fetch()).map(store => ({
+        id: getUUID(),
+        store: store,
+        type: VIEW_ID.store,
+      }));
     } catch (error) {
       throw error;
     }
   }
-  createOrUpdate(store: Store): Promise<Store> {
+  async createOrUpdate(store: Store): Promise<UIStore> {
     try {
       //TODO: Add validations
-      return this.storesRepository.addOrUpdate(store);
+
+      return {
+        id: getUUID(),
+        store: await this.storesRepository.addOrUpdate(store),
+        type: VIEW_ID.store,
+      };
     } catch (error) {
       throw error;
     }
+  }
+  async fetchListSuggestions(): Promise<ListSuggestions> {
+    //TODO: fetch and build suggestions
+    // try {
+    await new Promise(resolve => {
+      setTimeout(resolve, 2000);
+    });
+    return {
+      stores: ['Walmart', 'DollarTree', 'Home Depot', 'Walgreens', 'CVS'],
+      misc: ['Shopping', 'Goods', 'Groceries', '04/12/2024'],
+    };
+    // } catch (error) {
+    //   throw error;
+    // }
   }
 }
