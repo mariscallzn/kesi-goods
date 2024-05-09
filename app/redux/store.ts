@@ -1,7 +1,7 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import storesReducer from '../screens/stores/redux-slice/storesSlice';
-import shoppingListReducer from '../screens/shopping/shoppingListSlice';
+import shoppingListReducer from '../screens/shopping/redux-slice/shoppingListSlice';
 import productsReducer from '../screens/products/productsSlice';
 
 //#region Redux STORE
@@ -23,3 +23,5 @@ export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 //#endregion
+
+export const selectRootState = (rootState: RootState) => rootState;

@@ -17,10 +17,17 @@ export class DatabaseCategoryRepository implements CategoryRepository {
 
   async fetch(): Promise<Category[]> {
     try {
-      return await this.database
-        .get<DAOCategories>(Tables.categories)
-        .query()
-        .fetch();
+      const categories = (
+        await this.database
+          .get<DAOCategories>(Tables.categories)
+          .query()
+          .fetch()
+      ).map(c => ({id: c.id, color: c.color}));
+      if (categories.length === 0) {
+        return await this.populateTable();
+      } else {
+        return categories;
+      }
     } catch (error) {
       throw error;
     }
@@ -37,6 +44,35 @@ export class DatabaseCategoryRepository implements CategoryRepository {
     } catch (error) {
       throw error;
     }
+  }
+
+  private async populateTable(): Promise<Category[]> {
+    const colors = [
+      '#FFA500',
+      '#008000',
+      '#4682B4',
+      '#FF69B4',
+      '#FFD700',
+      '#4B0082',
+      '#8A2BE2',
+      '#800000',
+      '#808080',
+      '#00FFFF',
+    ];
+    for (const color of colors) {
+      try {
+        await this.database.write(async () => {
+          return await this.database
+            .get<DAOCategories>(Tables.categories)
+            .create(dao => {
+              dao.color = color;
+            });
+        });
+      } catch (error) {
+        throw error;
+      }
+    }
+    return this.fetch();
   }
 
   private async save(color: string): Promise<Category> {

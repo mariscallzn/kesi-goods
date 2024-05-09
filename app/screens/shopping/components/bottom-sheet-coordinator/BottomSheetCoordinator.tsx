@@ -1,45 +1,54 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import BottomSheet from '../../../../components/BottomSheet';
+import {ShoppingListItem} from '../../../../model/types';
 import {useAppDispatch} from '../../../../redux/store';
-import {createOrUpdateStore} from '../../redux-slice/asyncThunks';
+import {createOrUpdateItem} from '../../redux-slice/asyncThunks';
 import {bottomSheetSelector} from '../../redux-slice/selectors';
-import {hideBottomSheet} from '../../redux-slice/storesSlice';
+import {hideBottomSheet} from '../../redux-slice/shoppingListSlice';
+import AddOrUpdateItem from './add-or-update-item/AddOrUpdateItem';
 import {
+  AddOrUpdateBSMetadata,
   BottomSheetCoordinatorProps,
   bottomSheetActions,
   bottomSheetTypes,
 } from './types';
-import CreateList from './create-list/CreateList';
 
 const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
   const selectBottomSheet = useSelector(bottomSheetSelector);
   const dispatch = useAppDispatch();
+
   return (
     <BottomSheet
       maxHeight={props.maxHeight}
       isVisible={selectBottomSheet.isVisible}
       dismissed={() => dispatch(hideBottomSheet())}>
-      {selectBottomSheet.metadata?.type === bottomSheetTypes.create ? (
-        <CreateList
+      {selectBottomSheet.metadata?.type === bottomSheetTypes.addOrUpdateItem ? (
+        <AddOrUpdateItem
           action={action => {
             switch (action.metadata.type) {
-              case bottomSheetActions.close:
-                dispatch(hideBottomSheet());
-                break;
-              case bottomSheetActions.create:
+              case bottomSheetActions.add:
                 dispatch(
-                  createOrUpdateStore({
-                    name: action.metadata.value as string,
-                    id: '',
+                  createOrUpdateItem({
+                    listId: (
+                      selectBottomSheet.metadata?.value as AddOrUpdateBSMetadata
+                    ).listId,
+                    shoppingListItem: action.metadata.value as ShoppingListItem,
                   }),
                 );
+                dispatch(hideBottomSheet());
                 break;
+
+              case bottomSheetActions.back:
+                dispatch(hideBottomSheet());
+                break;
+
               default:
                 props.action(action);
                 break;
             }
           }}
+          metadata={selectBottomSheet.metadata.value as AddOrUpdateBSMetadata}
         />
       ) : null}
     </BottomSheet>

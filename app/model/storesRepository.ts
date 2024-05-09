@@ -4,6 +4,7 @@ import {Tables} from '../database/schema';
 import {Store} from './types';
 
 export interface StoresRepository {
+  getById(id: string): Promise<Store>;
   fetch(): Promise<Store[]>;
   addOrUpdate(store: Store): Promise<Store>;
 }
@@ -13,6 +14,21 @@ export class DatabaseStoresRepository implements StoresRepository {
   constructor(database: Database) {
     this.database = database;
   }
+
+  async getById(id: string): Promise<Store> {
+    try {
+      const daoStore = await this.database
+        .get<DAOStores>(Tables.stores)
+        .find(id);
+      return {
+        id: daoStore.id,
+        name: daoStore.name,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async fetch(): Promise<Store[]> {
     try {
       const stores: Store[] = [];

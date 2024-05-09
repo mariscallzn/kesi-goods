@@ -1,5 +1,5 @@
-import {Action} from '../../../../../inf/multiViewRenderer';
+import {ActionCallback} from '../../../../../inf/multiViewRenderer';
 
 export type CreateListProps = {
-  action: (action: Action) => void;
+  action: ActionCallback;
 };

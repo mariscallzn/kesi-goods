@@ -7,23 +7,28 @@ import {
   TouchableRipple,
   useTheme,
 } from 'react-native-paper';
-import {UIStore} from '../../types';
-const StoreItem: React.FC<UIStore> = ({store}) => {
-  const {colors, roundness} = useTheme();
+import {CONTENT_ACTIONS, UIStore} from '../../types';
+import {ShoppingListNavigationMetadata} from './types';
+import {saveDivision} from '../../../../utils/misc';
 
-  const calculateProgress = (): number => {
-    if (store.checkedItems && store.totalItems) {
-      return store.checkedItems / store.totalItems;
-    } else {
-      return 0;
-    }
-  };
+const StoreItem: React.FC<UIStore> = ({store, action}) => {
+  const {colors, roundness} = useTheme();
 
   return (
     <TouchableRipple
       borderless
       style={[$container, {borderRadius: roundness}]}
-      onPress={() => {}}>
+      onPress={() => {
+        action?.({
+          metadata: {
+            type: CONTENT_ACTIONS.navigateToShoppingList,
+            value: {
+              route: 'ShoppingList',
+              storeId: store.id,
+            } as ShoppingListNavigationMetadata,
+          },
+        });
+      }}>
       <View style={{backgroundColor: colors.backdrop}}>
         <View style={$upperSection}>
           <Text style={$title} variant="headlineSmall">
@@ -36,7 +41,7 @@ const StoreItem: React.FC<UIStore> = ({store}) => {
             <ProgressBar
               style={[$progressBar, {borderRadius: roundness}]}
               theme={{colors: {primary: 'green'}}}
-              animatedValue={calculateProgress()}
+              animatedValue={saveDivision(store.checkedItems, store.totalItems)}
             />
           </View>
           <Text variant="titleMedium">

@@ -1,10 +1,11 @@
 import React from 'react';
-import {Action} from '../../../../inf/multiViewRenderer';
+import {ActionCallback} from '../../../../inf/multiViewRenderer';
+import {NavigationMetadata} from '../../../../routes/types';
 import {UIStore} from '../../types';
 import StoreItem from './StoreItem';
 
-export type ScreenContentProps = {
-  action: (action: Action) => void;
+export type ContentProps = {
+  action: ActionCallback;
 };
 
 type CustomViewTypes = {
@@ -21,3 +22,7 @@ export const CUSTOM_VIEWS: CustomViewTypes = {
 export const VIEW_ID = {
   store: 'store',
 };
+
+export interface ShoppingListNavigationMetadata extends NavigationMetadata {
+  storeId: string;
+}

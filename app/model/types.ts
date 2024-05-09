@@ -23,3 +23,5 @@ export type Category = {
   id: string;
   color: string;
 };
+
+export type MeasurementSystem = 'imperial' | 'metric';

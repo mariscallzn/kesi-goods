@@ -2,6 +2,8 @@ import React from 'react';
 import {Text} from 'react-native';
 import {UnknownMetadata} from '../utils/types';
 
+export type ActionCallback = (action: Action) => void;
+
 export interface Action {
   metadata: UnknownMetadata;
 }
@@ -9,7 +11,7 @@ export interface Action {
 export interface UIModelProps {
   id: string;
   type: string;
-  action?: (action: Action) => void;
+  action?: ActionCallback;
 }
 
 export type UIModelType<T extends UIModelProps> = {[key: string]: React.FC<T>};

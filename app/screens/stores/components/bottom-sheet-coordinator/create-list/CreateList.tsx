@@ -12,7 +12,7 @@ import {
 import {appComponent} from '../../../../../di/appComponent';
 import {translate} from '../../../../../i18n/translate';
 import {ListSuggestions} from '../../../types';
-import {bottomSheetTypes} from '../types';
+import {bottomSheetActions} from '../types';
 import {CreateListProps} from './types';
 
 const CreateList: React.FC<CreateListProps> = props => {
@@ -40,13 +40,17 @@ const CreateList: React.FC<CreateListProps> = props => {
           size={18}
           iconColor={colors.onSurfaceDisabled}
           containerColor={colors.backdrop}
-          onPress={() => props.action({metadata: {type: 'close', value: {}}})}
+          onPress={() =>
+            props.action({
+              metadata: {type: bottomSheetActions.close, value: {}},
+            })
+          }
         />
       </View>
       <TextInput
+        style={[$textInput, {borderRadius: roundness}]}
         placeholder={translate('StoreScreen.CreateBottomSheet.newList')}
         autoFocus={true}
-        style={[$textInput, {borderRadius: roundness}]}
         underlineStyle={$textInputUnderLine}
         value={text}
         onChangeText={setText}
@@ -92,7 +96,7 @@ const CreateList: React.FC<CreateListProps> = props => {
         labelStyle={$createButtonLabel}
         onPress={() => {
           props.action({
-            metadata: {type: bottomSheetTypes.create, value: text},
+            metadata: {type: bottomSheetActions.create, value: text},
           });
         }}>
         {translate('StoreScreen.CreateBottomSheet.create')}

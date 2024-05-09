@@ -8,9 +8,14 @@ const en = {
     done: 'Done',
   },
   ShoppingListScreen: {
-    productName: 'Product name',
-    quantity: 'Quantity',
-    unit: 'Unit',
+    AddOrUpdateBottomSheet: {
+      add: 'Add',
+      update: 'Update',
+      unitCP: 'UNIT',
+      quantity: 'Quantity',
+      unit: 'Unit',
+      addTextInput: 'What would you like to add?',
+    },
   },
   Units: {
     Imperial: {

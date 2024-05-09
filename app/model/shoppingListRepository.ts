@@ -37,8 +37,8 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
         const daoCategory = await daoItem.category.fetch();
         shoppingListItems.push({
           id: daoItem.id,
-          product: daoProduct,
-          category: daoCategory,
+          product: {id: daoProduct.id, name: daoProduct.name},
+          category: {id: daoCategory?.id, color: daoCategory?.color},
           checked: daoItem.checked,
           quantity: daoItem.quantity,
           unit: daoItem.unit,
@@ -97,11 +97,13 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
             _dao.category.id = shoppingListItem.category?.id;
           });
       });
+      const daoProduct = await dao.product;
+      const daoCategory = await dao.category;
       return {
         id: dao.id,
         checked: dao.checked,
-        product: await dao.product,
-        category: await dao.category,
+        product: {id: daoProduct.id, name: daoProduct.name},
+        category: {id: daoCategory?.id, color: daoCategory?.color},
         quantity: dao.quantity,
         unit: dao.unit,
       };
@@ -124,13 +126,15 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
         shoppingListItem.product.id,
         shoppingListItem.category?.id,
       );
+      const daoProduct = await daoUpdated.product;
+      const daoCategory = await daoUpdated.category;
       return {
         id: daoUpdated.id,
         checked: daoUpdated.checked,
         unit: daoUpdated.unit,
         quantity: daoUpdated.quantity,
-        product: await daoUpdated.product,
-        category: await daoUpdated.category,
+        product: {id: daoProduct.id, name: daoProduct.name},
+        category: {id: daoCategory?.id, color: daoCategory?.color},
       };
     } catch (error) {
       return;
