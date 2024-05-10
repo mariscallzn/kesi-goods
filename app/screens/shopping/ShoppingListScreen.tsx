@@ -1,17 +1,22 @@
 import React, {FC, useEffect} from 'react';
-import {Screen} from '../../components/Screen';
-import {Action, ActionCallback} from '../../inf/multiViewRenderer';
-import {ShoppingStackScreenProps} from '../../routes/ShoppingNavigator';
-import Content from './components/content/Content';
-import Header from './components/header/Header';
-import {useAppDispatch} from '../../redux/store';
-import {fetchListInfo} from './redux-slice/asyncThunks';
 import {FAB} from 'react-native-paper';
 import {ViewStyle} from 'react-native/types';
+import {Screen} from '../../components/Screen';
 import {translate} from '../../i18n/translate';
-import {bottomSheetTypes} from './components/bottom-sheet-coordinator/types';
-import {openBottomSheet} from './redux-slice/shoppingListSlice';
+import {Action, ActionCallback} from '../../inf/multiViewRenderer';
+import {useAppDispatch} from '../../redux/store';
+import {ShoppingStackScreenProps} from '../../routes/ShoppingNavigator';
 import BottomSheetCoordinator from './components/bottom-sheet-coordinator/BottomSheetCoordinator';
+import {bottomSheetTypes} from './components/bottom-sheet-coordinator/types';
+import Content from './components/content/Content';
+import {OnCheckPressType} from './components/content/types';
+import Header from './components/header/Header';
+import {
+  fetchListInfo,
+  handleToggle,
+  openBottomSheet,
+} from './redux-slice/shoppingListSlice';
+import {CONTENT_ACTIONS} from './types';
 
 const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
   route,
@@ -23,7 +28,26 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
   }, [dispatch, route]);
 
   const actions: ActionCallback = (action: Action) => {
-    console.log(action.metadata.type);
+    switch (action.metadata.type) {
+      case CONTENT_ACTIONS.shoppingListItem.onCheckPress:
+        const onCheckPressData = action.metadata.value as OnCheckPressType;
+        dispatch(
+          handleToggle({
+            listId: route.params.listId,
+            interaction: {
+              checked: onCheckPressData.checked,
+              itemId: onCheckPressData.itemId,
+            },
+          }),
+        );
+        break;
+      case CONTENT_ACTIONS.shoppingListItem.onItemPress:
+        // dispatch();
+        break;
+      default:
+        console.log(JSON.stringify(action));
+        break;
+    }
   };
 
   return (

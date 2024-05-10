@@ -3,9 +3,11 @@ import {useSelector} from 'react-redux';
 import BottomSheet from '../../../../components/BottomSheet';
 import {ShoppingListItem} from '../../../../model/types';
 import {useAppDispatch} from '../../../../redux/store';
-import {createOrUpdateItem} from '../../redux-slice/asyncThunks';
 import {bottomSheetSelector} from '../../redux-slice/selectors';
-import {hideBottomSheet} from '../../redux-slice/shoppingListSlice';
+import {
+  createOrUpdateItem,
+  hideBottomSheet,
+} from '../../redux-slice/shoppingListSlice';
 import AddOrUpdateItem from './add-or-update-item/AddOrUpdateItem';
 import {
   AddOrUpdateBSMetadata,

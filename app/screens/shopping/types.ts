@@ -10,3 +10,17 @@ export type ListInfo = {
   progress: number;
   shoppingListItems: UIShoppingListItem[];
 };
+
+type ContentActions = {
+  shoppingListItem: {
+    onCheckPress: string;
+    onItemPress: string;
+  };
+};
+
+export const CONTENT_ACTIONS: ContentActions = {
+  shoppingListItem: {
+    onCheckPress: 'onCheckPress',
+    onItemPress: 'onItemPress',
+  },
+};

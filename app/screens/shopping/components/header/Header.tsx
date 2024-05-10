@@ -19,8 +19,8 @@ const Header: React.FC<HeaderProps> = ({action}) => {
         <Text variant="headlineMedium">{selectHederInfo.listName}</Text>
       </View>
       <ProgressBar
-        style={[$progressBar, {borderRadius: roundness}]}
         progress={selectHederInfo.progress}
+        style={[$progressBar, {borderRadius: roundness}]}
       />
     </View>
   );

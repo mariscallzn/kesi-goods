@@ -15,6 +15,7 @@ export interface ShoppingListService {
   ): Promise<UIShoppingListItem>;
   fetchCategories(): Promise<Category[]>;
   findByNameOrFetch(name?: string): Promise<Product[]>;
+  toggleShoppingListItemById(id: string, value: boolean): Promise<void>;
 }
 
 export class ShoppingListServiceImpl implements ShoppingListService {
@@ -116,5 +117,12 @@ export class ShoppingListServiceImpl implements ShoppingListService {
 
   async findByNameOrFetch(name?: string | undefined): Promise<Product[]> {
     return await this.productRepository.findByNameOrFetch(name);
+  }
+
+  async toggleShoppingListItemById(id: string, value: boolean): Promise<void> {
+    return await this.shoppingListRepository.toggleShoppingListItemById(
+      id,
+      value,
+    );
   }
 }

@@ -17,3 +17,8 @@ export const CUSTOM_VIEWS: CustomViewTypes = {
 export const VIEW_ID = {
   shoppingListItem: 'shoppingListItem',
 };
+
+export type OnCheckPressType = {
+  itemId: string;
+  checked: boolean;
+};
