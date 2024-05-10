@@ -19,15 +19,19 @@ export type ListInfo = {
 };
 
 type ContentActions = {
+  header: {back: string};
   shoppingListItem: {
     onCheckPress: string;
-    onItemPress: string;
+    onLongPress: string;
   };
 };
 
 export const CONTENT_ACTIONS: ContentActions = {
+  header: {
+    back: 'back',
+  },
   shoppingListItem: {
     onCheckPress: 'onCheckPress',
-    onItemPress: 'onItemPress',
+    onLongPress: 'onLongPress',
   },
 };

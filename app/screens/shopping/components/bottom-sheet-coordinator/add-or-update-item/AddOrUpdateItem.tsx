@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {TextStyle, View, ViewStyle} from 'react-native';
 import {Button, useTheme} from 'react-native-paper';
 import {translate} from '../../../../../i18n/translate';
@@ -20,6 +20,13 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
   const headerRef = React.useRef<HeaderRef>(null);
   const quantityUnitRef = React.useRef<QuantityUnitRef>(null);
   const categoryRef = React.useRef<CategoriesRef>(null);
+
+  useEffect(() => {
+    headerRef.current?.setProduct(shoppingListItem?.product);
+    quantityUnitRef.current?.setQuantity(shoppingListItem?.quantity);
+    quantityUnitRef.current?.setUnit(shoppingListItem?.unit);
+    categoryRef.current?.setCategory(shoppingListItem?.category);
+  }, [shoppingListItem]);
 
   return (
     <View>

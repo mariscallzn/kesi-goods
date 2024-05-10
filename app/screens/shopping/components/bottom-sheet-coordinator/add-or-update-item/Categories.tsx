@@ -13,6 +13,7 @@ type CategoriesState = {
 type CategoriesProps = {};
 export interface CategoriesRef {
   getCategory(): Category | undefined;
+  setCategory(category: Category | undefined): void;
 }
 
 class Categories
@@ -29,6 +30,12 @@ class Categories
 
   getCategory(): Category | undefined {
     return this.state.selectedCategory;
+  }
+
+  setCategory(category: Category | undefined): void {
+    if (category) {
+      this.setState({...this.state, selectedCategory: category});
+    }
   }
 
   private async fetchCategories() {
@@ -51,7 +58,7 @@ class Categories
           renderItem={({item}) => (
             <CategoryItem
               category={item}
-              isSelected={this.state.selectedCategory === item}
+              isSelected={this.state.selectedCategory?.id === item.id}
               onCategoryPress={category =>
                 this.setState({
                   ...this.state,

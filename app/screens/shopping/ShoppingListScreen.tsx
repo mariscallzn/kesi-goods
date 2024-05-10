@@ -17,9 +17,11 @@ import {
   openBottomSheet,
 } from './redux-slice/shoppingListSlice';
 import {CONTENT_ACTIONS} from './types';
+import {AddOrUpdateBSMetadata} from './components/bottom-sheet-coordinator/types';
 
 const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
   route,
+  navigation,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -29,6 +31,9 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
 
   const actions: ActionCallback = (action: Action) => {
     switch (action.metadata.type) {
+      case CONTENT_ACTIONS.header.back:
+        navigation.goBack();
+        break;
       case CONTENT_ACTIONS.shoppingListItem.onCheckPress:
         const onCheckPressData = action.metadata.value as OnCheckPressType;
         dispatch(
@@ -41,8 +46,16 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
           }),
         );
         break;
-      case CONTENT_ACTIONS.shoppingListItem.onItemPress:
-        // dispatch();
+      case CONTENT_ACTIONS.shoppingListItem.onLongPress:
+        dispatch(
+          openBottomSheet({
+            type: bottomSheetTypes.addOrUpdateItem,
+            value: {
+              listId: route.params.listId,
+              shoppingListItem: action.metadata.value,
+            } as AddOrUpdateBSMetadata,
+          }),
+        );
         break;
       default:
         console.log(JSON.stringify(action));
@@ -63,7 +76,7 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
           dispatch(
             openBottomSheet({
               type: bottomSheetTypes.addOrUpdateItem,
-              value: {listId: route.params.listId},
+              value: {listId: route.params.listId} as AddOrUpdateBSMetadata,
             }),
           )
         }

@@ -29,6 +29,7 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         <AddOrUpdateItem
           action={action => {
             switch (action.metadata.type) {
+              case bottomSheetActions.update:
               case bottomSheetActions.add:
                 dispatch(
                   createOrUpdateItem({

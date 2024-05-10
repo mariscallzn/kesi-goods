@@ -12,7 +12,14 @@ const UncheckedItem: React.FC<UIUncheckedItem> = props => {
   return (
     <TouchableWithoutFeedback
       style={[{backgroundColor: colors.backdrop}]}
-      onLongPress={() => props.action?.({metadata: {type: '', value: {}}})}>
+      onLongPress={() =>
+        props.action?.({
+          metadata: {
+            type: CONTENT_ACTIONS.shoppingListItem.onLongPress,
+            value: props.shoppingListItem,
+          },
+        })
+      }>
       <>
         <View style={$container}>
           {props.shoppingListItem.category && (

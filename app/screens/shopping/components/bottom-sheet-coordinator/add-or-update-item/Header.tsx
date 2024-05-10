@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 import {View, ViewStyle} from 'react-native';
+import {FlatList} from 'react-native-gesture-handler';
 import {Chip, IconButton} from 'react-native-paper';
 import {ThemeProp} from 'react-native-paper/lib/typescript/types';
 import ControlledTextInput, {
   ControlledTextInputRef,
 } from '../../../../../components/ControlledTextInput';
+import {appComponent} from '../../../../../di/appComponent';
 import {translate} from '../../../../../i18n/translate';
 import {ActionCallback} from '../../../../../inf/multiViewRenderer';
 import {Product} from '../../../../../model/types';
-import {bottomSheetActions} from '../types';
-import {appComponent} from '../../../../../di/appComponent';
-import {FlatList} from 'react-native-gesture-handler';
+import {CONTENT_ACTIONS} from '../../../types';
 
 type HeaderProps = {
   theme: ThemeProp;
@@ -24,6 +24,7 @@ type HeaderState = {
 
 export interface HeaderRef {
   getProduct(): Product;
+  setProduct(product?: Product): void;
 }
 
 class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
@@ -35,7 +36,7 @@ class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
     this.productNameRef = React.createRef();
     this.flatListRef = React.createRef();
     this.state = {
-      product: undefined,
+      product: {id: '', name: ''},
       suggestions: [],
     };
     this.fetchSuggestions();
@@ -53,6 +54,13 @@ class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
     return this.state.product ?? {id: 'invalid', name: 'invalid'};
   }
 
+  setProduct(product?: Product): void {
+    if (product) {
+      this.setState({...this.state, product: product});
+      this.productNameRef.current?.setText(product.name);
+    }
+  }
+
   render(): React.ReactNode {
     return (
       <View>
@@ -62,7 +70,7 @@ class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
             icon="arrow-left"
             onPress={() =>
               this.props.action({
-                metadata: {type: bottomSheetActions.back, value: {}},
+                metadata: {type: CONTENT_ACTIONS.header.back, value: {}},
               })
             }
           />
@@ -79,35 +87,42 @@ class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
             underlineStyle={$textInputUnderLine}
             autoFocus={true}
             onChangeText={async e => {
-              await this.fetchSuggestions(e);
-              this.setState({
-                product: {id: this.state.product?.id ?? '', name: e},
-              });
+              if (
+                e.trim().toLowerCase() !==
+                this.state.product?.name.trim().toLocaleLowerCase()
+              ) {
+                await this.fetchSuggestions(e);
+                this.setState({
+                  product: {id: '', name: e},
+                });
+              }
             }}
           />
           {/* <IconButton icon="open-in-new" onPress={() => props.action()} /> */}
         </View>
-        <FlatList
-          //@ts-ignore
-          ref={this.flatListRef}
-          contentContainerStyle={$flatList}
-          data={this.state.suggestions}
-          keyboardShouldPersistTaps={'always'}
-          // eslint-disable-next-line react/no-unstable-nested-components
-          ItemSeparatorComponent={() => <View style={$chipsSeparator} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({item}) => (
-            <Chip
-              style={$suggestionChip}
-              onPress={() => {
-                this.setState({suggestions: [], product: item});
-                this.productNameRef.current?.setText(item.name);
-              }}>
-              {item.name}
-            </Chip>
-          )}
-        />
+        {this.state.product?.id === '' && (
+          <FlatList
+            //@ts-ignore
+            ref={this.flatListRef}
+            contentContainerStyle={$flatList}
+            data={this.state.suggestions}
+            keyboardShouldPersistTaps={'always'}
+            // eslint-disable-next-line react/no-unstable-nested-components
+            ItemSeparatorComponent={() => <View style={$chipsSeparator} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item}) => (
+              <Chip
+                style={$suggestionChip}
+                onPress={() => {
+                  this.setState({suggestions: [], product: item});
+                  this.productNameRef.current?.setText(item.name);
+                }}>
+                {item.name}
+              </Chip>
+            )}
+          />
+        )}
       </View>
     );
   }

@@ -17,7 +17,9 @@ type QuantityUnitProps = {
 };
 export interface QuantityUnitRef {
   getQuantity(): number | undefined;
+  setQuantity(quantity: number | undefined): void;
   getUnit(): string | undefined;
+  setUnit(unit: string | undefined): void;
 }
 
 export class QuantityUnit
@@ -40,8 +42,20 @@ export class QuantityUnit
     return Number(this.quantityRef.current?.getText());
   }
 
+  setQuantity(quantity: number | undefined): void {
+    if (quantity) {
+      this.quantityRef.current?.setText(`${quantity}`);
+    }
+  }
+
   getUnit(): string | undefined {
     return this.unitRef.current?.getText();
+  }
+
+  setUnit(unit: string | undefined): void {
+    if (unit) {
+      this.unitRef.current?.setText(unit);
+    }
   }
 
   render() {
