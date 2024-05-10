@@ -1,21 +1,25 @@
 import {ActionCallback} from '../../../../inf/multiViewRenderer';
-import {UIShoppingListItem} from '../../types';
-import ShoppingListItem from './ShoppingListItem';
+import {UICheckedItem, UIUncheckedItem} from '../../types';
+import CheckedItem from './CheckedItem';
+import UncheckedItem from './UncheckedItem';
 
 export type ContentProps = {
   action: ActionCallback;
 };
 
 type CustomViewTypes = {
-  shoppingListItem: React.FC<UIShoppingListItem>;
+  uncheckedItem: React.FC<UIUncheckedItem>;
+  checkedItem: React.FC<UICheckedItem>;
 };
 
 export const CUSTOM_VIEWS: CustomViewTypes = {
-  shoppingListItem: ShoppingListItem,
+  uncheckedItem: UncheckedItem,
+  checkedItem: CheckedItem,
 };
 
 export const VIEW_ID = {
-  shoppingListItem: 'shoppingListItem',
+  uncheckedItem: 'uncheckedItem',
+  checkedItem: 'checkedItem',
 };
 
 export type OnCheckPressType = {

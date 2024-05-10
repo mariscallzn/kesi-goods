@@ -1,8 +1,8 @@
 import {ThunkAction} from '@reduxjs/toolkit';
+import {UIModelProps} from '../../../inf/multiViewRenderer';
 import {ShoppingListItem} from '../../../model/types';
-import {UnknownMetadata} from '../../../utils/types';
-import {UIShoppingListItem} from '../types';
 import {RootState} from '../../../redux/store';
+import {UnknownMetadata} from '../../../utils/types';
 
 interface HeaderInfo {
   listName: string;
@@ -21,7 +21,7 @@ interface BottomSheet {
 
 export interface ShoppingListState {
   headerInfo: HeaderInfo;
-  items: UIShoppingListItem[];
+  items: UIModelProps[];
   toggleItemInteractions: ToggledItem[];
   bottomSheet: BottomSheet;
 }

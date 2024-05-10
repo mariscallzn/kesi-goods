@@ -3,19 +3,19 @@ import {View, ViewStyle} from 'react-native';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {Divider, IconButton, Text, useTheme} from 'react-native-paper';
 import {shallowEqual} from 'react-redux';
-import {CONTENT_ACTIONS, UIShoppingListItem} from '../../types';
+import {CONTENT_ACTIONS, UIUncheckedItem} from '../../types';
 import {OnCheckPressType} from './types';
 
-const ShoppingListItem: React.FC<UIShoppingListItem> = props => {
+const UncheckedItem: React.FC<UIUncheckedItem> = props => {
   const [checked, setChecked] = React.useState(props.shoppingListItem.checked);
   const {colors} = useTheme();
   return (
     <TouchableWithoutFeedback
-      style={[{backgroundColor: checked ? undefined : colors.backdrop}]}
+      style={[{backgroundColor: colors.backdrop}]}
       onLongPress={() => props.action?.({metadata: {type: '', value: {}}})}>
       <>
         <View style={$container}>
-          {props.shoppingListItem.category && !checked && (
+          {props.shoppingListItem.category && (
             <View
               style={{
                 ...$categoryView,
@@ -45,13 +45,10 @@ const ShoppingListItem: React.FC<UIShoppingListItem> = props => {
           />
           <Text
             variant="bodyLarge"
-            style={[
-              $title,
-              {color: checked ? colors.onSurfaceDisabled : colors.onBackground},
-            ]}>
+            style={[$title, {color: colors.onBackground}]}>
             {props.shoppingListItem.product.name}
           </Text>
-          {props.shoppingListItem.quantity > 0 && !checked && (
+          {props.shoppingListItem.quantity > 0 && (
             <View
               style={[$amountContainer, {backgroundColor: colors.onPrimary}]}>
               <Text
@@ -62,7 +59,7 @@ const ShoppingListItem: React.FC<UIShoppingListItem> = props => {
             </View>
           )}
         </View>
-        {!props.shoppingListItem.checked && <Divider />}
+        {props.itemLocation !== 'tail' && <Divider />}
       </>
     </TouchableWithoutFeedback>
   );
@@ -94,4 +91,4 @@ const $amount: ViewStyle = {
   marginHorizontal: 16,
 };
 
-export default memo(ShoppingListItem, shallowEqual);
+export default memo(UncheckedItem, shallowEqual);

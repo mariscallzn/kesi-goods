@@ -56,6 +56,7 @@ const shoppingListSlice = createSlice({
       state: ShoppingListState,
       action: PayloadAction<ToggledItem>,
     ) => {
+      //TODO: For better performance, remove duplicates
       state.toggleItemInteractions = state.toggleItemInteractions.concat(
         action.payload,
       );

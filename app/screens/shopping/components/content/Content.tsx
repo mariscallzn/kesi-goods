@@ -14,6 +14,7 @@ const Content: React.FC<ContentProps> = ({action}) => {
       data={selector.items}
       keyExtractor={item => item.id}
       renderItem={({item}) =>
+        //@ts-ignore
         multiViewRenderer(CUSTOM_VIEWS, {...item, action: action})
       }
     />

@@ -5,14 +5,14 @@ import {StoresRepository} from '../../model/storesRepository';
 import {Category, Product, ShoppingListItem} from '../../model/types';
 import {getUUID, saveDivision} from '../../utils/misc';
 import {VIEW_ID} from './components/content/types';
-import {ListInfo, UIShoppingListItem} from './types';
+import {ListInfo, UIUncheckedItem} from './types';
 
 export interface ShoppingListService {
   getShoppingListByStore(storeId: string): Promise<ListInfo>;
   createOrUpdateShoppingListItem(
     storeId: string,
     shoppingListItem: ShoppingListItem,
-  ): Promise<UIShoppingListItem>;
+  ): Promise<UIUncheckedItem>;
   fetchCategories(): Promise<Category[]>;
   findByNameOrFetch(name?: string): Promise<Product[]>;
   toggleShoppingListItemById(id: string, value: boolean): Promise<void>;
@@ -56,16 +56,43 @@ export class ShoppingListServiceImpl implements ShoppingListService {
         }
       });
 
+      const uncheckedCombined = categorizedItems
+        .sort((a, b) => a.category!!.color.localeCompare(b.category!!.color))
+        .concat(undefinedCategoryItems);
+
+      const uncheckedFormatted = uncheckedCombined.map(
+        (item, index) =>
+          ({
+            id: getUUID(),
+            type: VIEW_ID.uncheckedItem,
+            shoppingListItem: item,
+            itemLocation:
+              index === 0
+                ? 'head'
+                : index === uncheckedCombined.length - 1
+                ? 'tail'
+                : 'body',
+          } as UIUncheckedItem),
+      );
+
+      const checkedFormatted = checkItems.map(
+        (item, index) =>
+          ({
+            id: getUUID(),
+            type: VIEW_ID.checkedItem,
+            shoppingListItem: item,
+            itemLocation:
+              index === 0
+                ? 'head'
+                : index === uncheckedCombined.length - 1
+                ? 'tail'
+                : 'body',
+          } as UIUncheckedItem),
+      );
+
       const listInfo: ListInfo = {
         listName: (await this.storeRepository.getById(storeId)).name,
-        shoppingListItems: categorizedItems
-          .sort((a, b) => a.category!!.color.localeCompare(b.category!!.color))
-          .concat(undefinedCategoryItems, checkItems)
-          .map(item => ({
-            id: getUUID(),
-            type: VIEW_ID.shoppingListItem,
-            shoppingListItem: item,
-          })),
+        shoppingListItems: uncheckedFormatted.concat(checkedFormatted),
         progress: saveDivision(checkItems.length, shoppingListItems.length),
       };
 
@@ -78,7 +105,7 @@ export class ShoppingListServiceImpl implements ShoppingListService {
   async createOrUpdateShoppingListItem(
     storeId: string,
     shoppingListItem: ShoppingListItem,
-  ): Promise<UIShoppingListItem> {
+  ): Promise<UIUncheckedItem> {
     try {
       const product = await this.productRepository.findOrCreate(
         shoppingListItem.product,
@@ -103,7 +130,8 @@ export class ShoppingListServiceImpl implements ShoppingListService {
       return {
         id: getUUID(),
         shoppingListItem: _shoppingListItem,
-        type: VIEW_ID.shoppingListItem,
+        type: VIEW_ID.uncheckedItem,
+        itemLocation: 'tail',
       };
     } catch (error) {
       console.log(error);

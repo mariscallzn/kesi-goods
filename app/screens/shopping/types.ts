@@ -1,14 +1,21 @@
 import {UIModelProps} from '../../inf/multiViewRenderer';
 import {ShoppingListItem} from '../../model/types';
 
-export interface UIShoppingListItem extends UIModelProps {
+type ItemLocation = 'head' | 'body' | 'tail';
+export interface UIUncheckedItem extends UIModelProps {
   shoppingListItem: ShoppingListItem;
+  itemLocation: ItemLocation;
+}
+
+export interface UICheckedItem extends UIModelProps {
+  shoppingListItem: ShoppingListItem;
+  itemLocation: ItemLocation;
 }
 
 export type ListInfo = {
   listName: string;
   progress: number;
-  shoppingListItems: UIShoppingListItem[];
+  shoppingListItems: UIModelProps[];
 };
 
 type ContentActions = {
