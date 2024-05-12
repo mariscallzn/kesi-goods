@@ -1,6 +1,6 @@
-import {Database} from '@nozbe/watermelondb';
+import {Database, Q} from '@nozbe/watermelondb';
 import {DAOStores} from '../database/models';
-import {Tables} from '../database/schema';
+import {Columns, Tables} from '../database/schema';
 import {Store} from './types';
 
 export interface StoresRepository {
@@ -34,7 +34,7 @@ export class DatabaseStoresRepository implements StoresRepository {
       const stores: Store[] = [];
       const daoStores = await this.database
         .get<DAOStores>(Tables.stores)
-        .query()
+        .query(Q.sortBy(Columns.stores.updatedAt, Q.desc))
         .fetch();
       for (const store of daoStores) {
         const daoItems = await store.shoppingListItems.fetch();

@@ -39,6 +39,12 @@ const en = {
       create: 'CREATE',
       suggestions: 'Suggestions',
     },
+    ItemMenuBottomSheet: {
+      manageList: 'Manage list',
+      rename: 'Rename',
+      copy: 'Copy',
+      delete: 'Delete',
+    },
   },
 };
 export default en;

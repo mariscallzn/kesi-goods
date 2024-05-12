@@ -20,9 +20,9 @@ import {
 } from '../components/bottom-sheet-coordinator/types';
 import {ListInfo} from '../types';
 import {appComponent} from '../../../di/appComponent';
-import {fetchStores} from '../../stores/redux-slice/asyncThunks';
 import {AppDispatch} from '../../../redux/store';
 import {debounce} from 'lodash';
+import {fetchStores} from '../../stores/redux-slice/storesSlice';
 
 //#region Slice
 const shoppingListSlice = createSlice({

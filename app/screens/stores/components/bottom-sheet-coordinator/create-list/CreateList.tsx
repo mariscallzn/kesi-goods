@@ -1,28 +1,25 @@
 import React, {useEffect} from 'react';
 import {TextStyle, View, ViewStyle} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
-import {
-  Button,
-  Chip,
-  IconButton,
-  Text,
-  TextInput,
-  useTheme,
-} from 'react-native-paper';
+import {Button, Chip, Text, useTheme} from 'react-native-paper';
+import ControlledTextInput, {
+  ControlledTextInputRef,
+} from '../../../../../components/ControlledTextInput';
+import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSheetToolBar';
 import {appComponent} from '../../../../../di/appComponent';
 import {translate} from '../../../../../i18n/translate';
 import {ListSuggestions} from '../../../types';
-import {bottomSheetActions} from '../types';
 import {CreateListProps} from './types';
+import {bottomSheetActions} from '../../../../../components/types';
 
 const CreateList: React.FC<CreateListProps> = props => {
   const storesService = appComponent.storesService();
   const {colors, roundness} = useTheme();
-
-  const [text, setText] = React.useState<string>('');
   const [listSuggestions, setListSuggestions] = React.useState<
     ListSuggestions | undefined
   >();
+
+  const listNameRef = React.useRef<ControlledTextInputRef>(null);
 
   useEffect(() => {
     (async () =>
@@ -31,29 +28,17 @@ const CreateList: React.FC<CreateListProps> = props => {
 
   return (
     <View>
-      <View style={$topBar}>
-        <Text variant="titleLarge" style={$topBarTitle}>
-          {translate('StoreScreen.CreateBottomSheet.createList')}
-        </Text>
-        <IconButton
-          icon={'close'}
-          size={18}
-          iconColor={colors.onSurfaceDisabled}
-          containerColor={colors.backdrop}
-          onPress={() =>
-            props.action({
-              metadata: {type: bottomSheetActions.close, value: {}},
-            })
-          }
-        />
-      </View>
-      <TextInput
+      <GenericBottomSheetToolBar
+        action={props.action}
+        title={{key: 'StoreScreen.CreateBottomSheet.newList'}}
+      />
+      <ControlledTextInput
+        //@ts-ignore
+        ref={listNameRef}
         style={[$textInput, {borderRadius: roundness}]}
         placeholder={translate('StoreScreen.CreateBottomSheet.newList')}
         autoFocus={true}
         underlineStyle={$textInputUnderLine}
-        value={text}
-        onChangeText={setText}
       />
       <Text style={$suggestionsText} variant="titleSmall">
         {translate('StoreScreen.CreateBottomSheet.suggestions')}
@@ -68,7 +53,9 @@ const CreateList: React.FC<CreateListProps> = props => {
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({item}) => (
-          <Chip style={$suggestionChip} onPress={() => setText(item)}>
+          <Chip
+            style={$suggestionChip}
+            onPress={() => listNameRef.current?.setText(item)}>
             {item}
           </Chip>
         )}
@@ -83,7 +70,9 @@ const CreateList: React.FC<CreateListProps> = props => {
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({item}) => (
-          <Chip style={$suggestionChip} onPress={() => setText(item)}>
+          <Chip
+            style={$suggestionChip}
+            onPress={() => listNameRef.current?.setText(item)}>
             {item}
           </Chip>
         )}
@@ -96,24 +85,16 @@ const CreateList: React.FC<CreateListProps> = props => {
         labelStyle={$createButtonLabel}
         onPress={() => {
           props.action({
-            metadata: {type: bottomSheetActions.create, value: text},
+            metadata: {
+              type: bottomSheetActions.create,
+              value: listNameRef.current?.getText(),
+            },
           });
         }}>
         {translate('StoreScreen.CreateBottomSheet.create')}
       </Button>
     </View>
   );
-};
-
-const $topBar: ViewStyle = {
-  flexDirection: 'row',
-  marginHorizontal: 16,
-  marginBottom: 16,
-  alignItems: 'center',
-};
-
-const $topBarTitle: ViewStyle = {
-  flex: 1,
 };
 
 const $textInput: ViewStyle = {

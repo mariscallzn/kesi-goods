@@ -6,23 +6,15 @@ export type BottomSheetCoordinatorProps = {
   maxHeight: MaxHeight;
 };
 
-type BottomSheetActions = {
-  close: string;
-  create: string;
-};
-
-export const bottomSheetActions: BottomSheetActions = {
-  close: 'close',
-  create: 'create',
-};
-
 /**
  * Type to ensure all needed types are listed and defined on {@link bottomSheetTypes}
  */
 type BottomSheetTypes = {
-  create: string;
+  openItemMenu: string;
+  addOrUpdateList: string;
 };
 
 export const bottomSheetTypes: BottomSheetTypes = {
-  create: 'create',
+  openItemMenu: 'openItemMenu',
+  addOrUpdateList: 'addOrUpdateList',
 };

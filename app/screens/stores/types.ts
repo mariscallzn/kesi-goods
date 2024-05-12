@@ -12,8 +12,10 @@ export interface ListSuggestions {
 
 type ContentActions = {
   navigateToShoppingList: string;
+  itemMenu: string;
 };
 
 export const CONTENT_ACTIONS: ContentActions = {
   navigateToShoppingList: 'navigateToShoppingList',
+  itemMenu: 'itemMenu',
 };

@@ -16,7 +16,9 @@ const Header: React.FC<HeaderProps> = ({action}) => {
           icon="arrow-left"
           onPress={() => action({metadata: {type: 'back', value: {}}})}
         />
-        <Text variant="headlineMedium">{selectHederInfo.listName}</Text>
+        <Text variant="headlineMedium" style={$topBarTitle}>
+          {selectHederInfo.listName}
+        </Text>
       </View>
       <ProgressBar
         progress={selectHederInfo.progress}
@@ -29,6 +31,11 @@ const Header: React.FC<HeaderProps> = ({action}) => {
 const $upperContainer: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
+  marginEnd: 16,
+};
+
+const $topBarTitle: ViewStyle = {
+  flex: 1,
 };
 
 const $progressBar: ViewStyle = {

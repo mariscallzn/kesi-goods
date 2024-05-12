@@ -13,18 +13,6 @@ export interface AddOrUpdateBSMetadata {
   units: string[];
 }
 
-type BottomSheetActions = {
-  back: string;
-  add: string;
-  update: string;
-};
-
-export const bottomSheetActions: BottomSheetActions = {
-  add: 'add',
-  back: 'back',
-  update: 'update',
-};
-
 /**
  * Type to ensure all needed types are listed and defined on {@link bottomSheetTypes}
  */

@@ -34,7 +34,14 @@ const StoreItem: React.FC<UIStore> = ({store, action}) => {
           <Text style={$title} variant="headlineSmall">
             {store.name}
           </Text>
-          <IconButton icon={'dots-vertical'} onPress={() => {}} />
+          <IconButton
+            icon={'dots-vertical'}
+            onPress={() => {
+              action?.({
+                metadata: {type: CONTENT_ACTIONS.itemMenu, value: store},
+              });
+            }}
+          />
         </View>
         <View style={$bottomContainer}>
           <View style={$progressContainer}>

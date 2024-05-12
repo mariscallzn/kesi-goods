@@ -11,8 +11,7 @@ import {bottomSheetTypes} from './components/bottom-sheet-coordinator/types';
 import Content from './components/content/Content';
 import {ShoppingListNavigationMetadata} from './components/content/types';
 import TopBar from './components/topbar/TopBar';
-import {fetchStores} from './redux-slice/asyncThunks';
-import {openBottomSheet} from './redux-slice/storesSlice';
+import {fetchStores, openBottomSheet} from './redux-slice/storesSlice';
 import {CONTENT_ACTIONS} from './types';
 
 const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
@@ -34,6 +33,15 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
         });
         break;
 
+      case CONTENT_ACTIONS.itemMenu:
+        dispatch(
+          openBottomSheet({
+            type: bottomSheetTypes.openItemMenu,
+            value: action.metadata.value,
+          }),
+        );
+        break;
+
       default:
         break;
     }
@@ -51,7 +59,7 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
         onPress={() =>
           dispatch(
             openBottomSheet({
-              type: bottomSheetTypes.create,
+              type: bottomSheetTypes.addOrUpdateList,
               value: {},
             }),
           )

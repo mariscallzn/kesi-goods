@@ -12,9 +12,9 @@ import AddOrUpdateItem from './add-or-update-item/AddOrUpdateItem';
 import {
   AddOrUpdateBSMetadata,
   BottomSheetCoordinatorProps,
-  bottomSheetActions,
   bottomSheetTypes,
 } from './types';
+import {bottomSheetActions} from '../../../../components/types';
 
 const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
   const selectBottomSheet = useSelector(bottomSheetSelector);

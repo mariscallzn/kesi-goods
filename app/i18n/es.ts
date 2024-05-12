@@ -39,6 +39,12 @@ const es = {
       create: 'CREAR',
       suggestions: 'Sugerencias',
     },
+    ItemMenuBottomSheet: {
+      manageList: 'Gestionar lista',
+      rename: 'Renombrar',
+      copy: 'Copiar',
+      delete: 'Borrar',
+    },
   },
 };
 
