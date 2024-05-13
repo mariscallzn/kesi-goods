@@ -6,12 +6,14 @@ import {bottomSheetSelector} from '../../redux-slice/selectors';
 import {
   createOrUpdateStore,
   hideBottomSheet,
+  openBottomSheet,
 } from '../../redux-slice/storesSlice';
 import {BottomSheetCoordinatorProps, bottomSheetTypes} from './types';
-import CreateList from './create-list/CreateList';
+import AddOrUpdateList from './add-or-update-list/AddOrUpdateList';
 import {bottomSheetActions} from '../../../../components/types';
 import ItemMenu from './item-menu/ItemMenu';
 import {Action} from '../../../../inf/multiViewRenderer';
+import {Store} from '../../../../model/types';
 
 const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
   const selectBottomSheet = useSelector(bottomSheetSelector);
@@ -22,14 +24,25 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       case bottomSheetActions.close:
         dispatch(hideBottomSheet());
         break;
-      case bottomSheetActions.create:
+      case bottomSheetActions.rename:
         dispatch(
-          createOrUpdateStore({
-            name: action.metadata.value as string,
-            id: '',
+          openBottomSheet({
+            type: bottomSheetTypes.addOrUpdateList,
+            value: action.metadata.value as Store,
           }),
         );
         break;
+      case bottomSheetActions.update:
+      case bottomSheetActions.create:
+        dispatch(createOrUpdateStore(action.metadata.value as Store));
+        break;
+      case bottomSheetActions.delete:
+        //TODO:
+        break;
+      case bottomSheetActions.copy:
+        //TODO:
+        break;
+
       default:
         props.action(action);
         break;
@@ -42,9 +55,15 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       isVisible={selectBottomSheet.isVisible}
       dismissed={() => dispatch(hideBottomSheet())}>
       {selectBottomSheet.metadata?.type === bottomSheetTypes.addOrUpdateList ? (
-        <CreateList action={action => bottomSheetActionsHandler(action)} />
+        <AddOrUpdateList
+          action={action => bottomSheetActionsHandler(action)}
+          metadata={{store: selectBottomSheet.metadata.value as Store}}
+        />
       ) : selectBottomSheet.metadata?.type === bottomSheetTypes.openItemMenu ? (
-        <ItemMenu action={action => bottomSheetActionsHandler(action)} />
+        <ItemMenu
+          store={selectBottomSheet.metadata.value as Store}
+          action={action => bottomSheetActionsHandler(action)}
+        />
       ) : null}
     </BottomSheet>
   );

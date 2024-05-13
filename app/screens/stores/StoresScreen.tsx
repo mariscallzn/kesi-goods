@@ -60,7 +60,7 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
           dispatch(
             openBottomSheet({
               type: bottomSheetTypes.addOrUpdateList,
-              value: {},
+              value: undefined,
             }),
           )
         }

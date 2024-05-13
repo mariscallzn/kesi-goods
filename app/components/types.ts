@@ -1,6 +1,6 @@
 import {TranslateOptions} from 'i18n-js';
 import {TxKeyPath} from '../i18n/translate';
-import {ActionCallback} from '../inf/multiViewRenderer';
+import {Action, ActionCallback} from '../inf/multiViewRenderer';
 
 type BottomSheetActions = {
   close: string;
@@ -8,7 +8,10 @@ type BottomSheetActions = {
   manage: string;
   add: string;
   back: string;
+  rename: string;
   update: string;
+  copy: string;
+  delete: string;
 };
 
 export const bottomSheetActions: BottomSheetActions = {
@@ -17,7 +20,10 @@ export const bottomSheetActions: BottomSheetActions = {
   manage: 'manage',
   add: 'add',
   back: 'back',
+  rename: 'rename',
   update: 'update',
+  copy: 'copy',
+  delete: 'delete',
 };
 
 export type GenericBottomSheetToolBarProps = {
@@ -44,5 +50,6 @@ type GenericRowTitle = {
 
 type GenericAction = {
   action: ActionCallback;
+  passOnMetadata?: Action;
   rippleColor?: string;
 };

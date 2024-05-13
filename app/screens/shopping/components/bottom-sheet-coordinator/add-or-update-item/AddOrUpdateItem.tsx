@@ -3,11 +3,11 @@ import {TextStyle, View, ViewStyle} from 'react-native';
 import {Button, useTheme} from 'react-native-paper';
 import {translate} from '../../../../../i18n/translate';
 import {ShoppingListItem} from '../../../../../model/types';
-import {bottomSheetActions} from '../types';
 import Categories, {CategoriesRef} from './Categories';
 import Header, {HeaderRef} from './Header';
 import QuantityUnit, {QuantityUnitRef} from './QuantityUnit';
 import {AddOrUpdateItemProps} from './types';
+import {bottomSheetActions} from '../../../../../components/types';
 
 const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
   const shoppingListItem = props.metadata?.shoppingListItem;

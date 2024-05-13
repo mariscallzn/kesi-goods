@@ -16,7 +16,11 @@ const GenericRow: React.FC<GenericRowProps> = props => {
       onPress={
         props.action
           ? () => {
-              props.action?.action?.({metadata: {type: '', value: ''}});
+              props.action?.action?.(
+                props.action.passOnMetadata ?? {
+                  metadata: {type: 'undefined', value: undefined},
+                },
+              );
             }
           : undefined
       }>

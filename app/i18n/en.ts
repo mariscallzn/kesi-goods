@@ -33,10 +33,12 @@ const en = {
   StoreScreen: {
     topBarTitle: 'Hello! 👋',
     addList: 'Add',
-    CreateBottomSheet: {
+    AddOrUpdateBottomSheet: {
       createList: 'Create list',
       newList: 'New List',
+      renameList: 'Rename list',
       create: 'CREATE',
+      update: 'UPDATE',
       suggestions: 'Suggestions',
     },
     ItemMenuBottomSheet: {
