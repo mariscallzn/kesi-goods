@@ -92,6 +92,7 @@ class AppModule {
   getStoresService(): StoresService {
     return new StoresServiceImpl(
       this.providesStoresRepository(this.providesDatabase()),
+      this.providesShoppingListRepository(this.providesDatabase()),
     );
   }
 

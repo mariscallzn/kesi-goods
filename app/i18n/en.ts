@@ -47,6 +47,12 @@ const en = {
       copy: 'Copy',
       delete: 'Delete',
     },
+    CopyListMenuBottomSheet: {
+      copy: 'Copy',
+      wholeList: 'Whole list',
+      checkItems: 'Checked items',
+      uncheckedItems: 'Unchecked items',
+    },
   },
 };
 export default en;

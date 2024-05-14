@@ -19,3 +19,5 @@ export const CONTENT_ACTIONS: ContentActions = {
   navigateToShoppingList: 'navigateToShoppingList',
   itemMenu: 'itemMenu',
 };
+
+export type CopyListOption = 'whole-list' | 'checked-items' | 'unchecked-items';

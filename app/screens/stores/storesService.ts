@@ -1,21 +1,29 @@
+import {ShoppingListRepository} from '../../model/shoppingListRepository';
 import {StoresRepository} from '../../model/storesRepository';
-import {Store} from '../../model/types';
+import {ShoppingListItem, Store} from '../../model/types';
 import {getUUID} from '../../utils/misc';
 import {VIEW_ID} from './components/content/types';
-import {ListSuggestions, UIStore} from './types';
+import {CopyListOption, ListSuggestions, UIStore} from './types';
 
 export interface StoresService {
   getStores(): Promise<UIStore[]>;
   createOrUpdate(store: Store): Promise<UIStore>;
   fetchListSuggestions(): Promise<ListSuggestions>;
+  copyStoreList(store: Store, copyOption: CopyListOption): Promise<void>;
 }
 
 export class StoresServiceImpl implements StoresService {
   private readonly storesRepository: StoresRepository;
+  private readonly shoppingListRepository: ShoppingListRepository;
 
-  constructor(storesRepository: StoresRepository) {
+  constructor(
+    storesRepository: StoresRepository,
+    shoppingListRepository: ShoppingListRepository,
+  ) {
     this.storesRepository = storesRepository;
+    this.shoppingListRepository = shoppingListRepository;
   }
+
   async getStores(): Promise<UIStore[]> {
     try {
       return (await this.storesRepository.fetch()).map(store => ({
@@ -27,6 +35,7 @@ export class StoresServiceImpl implements StoresService {
       throw error;
     }
   }
+
   async createOrUpdate(store: Store): Promise<UIStore> {
     try {
       //TODO: Add validations
@@ -40,6 +49,7 @@ export class StoresServiceImpl implements StoresService {
       throw error;
     }
   }
+
   async fetchListSuggestions(): Promise<ListSuggestions> {
     //TODO: fetch and build suggestions
     // try {
@@ -54,5 +64,40 @@ export class StoresServiceImpl implements StoresService {
     // } catch (error) {
     //   throw error;
     // }
+  }
+
+  async copyStoreList(store: Store, copyOption: CopyListOption): Promise<void> {
+    try {
+      let items: ShoppingListItem[] = [];
+      switch (copyOption) {
+        case 'whole-list':
+          items = await this.shoppingListRepository.getByStoreId(store.id);
+          break;
+        case 'checked-items':
+          items = await this.shoppingListRepository.getCheckedByStoreId(
+            store.id,
+          );
+          break;
+        case 'unchecked-items':
+          items = await this.shoppingListRepository.getUncheckedItemsByStoreId(
+            store.id,
+          );
+          break;
+      }
+
+      const copyStore = await this.storesRepository.addOrUpdate({
+        id: '',
+        name: `${store.name} Copy`,
+      });
+
+      for (const item of items) {
+        await this.shoppingListRepository.addOrUpdate(copyStore.id, {
+          ...item,
+          checked: false,
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 }

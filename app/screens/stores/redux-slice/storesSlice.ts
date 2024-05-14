@@ -8,7 +8,7 @@ import {
 import {appComponent} from '../../../di/appComponent';
 import {UnknownMetadata} from '../../../utils/types';
 import {UIStore} from '../types';
-import {StoresState, initialState} from './types';
+import {CopyListThunkArgs, StoresState, initialState} from './types';
 import {Store} from '../../../model/types';
 
 //#region Slice
@@ -40,6 +40,7 @@ const storesSlice = createSlice({
   extraReducers: builder => {
     fetchStoresReducer(builder);
     createOrUpdateStoreReducer(builder);
+    copyListReducer(builder);
   },
 });
 //#endregion
@@ -56,9 +57,7 @@ export const fetchStores = createAsyncThunk<UIStore[], void>(
   },
 );
 
-export const fetchStoresReducer = (
-  builder: ActionReducerMapBuilder<StoresState>,
-) => {
+const fetchStoresReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
   // builder.addCase(fetchStores.pending, (state: StoresState) => {});
   builder.addCase(
     fetchStores.fulfilled,
@@ -83,7 +82,7 @@ export const createOrUpdateStore = createAsyncThunk<void, Store>(
   },
 );
 
-export const createOrUpdateStoreReducer = (
+const createOrUpdateStoreReducer = (
   builder: ActionReducerMapBuilder<StoresState>,
 ) => {
   // builder.addCase(createOrUpdateStore.pending, (state: StoresState) => {});
@@ -92,6 +91,26 @@ export const createOrUpdateStoreReducer = (
     state.bottomSheet.metadata = undefined;
   });
   // builder.addCase(createOrUpdateStore.rejected, (state: StoresState) => {});
+};
+//#endregion
+
+//#region Copy list
+export const copyList = createAsyncThunk<void, CopyListThunkArgs>(
+  'stores/copyList',
+  async (args, {rejectWithValue, dispatch}) => {
+    try {
+      await appComponent
+        .storesService()
+        .copyStoreList(args.store, args.copyOption);
+      dispatch(fetchStores());
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const copyListReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
+  builder.addCase(copyList.fulfilled, () => {});
 };
 //#endregion
 export const {hideBottomSheet, openBottomSheet} = storesSlice.actions;

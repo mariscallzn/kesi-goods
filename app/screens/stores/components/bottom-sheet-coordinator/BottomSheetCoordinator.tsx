@@ -4,6 +4,7 @@ import BottomSheet from '../../../../components/BottomSheet';
 import {useAppDispatch} from '../../../../redux/store';
 import {bottomSheetSelector} from '../../redux-slice/selectors';
 import {
+  copyList,
   createOrUpdateStore,
   hideBottomSheet,
   openBottomSheet,
@@ -14,6 +15,7 @@ import {bottomSheetActions} from '../../../../components/types';
 import ItemMenu from './item-menu/ItemMenu';
 import {Action} from '../../../../inf/multiViewRenderer';
 import {Store} from '../../../../model/types';
+import CopyListMenu from './copy-list-menu/CopyListMenu';
 
 const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
   const selectBottomSheet = useSelector(bottomSheetSelector);
@@ -40,7 +42,39 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         //TODO:
         break;
       case bottomSheetActions.copy:
-        //TODO:
+        dispatch(
+          openBottomSheet({
+            type: bottomSheetTypes.copyListOptions,
+            value: action.metadata.value as Store,
+          }),
+        );
+        break;
+      case bottomSheetActions.wholeList:
+        dispatch(
+          copyList({
+            store: action.metadata.value as Store,
+            copyOption: 'whole-list',
+          }),
+        );
+        dispatch(hideBottomSheet());
+        break;
+      case bottomSheetActions.checkedItems:
+        dispatch(
+          copyList({
+            store: action.metadata.value as Store,
+            copyOption: 'checked-items',
+          }),
+        );
+        dispatch(hideBottomSheet());
+        break;
+      case bottomSheetActions.uncheckedItems:
+        dispatch(
+          copyList({
+            store: action.metadata.value as Store,
+            copyOption: 'unchecked-items',
+          }),
+        );
+        dispatch(hideBottomSheet());
         break;
 
       default:
@@ -61,6 +95,12 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         />
       ) : selectBottomSheet.metadata?.type === bottomSheetTypes.openItemMenu ? (
         <ItemMenu
+          store={selectBottomSheet.metadata.value as Store}
+          action={action => bottomSheetActionsHandler(action)}
+        />
+      ) : selectBottomSheet.metadata?.type ===
+        bottomSheetTypes.copyListOptions ? (
+        <CopyListMenu
           store={selectBottomSheet.metadata.value as Store}
           action={action => bottomSheetActionsHandler(action)}
         />

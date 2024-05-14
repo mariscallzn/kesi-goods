@@ -6,6 +6,8 @@ import {asc} from '@nozbe/watermelondb/QueryDescription';
 
 export interface ShoppingListRepository {
   getByStoreId(storeId: string): Promise<ShoppingListItem[]>;
+  getUncheckedItemsByStoreId(storeId: string): Promise<ShoppingListItem[]>;
+  getCheckedByStoreId(storeId: string): Promise<ShoppingListItem[]>;
   addOrUpdate(
     storeId: string,
     shoppingListItem: ShoppingListItem,
@@ -44,6 +46,71 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
           unit: daoItem.unit,
         });
       }
+      console.log(JSON.stringify(shoppingListItems));
+
+      return shoppingListItems;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getUncheckedItemsByStoreId(
+    storeId: string,
+  ): Promise<ShoppingListItem[]> {
+    try {
+      const daoStore = await this.database
+        .get<DAOStores>(Tables.stores)
+        .find(storeId);
+
+      const daoShoppingListItems = await daoStore.shoppingListItems.extend(
+        Q.where(Columns.shoppingListItems.checked, Q.eq(false)),
+      );
+
+      const shoppingListItems: ShoppingListItem[] = [];
+
+      for (const daoItem of daoShoppingListItems) {
+        const daoProduct = await daoItem.product.fetch();
+        const daoCategory = await daoItem.category.fetch();
+        shoppingListItems.push({
+          id: daoItem.id,
+          product: {id: daoProduct.id, name: daoProduct.name},
+          category: {id: daoCategory?.id, color: daoCategory?.color},
+          checked: daoItem.checked,
+          quantity: daoItem.quantity,
+          unit: daoItem.unit,
+        });
+      }
+
+      return shoppingListItems;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getCheckedByStoreId(storeId: string): Promise<ShoppingListItem[]> {
+    try {
+      const daoStore = await this.database
+        .get<DAOStores>(Tables.stores)
+        .find(storeId);
+
+      const daoShoppingListItems = await daoStore.shoppingListItems.extend(
+        Q.where(Columns.shoppingListItems.checked, Q.eq(true)),
+      );
+
+      const shoppingListItems: ShoppingListItem[] = [];
+
+      for (const daoItem of daoShoppingListItems) {
+        const daoProduct = await daoItem.product.fetch();
+        const daoCategory = await daoItem.category.fetch();
+        shoppingListItems.push({
+          id: daoItem.id,
+          product: {id: daoProduct.id, name: daoProduct.name},
+          category: {id: daoCategory?.id, color: daoCategory?.color},
+          checked: daoItem.checked,
+          quantity: daoItem.quantity,
+          unit: daoItem.unit,
+        });
+      }
 
       return shoppingListItems;
     } catch (error) {
@@ -57,7 +124,7 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
   ): Promise<ShoppingListItem> {
     try {
       let _shoppingListItem: ShoppingListItem;
-      const item = await this.update(shoppingListItem);
+      const item = await this.update(storeId, shoppingListItem);
       if (item) {
         _shoppingListItem = item;
       } else {
@@ -113,12 +180,20 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
   }
 
   private async update(
+    storeId: string,
     shoppingListItem: ShoppingListItem,
   ): Promise<ShoppingListItem | undefined> {
     try {
       const daoItem = await this.database
         .get<DAOShoppingListItems>(Tables.shoppingListItems)
         .find(shoppingListItem.id);
+
+      // If daoItem.storeId is not eq storeId it means that the items
+      // are being copied, so we return undefine to allow save() to create them
+      if (daoItem.storeId !== storeId) {
+        return;
+      }
+
       const daoUpdated = await daoItem.updateShoppingListItem(
         shoppingListItem.checked,
         shoppingListItem.quantity,

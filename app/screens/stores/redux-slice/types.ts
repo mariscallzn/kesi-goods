@@ -1,5 +1,6 @@
+import {Store} from '../../../model/types';
 import {UnknownMetadata} from '../../../utils/types';
-import {UIStore} from '../types';
+import {CopyListOption, UIStore} from '../types';
 
 export interface StoresState {
   stores: UIStore[];
@@ -21,4 +22,9 @@ export const initialState: StoresState = {
   bottomSheet: {
     isVisible: false,
   },
+};
+
+export type CopyListThunkArgs = {
+  store: Store;
+  copyOption: CopyListOption;
 };

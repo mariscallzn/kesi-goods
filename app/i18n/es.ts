@@ -47,6 +47,12 @@ const es = {
       copy: 'Copiar',
       delete: 'Borrar',
     },
+    CopyListMenuBottomSheet: {
+      copy: 'Copiar',
+      wholeList: 'Lista entera',
+      checkItems: 'Productos tachados',
+      uncheckedItems: 'Productos pendientes',
+    },
   },
 };
 
