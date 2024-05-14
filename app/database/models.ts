@@ -13,6 +13,7 @@ import {Columns, Tables} from './schema';
 //Docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions
 
 //#region DAOStores
+export type DAOStoresStatus = 'active' | 'archived' | 'deleted' | 'pinned';
 const DAOStoresColumns = Columns.stores;
 export class DAOStores extends Model {
   static table = Tables.stores;
@@ -23,6 +24,11 @@ export class DAOStores extends Model {
 
   @text(DAOStoresColumns.name)
   name!: string;
+  /**
+   * Make sure to use one of these statues {@link DAOStoresStatus}
+   */
+  @text(DAOStoresColumns.status)
+  status!: string;
   @date(DAOStoresColumns.createdAt) createdAt!: Date;
   @date(DAOStoresColumns.updatedAt) updatedAt!: Date;
 
@@ -32,6 +38,12 @@ export class DAOStores extends Model {
   @writer async updateStore(name: string): Promise<DAOStores> {
     return await this.update(_store => {
       _store.name = name;
+    });
+  }
+
+  @writer async markAs(status: DAOStoresStatus): Promise<DAOStores> {
+    return await this.update(_store => {
+      _store.status = status;
     });
   }
 }

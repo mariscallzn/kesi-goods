@@ -41,6 +41,7 @@ const storesSlice = createSlice({
     fetchStoresReducer(builder);
     createOrUpdateStoreReducer(builder);
     copyListReducer(builder);
+    markStoreListAsDeleteReducer(builder);
   },
 });
 //#endregion
@@ -113,6 +114,27 @@ const copyListReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
   builder.addCase(copyList.fulfilled, () => {});
 };
 //#endregion
+
+//#region Mark as delete store list
+export const markStoreListAsDelete = createAsyncThunk<void, Store>(
+  'stores/markStoreListAsDelete',
+  async (store, {rejectWithValue, dispatch}) => {
+    try {
+      await appComponent.storesService().markStoreListAsDelete(store);
+      dispatch(fetchStores());
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const markStoreListAsDeleteReducer = (
+  builder: ActionReducerMapBuilder<StoresState>,
+) => {
+  builder.addCase(markStoreListAsDelete.fulfilled, () => {});
+};
+//#endregion
+
 export const {hideBottomSheet, openBottomSheet} = storesSlice.actions;
 
 export default storesSlice.reducer;

@@ -7,6 +7,7 @@ export interface StoresRepository {
   getById(id: string): Promise<Store>;
   fetch(): Promise<Store[]>;
   addOrUpdate(store: Store): Promise<Store>;
+  markAsDelete(store: Store): Promise<void>;
 }
 
 export class DatabaseStoresRepository implements StoresRepository {
@@ -34,7 +35,11 @@ export class DatabaseStoresRepository implements StoresRepository {
       const stores: Store[] = [];
       const daoStores = await this.database
         .get<DAOStores>(Tables.stores)
-        .query(Q.sortBy(Columns.stores.updatedAt, Q.desc))
+        .query(
+          Q.where(Columns.stores.status, Q.notIn(['deleted', 'archived'])),
+          Q.sortBy(Columns.stores.updatedAt, Q.desc),
+          Q.sortBy(Columns.stores.status, Q.desc),
+        )
         .fetch();
       for (const store of daoStores) {
         const daoItems = await store.shoppingListItems.fetch();
@@ -82,6 +87,17 @@ export class DatabaseStoresRepository implements StoresRepository {
         };
       }
       return _store;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async markAsDelete(store: Store): Promise<void> {
+    try {
+      const daoStore = await this.database
+        .get<DAOStores>(Tables.stores)
+        .find(store.id);
+      await daoStore.markAs('deleted');
     } catch (error) {
       throw error;
     }

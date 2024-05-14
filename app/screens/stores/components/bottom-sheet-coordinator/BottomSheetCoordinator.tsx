@@ -7,6 +7,7 @@ import {
   copyList,
   createOrUpdateStore,
   hideBottomSheet,
+  markStoreListAsDelete,
   openBottomSheet,
 } from '../../redux-slice/storesSlice';
 import {BottomSheetCoordinatorProps, bottomSheetTypes} from './types';
@@ -34,12 +35,9 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
           }),
         );
         break;
-      case bottomSheetActions.update:
-      case bottomSheetActions.create:
-        dispatch(createOrUpdateStore(action.metadata.value as Store));
-        break;
       case bottomSheetActions.delete:
-        //TODO:
+        dispatch(markStoreListAsDelete(action.metadata.value as Store));
+        dispatch(hideBottomSheet());
         break;
       case bottomSheetActions.copy:
         dispatch(
@@ -75,6 +73,10 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
           }),
         );
         dispatch(hideBottomSheet());
+        break;
+      case bottomSheetActions.update:
+      case bottomSheetActions.create:
+        dispatch(createOrUpdateStore(action.metadata.value as Store));
         break;
 
       default:

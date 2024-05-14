@@ -21,6 +21,7 @@ export const Tables = {
 export const Columns = {
   stores: {
     name: columnName('name'),
+    status: columnName('status'),
     createdAt: columnName('created_at'),
     updatedAt: columnName('updated_at'),
   },
@@ -53,6 +54,7 @@ export default appSchema({
       name: Tables.stores,
       columns: [
         {name: Columns.stores.name, type: 'string'},
+        {name: Columns.stores.status, type: 'string'},
         {name: Columns.stores.createdAt, type: 'number'},
         {name: Columns.stores.updatedAt, type: 'number'},
       ],
