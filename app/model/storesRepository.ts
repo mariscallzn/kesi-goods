@@ -7,7 +7,8 @@ export interface StoresRepository {
   getById(id: string): Promise<Store>;
   fetch(): Promise<Store[]>;
   addOrUpdate(store: Store): Promise<Store>;
-  markAsDelete(store: Store): Promise<void>;
+  markAsDelete(store: Store): Promise<Store>;
+  restore(store: Store): Promise<Store>;
 }
 
 export class DatabaseStoresRepository implements StoresRepository {
@@ -37,7 +38,7 @@ export class DatabaseStoresRepository implements StoresRepository {
         .get<DAOStores>(Tables.stores)
         .query(
           Q.where(Columns.stores.status, Q.notIn(['deleted', 'archived'])),
-          Q.sortBy(Columns.stores.updatedAt, Q.desc),
+          Q.sortBy(Columns.stores.createdAt, Q.desc),
           Q.sortBy(Columns.stores.status, Q.desc),
         )
         .fetch();
@@ -92,12 +93,25 @@ export class DatabaseStoresRepository implements StoresRepository {
     }
   }
 
-  async markAsDelete(store: Store): Promise<void> {
+  async markAsDelete(store: Store): Promise<Store> {
     try {
       const daoStore = await this.database
         .get<DAOStores>(Tables.stores)
         .find(store.id);
-      await daoStore.markAs('deleted');
+      const updatedDaoStore = await daoStore.markAs('deleted');
+      return {id: updatedDaoStore.id, name: updatedDaoStore.name};
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async restore(store: Store): Promise<Store> {
+    try {
+      const daoStore = await this.database
+        .get<DAOStores>(Tables.stores)
+        .find(store.id);
+      const updatedDaoStore = await daoStore.markAs('active');
+      return {id: updatedDaoStore.id, name: updatedDaoStore.name};
     } catch (error) {
       throw error;
     }

@@ -10,7 +10,8 @@ export interface StoresService {
   createOrUpdate(store: Store): Promise<UIStore>;
   fetchListSuggestions(): Promise<ListSuggestions>;
   copyStoreList(store: Store, copyOption: CopyListOption): Promise<void>;
-  markStoreListAsDelete(store: Store): Promise<void>;
+  markStoreListAsDelete(store: Store): Promise<Store>;
+  restoreStoreList(store: Store): Promise<Store>;
 }
 
 export class StoresServiceImpl implements StoresService {
@@ -102,7 +103,11 @@ export class StoresServiceImpl implements StoresService {
     }
   }
 
-  async markStoreListAsDelete(store: Store): Promise<void> {
+  async markStoreListAsDelete(store: Store): Promise<Store> {
     return await this.storesRepository.markAsDelete(store);
+  }
+
+  async restoreStoreList(store: Store): Promise<Store> {
+    return await this.storesRepository.restore(store);
   }
 }

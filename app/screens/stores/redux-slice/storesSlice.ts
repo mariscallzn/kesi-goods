@@ -36,12 +36,17 @@ const storesSlice = createSlice({
       state.bottomSheet.isVisible = true;
       state.bottomSheet.metadata = action.payload;
     },
+    dismissSnackbar: (state: StoresState) => {
+      state.footer.snackbar.visible = false;
+      state.footer.snackbar.metadata = {type: '', value: undefined};
+    },
   },
   extraReducers: builder => {
     fetchStoresReducer(builder);
     createOrUpdateStoreReducer(builder);
     copyListReducer(builder);
     markStoreListAsDeleteReducer(builder);
+    restoreStoreListReducer(builder);
   },
 });
 //#endregion
@@ -116,12 +121,15 @@ const copyListReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
 //#endregion
 
 //#region Mark as delete store list
-export const markStoreListAsDelete = createAsyncThunk<void, Store>(
+export const markStoreListAsDelete = createAsyncThunk<Store, Store>(
   'stores/markStoreListAsDelete',
   async (store, {rejectWithValue, dispatch}) => {
     try {
-      await appComponent.storesService().markStoreListAsDelete(store);
+      const updatedStore = await appComponent
+        .storesService()
+        .markStoreListAsDelete(store);
       dispatch(fetchStores());
+      return updatedStore;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -131,10 +139,41 @@ export const markStoreListAsDelete = createAsyncThunk<void, Store>(
 const markStoreListAsDeleteReducer = (
   builder: ActionReducerMapBuilder<StoresState>,
 ) => {
-  builder.addCase(markStoreListAsDelete.fulfilled, () => {});
+  builder.addCase(
+    markStoreListAsDelete.fulfilled,
+    (state: StoresState, action: PayloadAction<Store>) => {
+      state.footer.snackbar.visible = true;
+      state.footer.snackbar.metadata = {
+        type: 'snackbar',
+        value: action.payload,
+      };
+    },
+  );
 };
 //#endregion
 
-export const {hideBottomSheet, openBottomSheet} = storesSlice.actions;
+//#region Restore store list
+export const restoreStoreList = createAsyncThunk<Store, Store>(
+  'stores/restoreStoreList',
+  async (store: Store, {rejectWithValue, dispatch}) => {
+    try {
+      const _store = await appComponent.storesService().restoreStoreList(store);
+      dispatch(fetchStores());
+      return _store;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const restoreStoreListReducer = (
+  builder: ActionReducerMapBuilder<StoresState>,
+) => {
+  builder.addCase(restoreStoreList.fulfilled, () => {});
+};
+//#endregion
+
+export const {hideBottomSheet, openBottomSheet, dismissSnackbar} =
+  storesSlice.actions;
 
 export default storesSlice.reducer;

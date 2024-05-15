@@ -5,9 +5,10 @@ import {CopyListOption, UIStore} from '../types';
 export interface StoresState {
   stores: UIStore[];
   bottomSheet: BottomSheet;
+  footer: FooterState;
 }
 
-export interface BottomSheet {
+interface BottomSheet {
   isVisible: boolean;
   /**
    * (Optional)
@@ -17,10 +18,25 @@ export interface BottomSheet {
   metadata?: UnknownMetadata;
 }
 
+interface FooterState {
+  snackbar: SnackbarState;
+}
+
+interface SnackbarState {
+  visible: boolean;
+  metadata: UnknownMetadata;
+}
+
 export const initialState: StoresState = {
   stores: [],
   bottomSheet: {
     isVisible: false,
+  },
+  footer: {
+    snackbar: {
+      visible: false,
+      metadata: {type: '', value: undefined},
+    },
   },
 };
 

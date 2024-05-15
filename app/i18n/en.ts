@@ -6,6 +6,7 @@ const en = {
     logOut: 'Log Out',
     add: 'Add',
     done: 'Done',
+    undo: 'Undo',
   },
   ShoppingListScreen: {
     AddOrUpdateBottomSheet: {
@@ -33,6 +34,7 @@ const en = {
   StoreScreen: {
     topBarTitle: 'Hello! 👋',
     addList: 'Add',
+    storeDeleted: 'List deleted',
     AddOrUpdateBottomSheet: {
       createList: 'Create list',
       newList: 'New List',
