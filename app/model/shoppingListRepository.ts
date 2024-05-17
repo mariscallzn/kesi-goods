@@ -46,8 +46,6 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
           unit: daoItem.unit,
         });
       }
-      console.log(JSON.stringify(shoppingListItems));
-
       return shoppingListItems;
     } catch (error) {
       throw error;

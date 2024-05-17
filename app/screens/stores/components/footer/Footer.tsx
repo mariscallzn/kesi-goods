@@ -10,45 +10,49 @@ import {
 } from '../../redux-slice/storesSlice';
 import {bottomSheetTypes} from '../bottom-sheet-coordinator/types';
 import {FooterProps} from './types';
-import {footerSelector} from '../../redux-slice/selectors';
+import {
+  multiSelectionSelector,
+  snackbarSelector,
+} from '../../redux-slice/selectors';
 import {useSelector} from 'react-redux';
 import {Store} from '../../../../model/types';
 
 const Footer: React.FC<FooterProps> = props => {
   const dispatch = useAppDispatch();
-  const selectFooter = useSelector(footerSelector);
+  const selectFooter = useSelector(snackbarSelector);
+  const selectMultiSelection = useSelector(multiSelectionSelector);
 
   return (
     <View style={props.style}>
       <Snackbar
         style={$snackbar}
         duration={3000}
-        visible={selectFooter.snackbar.visible}
+        visible={selectFooter.visible}
         onDismiss={() => dispatch(dismissSnackbar())}
         action={{
           label: translate('common.undo'),
           onPress: () => {
-            dispatch(
-              restoreStoreList(selectFooter.snackbar.metadata.value as Store),
-            );
+            dispatch(restoreStoreList(selectFooter.metadata.value as Store[]));
             dispatch(dismissSnackbar());
           },
         }}>
         {translate('StoreScreen.storeDeleted')}
       </Snackbar>
-      <FAB
-        style={$fab}
-        icon="plus"
-        label={translate('StoreScreen.addList')}
-        onPress={() =>
-          dispatch(
-            openBottomSheet({
-              type: bottomSheetTypes.addOrUpdateList,
-              value: undefined,
-            }),
-          )
-        }
-      />
+      {!selectMultiSelection.isEnabled ? (
+        <FAB
+          style={$fab}
+          icon="plus"
+          label={translate('StoreScreen.addList')}
+          onPress={() =>
+            dispatch(
+              openBottomSheet({
+                type: bottomSheetTypes.addOrUpdateList,
+                value: undefined,
+              }),
+            )
+          }
+        />
+      ) : null}
     </View>
   );
 };

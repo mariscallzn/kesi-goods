@@ -5,7 +5,8 @@ import {CopyListOption, UIStore} from '../types';
 export interface StoresState {
   stores: UIStore[];
   bottomSheet: BottomSheet;
-  footer: FooterState;
+  snackbar: SnackbarState;
+  multiSelection: MultiSelection;
 }
 
 interface BottomSheet {
@@ -18,13 +19,14 @@ interface BottomSheet {
   metadata?: UnknownMetadata;
 }
 
-interface FooterState {
-  snackbar: SnackbarState;
-}
-
 interface SnackbarState {
   visible: boolean;
   metadata: UnknownMetadata;
+}
+
+interface MultiSelection {
+  isEnabled: boolean;
+  selectedItems: Store[];
 }
 
 export const initialState: StoresState = {
@@ -32,15 +34,22 @@ export const initialState: StoresState = {
   bottomSheet: {
     isVisible: false,
   },
-  footer: {
-    snackbar: {
-      visible: false,
-      metadata: {type: '', value: undefined},
-    },
+  snackbar: {
+    visible: false,
+    metadata: {type: '', value: undefined},
+  },
+  multiSelection: {
+    isEnabled: false,
+    selectedItems: [],
   },
 };
 
 export type CopyListThunkArgs = {
   store: Store;
   copyOption: CopyListOption;
+};
+
+export type MultiSelectionArgs = {
+  addOrRemove: 'add' | 'remove';
+  store: Store;
 };

@@ -6,7 +6,12 @@ export const bottomSheetSelector = createSelector(
   state => state.stores.bottomSheet,
 );
 
-export const footerSelector = createSelector(
+export const snackbarSelector = createSelector(
   selectRootState,
-  state => state.stores.footer,
+  state => state.stores.snackbar,
+);
+
+export const multiSelectionSelector = createSelector(
+  selectRootState,
+  state => state.stores.multiSelection,
 );

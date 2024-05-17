@@ -134,7 +134,6 @@ export class ShoppingListServiceImpl implements ShoppingListService {
         itemLocation: 'tail',
       };
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

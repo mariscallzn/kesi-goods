@@ -8,7 +8,12 @@ import {
 import {appComponent} from '../../../di/appComponent';
 import {UnknownMetadata} from '../../../utils/types';
 import {UIStore} from '../types';
-import {CopyListThunkArgs, StoresState, initialState} from './types';
+import {
+  CopyListThunkArgs,
+  MultiSelectionArgs,
+  StoresState,
+  initialState,
+} from './types';
 import {Store} from '../../../model/types';
 
 //#region Slice
@@ -37,8 +42,34 @@ const storesSlice = createSlice({
       state.bottomSheet.metadata = action.payload;
     },
     dismissSnackbar: (state: StoresState) => {
-      state.footer.snackbar.visible = false;
-      state.footer.snackbar.metadata = {type: '', value: undefined};
+      state.snackbar.visible = false;
+      state.snackbar.metadata = {type: '', value: undefined};
+    },
+    toggleMultiSelection: (
+      state: StoresState,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.multiSelection.isEnabled = action.payload;
+      state.stores = state.stores.map(e => ({
+        ...e,
+        multiSelectionEnabled: action.payload,
+      }));
+
+      if (!action.payload) {
+        state.multiSelection.selectedItems = [];
+      }
+    },
+    addOrRemoveSelection: (
+      state: StoresState,
+      action: PayloadAction<MultiSelectionArgs>,
+    ) => {
+      let updatedList = state.multiSelection.selectedItems;
+      if (action.payload.addOrRemove === 'add') {
+        updatedList.push(action.payload.store);
+      } else {
+        updatedList = updatedList.filter(c => c.id !== action.payload.store.id);
+      }
+      state.multiSelection.selectedItems = updatedList;
     },
   },
   extraReducers: builder => {
@@ -121,15 +152,16 @@ const copyListReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
 //#endregion
 
 //#region Mark as delete store list
-export const markStoreListAsDelete = createAsyncThunk<Store, Store>(
+export const markStoreListAsDelete = createAsyncThunk<Store[], Store[]>(
   'stores/markStoreListAsDelete',
-  async (store, {rejectWithValue, dispatch}) => {
+  async (stores, {rejectWithValue, dispatch}) => {
     try {
-      const updatedStore = await appComponent
+      const result = await appComponent
         .storesService()
-        .markStoreListAsDelete(store);
+        .markStoreListAsDelete(stores);
       dispatch(fetchStores());
-      return updatedStore;
+      dispatch(toggleMultiSelection(false));
+      return result;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -141,9 +173,9 @@ const markStoreListAsDeleteReducer = (
 ) => {
   builder.addCase(
     markStoreListAsDelete.fulfilled,
-    (state: StoresState, action: PayloadAction<Store>) => {
-      state.footer.snackbar.visible = true;
-      state.footer.snackbar.metadata = {
+    (state: StoresState, action: PayloadAction<Store[]>) => {
+      state.snackbar.visible = true;
+      state.snackbar.metadata = {
         type: 'snackbar',
         value: action.payload,
       };
@@ -153,13 +185,15 @@ const markStoreListAsDeleteReducer = (
 //#endregion
 
 //#region Restore store list
-export const restoreStoreList = createAsyncThunk<Store, Store>(
+export const restoreStoreList = createAsyncThunk<Store[], Store[]>(
   'stores/restoreStoreList',
-  async (store: Store, {rejectWithValue, dispatch}) => {
+  async (stores: Store[], {rejectWithValue, dispatch}) => {
     try {
-      const _store = await appComponent.storesService().restoreStoreList(store);
+      const _stores = await appComponent
+        .storesService()
+        .restoreStoreList(stores);
       dispatch(fetchStores());
-      return _store;
+      return _stores;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -173,7 +207,12 @@ const restoreStoreListReducer = (
 };
 //#endregion
 
-export const {hideBottomSheet, openBottomSheet, dismissSnackbar} =
-  storesSlice.actions;
+export const {
+  hideBottomSheet,
+  openBottomSheet,
+  dismissSnackbar,
+  toggleMultiSelection,
+  addOrRemoveSelection,
+} = storesSlice.actions;
 
 export default storesSlice.reducer;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ViewStyle} from 'react-native';
 import {
   IconButton,
@@ -11,35 +11,89 @@ import {CONTENT_ACTIONS, UIStore} from '../../types';
 import {ShoppingListNavigationMetadata} from './types';
 import {saveDivision} from '../../../../utils/misc';
 
-const StoreItem: React.FC<UIStore> = ({store, action}) => {
+const StoreItem: React.FC<UIStore> = ({
+  store,
+  multiSelectionEnabled,
+  action,
+}) => {
   const {colors, roundness} = useTheme();
+
+  const [isSelected, setSelected] = useState(multiSelectionEnabled);
+
+  useEffect(() => {
+    if (!multiSelectionEnabled) {
+      setSelected(false);
+    }
+  }, [multiSelectionEnabled]);
 
   return (
     <TouchableRipple
       borderless
       style={[$container, {borderRadius: roundness}]}
-      onPress={() => {
+      onLongPress={() => {
+        setSelected(true);
         action?.({
           metadata: {
-            type: CONTENT_ACTIONS.navigateToShoppingList,
-            value: {
-              route: 'ShoppingList',
-              storeId: store.id,
-            } as ShoppingListNavigationMetadata,
+            type: CONTENT_ACTIONS.enableMultiSelection,
+            value: store,
           },
         });
+      }}
+      onPress={() => {
+        if (multiSelectionEnabled) {
+          const _isSelected = isSelected;
+          setSelected(!_isSelected);
+          action?.({
+            metadata: {
+              type: !_isSelected
+                ? CONTENT_ACTIONS.itemSelected
+                : CONTENT_ACTIONS.itemUnselected,
+              value: store,
+            },
+          });
+        } else {
+          action?.({
+            metadata: {
+              type: CONTENT_ACTIONS.navigateToShoppingList,
+              value: {
+                route: 'ShoppingList',
+                storeId: store.id,
+              } as ShoppingListNavigationMetadata,
+            },
+          });
+        }
       }}>
-      <View style={{backgroundColor: colors.backdrop}}>
+      <View
+        style={[
+          multiSelectionEnabled && isSelected
+            ? {
+                ...$multiSelectionContainer,
+                borderColor: colors.primaryContainer,
+              }
+            : undefined,
+          {backgroundColor: colors.backdrop, borderRadius: roundness},
+        ]}>
         <View style={$upperSection}>
           <Text style={$title} variant="headlineSmall">
             {store.name}
           </Text>
           <IconButton
-            icon={'dots-vertical'}
+            icon={
+              multiSelectionEnabled && !isSelected
+                ? 'circle-outline'
+                : isSelected
+                ? 'check-circle'
+                : 'dots-vertical'
+            }
+            iconColor={isSelected ? colors.primaryContainer : undefined}
             onPress={() => {
-              action?.({
-                metadata: {type: CONTENT_ACTIONS.itemMenu, value: store},
-              });
+              if (multiSelectionEnabled) {
+                setSelected(!isSelected);
+              } else {
+                action?.({
+                  metadata: {type: CONTENT_ACTIONS.itemMenu, value: store},
+                });
+              }
             }}
           />
         </View>
@@ -62,6 +116,10 @@ const StoreItem: React.FC<UIStore> = ({store, action}) => {
 
 const $container: ViewStyle = {
   marginHorizontal: 16,
+};
+
+const $multiSelectionContainer: ViewStyle = {
+  borderWidth: 4,
 };
 
 const $upperSection: ViewStyle = {

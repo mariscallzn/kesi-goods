@@ -7,6 +7,9 @@ const es = {
     add: 'Agregar',
     done: 'Listo',
     undo: 'Deshacer',
+    delete: 'Borrar',
+    edit: 'Editar',
+    copy: 'Copiar',
   },
   ShoppingListScreen: {
     AddOrUpdateBottomSheet: {

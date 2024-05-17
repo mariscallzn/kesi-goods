@@ -10,8 +10,8 @@ export interface StoresService {
   createOrUpdate(store: Store): Promise<UIStore>;
   fetchListSuggestions(): Promise<ListSuggestions>;
   copyStoreList(store: Store, copyOption: CopyListOption): Promise<void>;
-  markStoreListAsDelete(store: Store): Promise<Store>;
-  restoreStoreList(store: Store): Promise<Store>;
+  markStoreListAsDelete(stores: Store[]): Promise<Store[]>;
+  restoreStoreList(stores: Store[]): Promise<Store[]>;
 }
 
 export class StoresServiceImpl implements StoresService {
@@ -32,6 +32,7 @@ export class StoresServiceImpl implements StoresService {
         id: getUUID(),
         store: store,
         type: VIEW_ID.store,
+        multiSelectionEnabled: false,
       }));
     } catch (error) {
       throw error;
@@ -46,6 +47,7 @@ export class StoresServiceImpl implements StoresService {
         id: getUUID(),
         store: await this.storesRepository.addOrUpdate(store),
         type: VIEW_ID.store,
+        multiSelectionEnabled: false,
       };
     } catch (error) {
       throw error;
@@ -103,11 +105,27 @@ export class StoresServiceImpl implements StoresService {
     }
   }
 
-  async markStoreListAsDelete(store: Store): Promise<Store> {
-    return await this.storesRepository.markAsDelete(store);
+  async markStoreListAsDelete(stores: Store[]): Promise<Store[]> {
+    try {
+      const updatedList: Store[] = [];
+      for (const store of stores) {
+        updatedList.push(await this.storesRepository.markAsDelete(store));
+      }
+      return updatedList;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async restoreStoreList(store: Store): Promise<Store> {
-    return await this.storesRepository.restore(store);
+  async restoreStoreList(stores: Store[]): Promise<Store[]> {
+    try {
+      const updatedList: Store[] = [];
+      for (const store of stores) {
+        updatedList.push(await this.storesRepository.restore(store));
+      }
+      return updatedList;
+    } catch (error) {
+      throw error;
+    }
   }
 }

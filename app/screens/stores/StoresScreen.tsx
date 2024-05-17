@@ -10,8 +10,14 @@ import Content from './components/content/Content';
 import {ShoppingListNavigationMetadata} from './components/content/types';
 import Footer from './components/footer/Footer';
 import TopBar from './components/topbar/TopBar';
-import {fetchStores, openBottomSheet} from './redux-slice/storesSlice';
+import {
+  addOrRemoveSelection,
+  fetchStores,
+  openBottomSheet,
+  toggleMultiSelection,
+} from './redux-slice/storesSlice';
 import {CONTENT_ACTIONS} from './types';
+import {Store} from '../../model/types';
 
 const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
   const dispatch = useAppDispatch();
@@ -37,6 +43,32 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
           openBottomSheet({
             type: bottomSheetTypes.openItemMenu,
             value: action.metadata.value,
+          }),
+        );
+        break;
+
+      case CONTENT_ACTIONS.enableMultiSelection:
+        dispatch(toggleMultiSelection(true));
+        dispatch(
+          addOrRemoveSelection({
+            addOrRemove: 'add',
+            store: action.metadata.value as Store,
+          }),
+        );
+        break;
+      case CONTENT_ACTIONS.itemSelected:
+        dispatch(
+          addOrRemoveSelection({
+            addOrRemove: 'add',
+            store: action.metadata.value as Store,
+          }),
+        );
+        break;
+      case CONTENT_ACTIONS.itemUnselected:
+        dispatch(
+          addOrRemoveSelection({
+            addOrRemove: 'remove',
+            store: action.metadata.value as Store,
           }),
         );
         break;

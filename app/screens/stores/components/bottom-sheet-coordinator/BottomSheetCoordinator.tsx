@@ -36,7 +36,7 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         );
         break;
       case bottomSheetActions.delete:
-        dispatch(markStoreListAsDelete(action.metadata.value as Store));
+        dispatch(markStoreListAsDelete([action.metadata.value as Store]));
         dispatch(hideBottomSheet());
         break;
       case bottomSheetActions.copy:
