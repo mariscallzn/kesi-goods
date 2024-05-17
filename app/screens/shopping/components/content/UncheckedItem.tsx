@@ -1,6 +1,5 @@
 import React, {memo} from 'react';
-import {View, ViewStyle} from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {Pressable, View, ViewStyle} from 'react-native';
 import {Divider, IconButton, Text, useTheme} from 'react-native-paper';
 import {shallowEqual} from 'react-redux';
 import {CONTENT_ACTIONS, UIUncheckedItem} from '../../types';
@@ -10,7 +9,7 @@ const UncheckedItem: React.FC<UIUncheckedItem> = props => {
   const [checked, setChecked] = React.useState(props.shoppingListItem.checked);
   const {colors} = useTheme();
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       style={[{backgroundColor: colors.backdrop}]}
       onLongPress={() =>
         props.action?.({
@@ -68,7 +67,7 @@ const UncheckedItem: React.FC<UIUncheckedItem> = props => {
         </View>
         {props.itemLocation !== 'tail' && <Divider />}
       </>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 };
 
