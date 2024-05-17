@@ -17,8 +17,8 @@ const GenericBottomSheetToolBar: React.FC<
         style={$iconButton}
         icon={'close'}
         size={18}
-        iconColor={colors.onSurfaceDisabled}
-        containerColor={colors.backdrop}
+        iconColor={colors.onSurfaceVariant}
+        containerColor={colors.surfaceVariant}
         onPress={() =>
           props.action({
             metadata: {type: bottomSheetActions.close, value: {}},

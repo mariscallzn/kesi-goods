@@ -7,6 +7,8 @@ import {UnknownMetadata} from '../../../utils/types';
 interface HeaderInfo {
   listName: string;
   progress: number;
+  searchEnabled: boolean;
+  searchTerm?: string;
 }
 
 interface BottomSheet {
@@ -19,18 +21,32 @@ interface BottomSheet {
   metadata?: UnknownMetadata;
 }
 
+interface SnackbarState {
+  visible: boolean;
+  metadata: UnknownMetadata;
+}
+
 export interface ShoppingListState {
   headerInfo: HeaderInfo;
   items: UIModelProps[];
   toggleItemInteractions: ToggledItem[];
   bottomSheet: BottomSheet;
+  snackbar: SnackbarState;
 }
 
 export const initialState: ShoppingListState = {
-  headerInfo: {listName: '', progress: 0},
+  headerInfo: {
+    listName: '',
+    progress: 0,
+    searchEnabled: false,
+  },
   items: [],
   toggleItemInteractions: [],
   bottomSheet: {isVisible: false},
+  snackbar: {
+    visible: false,
+    metadata: {type: '', value: undefined},
+  },
 };
 
 export type CreateOrUpdateItemArgs = {
@@ -51,6 +67,11 @@ export type ThunkToggleItems = {
 export type ToggleItemArgs = {
   listId: string;
   interactions: ToggledItem[];
+};
+
+export type FetchListInfoArgs = {
+  listId: string;
+  searchTerm?: string;
 };
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, any>;

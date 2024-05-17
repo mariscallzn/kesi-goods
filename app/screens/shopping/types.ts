@@ -19,7 +19,11 @@ export type ListInfo = {
 };
 
 type ContentActions = {
-  header: {back: string};
+  header: {
+    back: string;
+    listMenu: string;
+    disableSearchMode: string;
+  };
   shoppingListItem: {
     onCheckPress: string;
     onLongPress: string;
@@ -29,6 +33,8 @@ type ContentActions = {
 export const CONTENT_ACTIONS: ContentActions = {
   header: {
     back: 'back',
+    listMenu: 'listMenu',
+    disableSearchMode: 'disableSearchMode',
   },
   shoppingListItem: {
     onCheckPress: 'onCheckPress',

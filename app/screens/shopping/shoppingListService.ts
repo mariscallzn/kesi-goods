@@ -8,7 +8,10 @@ import {VIEW_ID} from './components/content/types';
 import {ListInfo, UIUncheckedItem} from './types';
 
 export interface ShoppingListService {
-  getShoppingListByStore(storeId: string): Promise<ListInfo>;
+  getShoppingListByStore(
+    storeId: string,
+    searchTerm?: string,
+  ): Promise<ListInfo>;
   createOrUpdateShoppingListItem(
     storeId: string,
     shoppingListItem: ShoppingListItem,
@@ -36,10 +39,23 @@ export class ShoppingListServiceImpl implements ShoppingListService {
     this.storeRepository = storeRepository;
   }
 
-  async getShoppingListByStore(storeId: string): Promise<ListInfo> {
+  async getShoppingListByStore(
+    storeId: string,
+    searchTerm?: string,
+  ): Promise<ListInfo> {
     try {
+      let productIds: string[] | undefined;
+      if (searchTerm) {
+        productIds = (
+          await this.productRepository.findByNameOrFetch(searchTerm)
+        )
+          .filter(e => e.id !== 'n/a')
+          .map(e => e.id);
+      }
+
       const shoppingListItems = await this.shoppingListRepository.getByStoreId(
         storeId,
+        productIds,
       );
 
       const checkItems: ShoppingListItem[] = [];
@@ -139,17 +155,29 @@ export class ShoppingListServiceImpl implements ShoppingListService {
   }
 
   async fetchCategories(): Promise<Category[]> {
-    return await this.categoryRepository.fetch();
+    try {
+      return await this.categoryRepository.fetch();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findByNameOrFetch(name?: string | undefined): Promise<Product[]> {
-    return await this.productRepository.findByNameOrFetch(name);
+    try {
+      return await this.productRepository.findByNameOrFetch(name);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async toggleShoppingListItemById(id: string, value: boolean): Promise<void> {
-    return await this.shoppingListRepository.toggleShoppingListItemById(
-      id,
-      value,
-    );
+    try {
+      return await this.shoppingListRepository.toggleShoppingListItemById(
+        id,
+        value,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 }

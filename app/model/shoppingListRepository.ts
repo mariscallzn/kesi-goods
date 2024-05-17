@@ -1,11 +1,14 @@
 import {Database, Q} from '@nozbe/watermelondb';
-import {ShoppingListItem} from './types';
+import {asc} from '@nozbe/watermelondb/QueryDescription';
 import {DAOShoppingListItems, DAOStores} from '../database/models';
 import {Columns, Tables} from '../database/schema';
-import {asc} from '@nozbe/watermelondb/QueryDescription';
+import {ShoppingListItem} from './types';
 
 export interface ShoppingListRepository {
-  getByStoreId(storeId: string): Promise<ShoppingListItem[]>;
+  getByStoreId(
+    storeId: string,
+    productsIds?: string[],
+  ): Promise<ShoppingListItem[]>;
   getUncheckedItemsByStoreId(storeId: string): Promise<ShoppingListItem[]>;
   getCheckedByStoreId(storeId: string): Promise<ShoppingListItem[]>;
   addOrUpdate(
@@ -22,14 +25,26 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
     this.database = database;
   }
 
-  async getByStoreId(storeId: string): Promise<ShoppingListItem[]> {
+  async getByStoreId(
+    storeId: string,
+    productsIds?: string[],
+  ): Promise<ShoppingListItem[]> {
     try {
       const daoStore = await this.database
         .get<DAOStores>(Tables.stores)
         .find(storeId);
 
+      const query: Q.Clause[] = [];
+      query.push(Q.sortBy(Columns.shoppingListItems.checked, asc));
+
+      if (productsIds) {
+        query.push(
+          Q.where(Columns.shoppingListItems.productId, Q.oneOf(productsIds)),
+        );
+      }
+
       const daoShoppingListItems = await daoStore.shoppingListItems.extend(
-        Q.sortBy(Columns.shoppingListItems.checked, asc),
+        query,
       );
 
       const shoppingListItems: ShoppingListItem[] = [];

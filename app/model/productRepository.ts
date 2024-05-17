@@ -59,7 +59,7 @@ export class DatabaseProductRepository implements ProductRepository {
           result = await this.populateTable();
         }
       }
-      return result;
+      return result.map(e => ({id: e.id, name: e.name}));
     } catch (error) {
       throw error;
     }

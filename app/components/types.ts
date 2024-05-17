@@ -15,6 +15,9 @@ type BottomSheetActions = {
   wholeList: string;
   checkedItems: string;
   uncheckedItems: string;
+  uncheckAll: string;
+  deleteChecked: string;
+  search: string;
 };
 
 export const bottomSheetActions: BottomSheetActions = {
@@ -30,6 +33,9 @@ export const bottomSheetActions: BottomSheetActions = {
   wholeList: 'wholeList',
   checkedItems: 'checkedItems',
   uncheckedItems: 'uncheckedItems',
+  uncheckAll: 'uncheckAll',
+  deleteChecked: 'deleteChecked',
+  search: 'search',
 };
 
 export type GenericBottomSheetToolBarProps = {

@@ -10,3 +10,8 @@ export const bottomSheetSelector = createSelector(
   selectRootState,
   state => state.shopping.bottomSheet,
 );
+
+export const snackbarSelector = createSelector(
+  selectRootState,
+  state => state.shopping.snackbar,
+);

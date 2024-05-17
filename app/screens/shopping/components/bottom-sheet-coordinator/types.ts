@@ -18,8 +18,10 @@ export interface AddOrUpdateBSMetadata {
  */
 type BottomSheetTypes = {
   addOrUpdateItem: string;
+  listMenu: string;
 };
 
 export const bottomSheetTypes: BottomSheetTypes = {
   addOrUpdateItem: 'addOrUpdateItem',
+  listMenu: 'listMenu',
 };

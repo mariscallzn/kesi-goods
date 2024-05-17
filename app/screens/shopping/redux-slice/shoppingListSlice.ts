@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import {
   CreateOrUpdateItemArgs,
+  FetchListInfoArgs,
   ShoppingListState,
   ThunkResult,
   ThunkToggleItems,
@@ -20,7 +21,7 @@ import {
 } from '../components/bottom-sheet-coordinator/types';
 import {ListInfo} from '../types';
 import {appComponent} from '../../../di/appComponent';
-import {AppDispatch} from '../../../redux/store';
+import {AppDispatch, RootState} from '../../../redux/store';
 import {debounce} from 'lodash';
 import {fetchStores} from '../../stores/redux-slice/storesSlice';
 
@@ -29,8 +30,25 @@ const shoppingListSlice = createSlice({
   name: 'shopping',
   initialState: initialState,
   reducers: {
+    toggleSearch: (
+      state: ShoppingListState,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.headerInfo.searchEnabled = action.payload;
+      state.headerInfo.searchTerm = undefined;
+    },
     hideBottomSheet: (state: ShoppingListState) => {
       state.bottomSheet.isVisible = false;
+    },
+    dismissSnackbar: (state: ShoppingListState) => {
+      state.snackbar.visible = false;
+      state.snackbar.metadata = {type: '', value: undefined};
+    },
+    setSearchTerm: (
+      state: ShoppingListState,
+      action: PayloadAction<string>,
+    ) => {
+      state.headerInfo.searchTerm = action.payload;
     },
     openBottomSheet: (
       state: ShoppingListState,
@@ -49,6 +67,10 @@ const shoppingListSlice = createSlice({
           };
           break;
         default:
+          state.bottomSheet.metadata = {
+            type: action.payload.type,
+            value: action.payload.value,
+          };
           break;
       }
     },
@@ -71,13 +93,13 @@ const shoppingListSlice = createSlice({
 //#endregion
 
 //#region Fetch ListInfo
-export const fetchListInfo = createAsyncThunk<ListInfo, string>(
+export const fetchListInfo = createAsyncThunk<ListInfo, FetchListInfoArgs>(
   'shopping/fetchListInfo',
-  async (listId: string, {rejectWithValue}) => {
+  async (args, {rejectWithValue}) => {
     try {
       return await appComponent
         .shoppingListService()
-        .getShoppingListByStore(listId);
+        .getShoppingListByStore(args.listId, args.searchTerm);
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -104,17 +126,26 @@ export const fetchListInfoReducer = (
 export const createOrUpdateItem = createAsyncThunk<
   void,
   CreateOrUpdateItemArgs
->('shopping/createOrUpdateItem', async (args, {rejectWithValue, dispatch}) => {
-  try {
-    await appComponent
-      .shoppingListService()
-      .createOrUpdateShoppingListItem(args.listId, args.shoppingListItem);
-    dispatch(fetchListInfo(args.listId));
-    dispatch(fetchStores());
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
+>(
+  'shopping/createOrUpdateItem',
+  async (args, {rejectWithValue, dispatch, getState}) => {
+    try {
+      const state = (getState() as RootState).shopping;
+      await appComponent
+        .shoppingListService()
+        .createOrUpdateShoppingListItem(args.listId, args.shoppingListItem);
+      dispatch(
+        fetchListInfo({
+          listId: args.listId,
+          searchTerm: state.headerInfo.searchTerm,
+        }),
+      );
+      dispatch(fetchStores());
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const createOrUpdateItemReducer = (
   builder: ActionReducerMapBuilder<ShoppingListState>,
@@ -126,16 +157,22 @@ export const createOrUpdateItemReducer = (
 //#endregion
 
 //#region Toggle Item
-export const toggleItem = createAsyncThunk<void, ToggleItemArgs>(
+const toggleItem = createAsyncThunk<void, ToggleItemArgs>(
   'shopping/toggleItem',
-  async (args: ToggleItemArgs, {rejectWithValue, dispatch}) => {
+  async (args: ToggleItemArgs, {rejectWithValue, dispatch, getState}) => {
     try {
+      const state = (getState() as RootState).shopping;
       for (const interaction of args.interactions) {
         await appComponent
           .shoppingListService()
           .toggleShoppingListItemById(interaction.itemId, interaction.checked);
       }
-      dispatch(fetchListInfo(args.listId));
+      dispatch(
+        fetchListInfo({
+          listId: args.listId,
+          searchTerm: state.headerInfo.searchTerm,
+        }),
+      );
       dispatch(fetchStores());
     } catch (error) {
       return rejectWithValue(error);
@@ -165,8 +202,30 @@ export const toggleItemReducer = (
 };
 //#endregion
 
+//#region Search
+const debounceSearch = debounce(
+  (dispatch: AppDispatch, searchTerm: string, listId: string) => {
+    dispatch(fetchListInfo({listId: listId, searchTerm: searchTerm}));
+  },
+  500,
+);
+
+export const search =
+  (args: {term: string; listId: string}): ThunkResult<void> =>
+  dispatch => {
+    dispatch(setSearchTerm(args.term));
+    debounceSearch(dispatch, args.term, args.listId);
+  };
+//#endregion
+
 //#region Exports
-export const {hideBottomSheet, openBottomSheet, recordToggleInteraction} =
-  shoppingListSlice.actions;
+export const {
+  hideBottomSheet,
+  openBottomSheet,
+  recordToggleInteraction,
+  toggleSearch,
+  dismissSnackbar,
+  setSearchTerm,
+} = shoppingListSlice.actions;
 export default shoppingListSlice.reducer;
 //#endregion

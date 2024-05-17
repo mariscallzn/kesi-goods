@@ -1,23 +1,25 @@
 import React, {FC, useEffect} from 'react';
-import {FAB} from 'react-native-paper';
-import {ViewStyle} from 'react-native/types';
 import {Screen} from '../../components/Screen';
-import {translate} from '../../i18n/translate';
 import {Action, ActionCallback} from '../../inf/multiViewRenderer';
 import {useAppDispatch} from '../../redux/store';
 import {ShoppingStackScreenProps} from '../../routes/ShoppingNavigator';
 import BottomSheetCoordinator from './components/bottom-sheet-coordinator/BottomSheetCoordinator';
-import {bottomSheetTypes} from './components/bottom-sheet-coordinator/types';
+import {
+  AddOrUpdateBSMetadata,
+  bottomSheetTypes,
+} from './components/bottom-sheet-coordinator/types';
 import Content from './components/content/Content';
 import {OnCheckPressType} from './components/content/types';
+import Footer from './components/footer/Footer';
 import Header from './components/header/Header';
 import {
   fetchListInfo,
   handleToggle,
   openBottomSheet,
+  toggleSearch,
 } from './redux-slice/shoppingListSlice';
 import {CONTENT_ACTIONS} from './types';
-import {AddOrUpdateBSMetadata} from './components/bottom-sheet-coordinator/types';
+import {ViewStyle} from 'react-native';
 
 const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
   route,
@@ -26,13 +28,28 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchListInfo(route.params.listId));
+    dispatch(fetchListInfo({listId: route.params.listId}));
   }, [dispatch, route]);
 
+  //#region Actions
   const actions: ActionCallback = (action: Action) => {
     switch (action.metadata.type) {
       case CONTENT_ACTIONS.header.back:
         navigation.goBack();
+        break;
+
+      case CONTENT_ACTIONS.header.disableSearchMode:
+        dispatch(toggleSearch(false));
+        dispatch(fetchListInfo({listId: route.params.listId}));
+        break;
+
+      case CONTENT_ACTIONS.header.listMenu:
+        dispatch(
+          openBottomSheet({
+            type: bottomSheetTypes.listMenu,
+            value: undefined,
+          }),
+        );
         break;
       case CONTENT_ACTIONS.shoppingListItem.onCheckPress:
         const onCheckPressData = action.metadata.value as OnCheckPressType;
@@ -62,33 +79,25 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
         break;
     }
   };
+  //#endregion
 
+  //#region return Render
   return (
     <Screen safeAreaEdges={['top', 'bottom']}>
-      <Header action={actions} />
+      <Header action={actions} listId={route.params.listId} />
       <BottomSheetCoordinator maxHeight={50} action={actions} />
       <Content action={actions} />
-      <FAB
-        style={$fab}
-        icon="plus"
-        label={translate('ShoppingListScreen.AddOrUpdateBottomSheet.add')}
-        onPress={() =>
-          dispatch(
-            openBottomSheet({
-              type: bottomSheetTypes.addOrUpdateItem,
-              value: {listId: route.params.listId} as AddOrUpdateBSMetadata,
-            }),
-          )
-        }
-      />
+      <Footer style={$footer} storeListId={route.params.listId} />
     </Screen>
   );
+  //#endregion
 };
 
-const $fab: ViewStyle = {
+const $footer: ViewStyle = {
   position: 'absolute',
   margin: 16,
-  right: 0,
+  start: 0,
+  end: 0,
   bottom: 0,
 };
 

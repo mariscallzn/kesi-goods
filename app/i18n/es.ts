@@ -10,6 +10,7 @@ const es = {
     delete: 'Borrar',
     edit: 'Editar',
     copy: 'Copiar',
+    search: 'Buscar',
   },
   ShoppingListScreen: {
     AddOrUpdateBottomSheet: {
@@ -19,6 +20,12 @@ const es = {
       quantity: 'Cantidad',
       unit: 'Unidad',
       addTextInput: '¿Qué te gustaría añadir?',
+    },
+    ListMenuBottomSheet: {
+      manageList: 'Gestionar lista',
+      uncheckAll: 'Limpiar selección',
+      deleteCheckedItems: 'Borrar elementos seleccionados',
+      searchList: 'Buscar en la lista',
     },
   },
   Units: {

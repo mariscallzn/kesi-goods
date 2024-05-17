@@ -3,4 +3,5 @@ import {ActionCallback} from '../../../../inf/multiViewRenderer';
 
 export type HeaderProps = ViewProps & {
   action: ActionCallback;
+  listId: string;
 };
