@@ -9,7 +9,7 @@ export interface StoresService {
   getStores(): Promise<UIStore[]>;
   createOrUpdate(store: Store): Promise<UIStore>;
   fetchListSuggestions(): Promise<ListSuggestions>;
-  copyStoreList(store: Store, copyOption: CopyListOption): Promise<void>;
+  copyStoreList(stores: Store[], copyOption: CopyListOption): Promise<void>;
   markStoreListAsDelete(stores: Store[]): Promise<Store[]>;
   restoreStoreList(stores: Store[]): Promise<Store[]>;
 }
@@ -70,35 +70,41 @@ export class StoresServiceImpl implements StoresService {
     // }
   }
 
-  async copyStoreList(store: Store, copyOption: CopyListOption): Promise<void> {
+  async copyStoreList(
+    stores: Store[],
+    copyOption: CopyListOption,
+  ): Promise<void> {
     try {
-      let items: ShoppingListItem[] = [];
-      switch (copyOption) {
-        case 'whole-list':
-          items = await this.shoppingListRepository.getByStoreId(store.id);
-          break;
-        case 'checked-items':
-          items = await this.shoppingListRepository.getCheckedByStoreId(
-            store.id,
-          );
-          break;
-        case 'unchecked-items':
-          items = await this.shoppingListRepository.getUncheckedItemsByStoreId(
-            store.id,
-          );
-          break;
-      }
+      for (const store of stores) {
+        let items: ShoppingListItem[] = [];
+        switch (copyOption) {
+          case 'whole-list':
+            items = await this.shoppingListRepository.getByStoreId(store.id);
+            break;
+          case 'checked-items':
+            items = await this.shoppingListRepository.getCheckedByStoreId(
+              store.id,
+            );
+            break;
+          case 'unchecked-items':
+            items =
+              await this.shoppingListRepository.getUncheckedItemsByStoreId(
+                store.id,
+              );
+            break;
+        }
 
-      const copyStore = await this.storesRepository.addOrUpdate({
-        id: '',
-        name: `${store.name} Copy`,
-      });
-
-      for (const item of items) {
-        await this.shoppingListRepository.addOrUpdate(copyStore.id, {
-          ...item,
-          checked: false,
+        const copyStore = await this.storesRepository.addOrUpdate({
+          id: '',
+          name: `${store.name} - Copy`,
         });
+
+        for (const item of items) {
+          await this.shoppingListRepository.addOrUpdate(copyStore.id, {
+            ...item,
+            checked: false,
+          });
+        }
       }
     } catch (error) {
       throw error;

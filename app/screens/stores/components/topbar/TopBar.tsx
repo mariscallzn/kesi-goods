@@ -7,6 +7,7 @@ import {Action} from '../../../../inf/multiViewRenderer';
 import {useAppDispatch} from '../../../../redux/store';
 import {multiSelectionSelector} from '../../redux-slice/selectors';
 import {
+  copyList,
   markStoreListAsDelete,
   openBottomSheet,
   toggleMultiSelection,
@@ -37,8 +38,14 @@ const TopBar: React.FC<TopBarPros> = props => {
         break;
 
       case topBarActions.copy:
-        //TODO:
+        dispatch(
+          copyList({
+            stores: selectMultiSelection.selectedItems,
+            copyOption: 'whole-list',
+          }),
+        );
         break;
+
       case topBarActions.delete:
         dispatch(markStoreListAsDelete(selectMultiSelection.selectedItems));
         break;

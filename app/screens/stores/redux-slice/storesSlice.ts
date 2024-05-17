@@ -138,8 +138,9 @@ export const copyList = createAsyncThunk<void, CopyListThunkArgs>(
     try {
       await appComponent
         .storesService()
-        .copyStoreList(args.store, args.copyOption);
+        .copyStoreList(args.stores, args.copyOption);
       dispatch(fetchStores());
+      dispatch(toggleMultiSelection(false));
     } catch (error) {
       return rejectWithValue(error);
     }

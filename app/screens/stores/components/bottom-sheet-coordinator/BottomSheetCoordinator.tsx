@@ -50,7 +50,7 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       case bottomSheetActions.wholeList:
         dispatch(
           copyList({
-            store: action.metadata.value as Store,
+            stores: [action.metadata.value as Store],
             copyOption: 'whole-list',
           }),
         );
@@ -59,7 +59,7 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       case bottomSheetActions.checkedItems:
         dispatch(
           copyList({
-            store: action.metadata.value as Store,
+            stores: [action.metadata.value as Store],
             copyOption: 'checked-items',
           }),
         );
@@ -68,7 +68,7 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       case bottomSheetActions.uncheckedItems:
         dispatch(
           copyList({
-            store: action.metadata.value as Store,
+            stores: [action.metadata.value as Store],
             copyOption: 'unchecked-items',
           }),
         );

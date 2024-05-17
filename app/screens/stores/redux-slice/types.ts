@@ -45,7 +45,7 @@ export const initialState: StoresState = {
 };
 
 export type CopyListThunkArgs = {
-  store: Store;
+  stores: Store[];
   copyOption: CopyListOption;
 };
 
