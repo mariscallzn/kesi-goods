@@ -10,6 +10,7 @@ import {
   createOrUpdateItem,
   hideBottomSheet,
   toggleSearch,
+  uncheckAllListItems,
 } from '../../redux-slice/shoppingListSlice';
 import AddOrUpdateItem from './add-or-update-item/AddOrUpdateItem';
 import ListMenu from './list-menu/ListMenu';
@@ -56,6 +57,13 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
 
       case bottomSheetActions.close:
         dispatch(hideBottomSheet());
+        break;
+
+      case bottomSheetActions.uncheckAll:
+        dispatch(uncheckAllListItems(props.storeId));
+        dispatch(hideBottomSheet());
+        break;
+      case bottomSheetActions.deleteChecked:
         break;
 
       default:

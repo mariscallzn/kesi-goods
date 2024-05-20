@@ -27,6 +27,7 @@ export const Columns = {
   },
   shoppingListItems: {
     storeId: columnName('store_id'),
+    status: columnName('status'),
     productId: columnName('product_id'),
     categoryId: columnName('category_id'),
     quantity: columnName('quantity'),
@@ -68,6 +69,7 @@ export default appSchema({
           isIndexed: true,
         },
         {name: Columns.shoppingListItems.productId, type: 'string'},
+        {name: Columns.shoppingListItems.status, type: 'string'},
         {name: Columns.shoppingListItems.categoryId, type: 'string'},
         {name: Columns.shoppingListItems.quantity, type: 'number'},
         {name: Columns.shoppingListItems.unit, type: 'string'},

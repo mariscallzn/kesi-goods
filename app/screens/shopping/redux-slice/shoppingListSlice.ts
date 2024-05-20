@@ -7,6 +7,7 @@ import {
 import {
   CreateOrUpdateItemArgs,
   FetchListInfoArgs,
+  RestoreShoppingListArgs,
   ShoppingListState,
   ThunkResult,
   ThunkToggleItems,
@@ -19,11 +20,12 @@ import {
   AddOrUpdateBSMetadata,
   bottomSheetTypes,
 } from '../components/bottom-sheet-coordinator/types';
-import {ListInfo} from '../types';
+import {ListInfo, RESTORE_TYPE} from '../types';
 import {appComponent} from '../../../di/appComponent';
 import {AppDispatch, RootState} from '../../../redux/store';
 import {debounce} from 'lodash';
 import {fetchStores} from '../../stores/redux-slice/storesSlice';
+import {ShoppingListItem} from '../../../model/types';
 
 //#region Slice
 const shoppingListSlice = createSlice({
@@ -88,6 +90,8 @@ const shoppingListSlice = createSlice({
     fetchListInfoReducer(builder);
     createOrUpdateItemReducer(builder);
     toggleItemReducer(builder);
+    uncheckAllListItemsReducer(builder);
+    restoreShoppingListReducer(builder);
   },
 });
 //#endregion
@@ -216,6 +220,60 @@ export const search =
     dispatch(setSearchTerm(args.term));
     debounceSearch(dispatch, args.term, args.listId);
   };
+//#endregion
+
+//#region Uncheck all items
+export const uncheckAllListItems = createAsyncThunk<ShoppingListItem[], string>(
+  'shopping/uncheckAllListItems',
+  async (storeId, {rejectWithValue, dispatch}) => {
+    try {
+      const items = await appComponent
+        .shoppingListService()
+        .uncheckAllListItems(storeId);
+      dispatch(fetchListInfo({listId: storeId}));
+      dispatch(fetchStores());
+      return items;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const uncheckAllListItemsReducer = (
+  builder: ActionReducerMapBuilder<ShoppingListState>,
+) => {
+  builder.addCase(
+    uncheckAllListItems.fulfilled,
+    (state: ShoppingListState, action: PayloadAction<ShoppingListItem[]>) => {
+      state.snackbar.visible = true;
+      state.snackbar.metadata = {
+        type: RESTORE_TYPE.restoreUnchecked,
+        value: action.payload,
+      };
+    },
+  );
+};
+//#endregion
+
+//#region Restore shopping list
+export const restoreShoppingList = createAsyncThunk<
+  void,
+  RestoreShoppingListArgs
+>('shopping/restoreShoppingList', async (args, {rejectWithValue, dispatch}) => {
+  try {
+    await appComponent.shoppingListService().restoreShoppingList(args.metadata);
+    dispatch(fetchListInfo({listId: args.listId}));
+    dispatch(fetchStores());
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+const restoreShoppingListReducer = (
+  builder: ActionReducerMapBuilder<ShoppingListState>,
+) => {
+  builder.addCase(restoreShoppingList.fulfilled, () => {});
+};
 //#endregion
 
 //#region Exports

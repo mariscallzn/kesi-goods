@@ -74,4 +74,9 @@ export type FetchListInfoArgs = {
   searchTerm?: string;
 };
 
+export type RestoreShoppingListArgs = {
+  listId: string;
+  metadata: UnknownMetadata;
+};
+
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, any>;

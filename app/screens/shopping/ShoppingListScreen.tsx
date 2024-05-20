@@ -85,7 +85,11 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
   return (
     <Screen safeAreaEdges={['top', 'bottom']}>
       <Header action={actions} listId={route.params.listId} />
-      <BottomSheetCoordinator maxHeight={50} action={actions} />
+      <BottomSheetCoordinator
+        maxHeight={50}
+        action={actions}
+        storeId={route.params.listId}
+      />
       <Content action={actions} />
       <Footer style={$footer} storeListId={route.params.listId} />
     </Screen>

@@ -7,6 +7,7 @@ import {useAppDispatch} from '../../../../redux/store';
 import {
   dismissSnackbar,
   openBottomSheet,
+  restoreShoppingList,
 } from '../../redux-slice/shoppingListSlice';
 import {
   AddOrUpdateBSMetadata,
@@ -33,7 +34,12 @@ const Footer: React.FC<FooterProps> = props => {
         action={{
           label: translate('common.undo'),
           onPress: () => {
-            // dispatch(restoreStoreList(selectFooter.metadata.value as Store[]));
+            dispatch(
+              restoreShoppingList({
+                listId: props.storeListId,
+                metadata: selectFooter.metadata,
+              }),
+            );
             dispatch(dismissSnackbar());
           },
         }}>

@@ -16,6 +16,8 @@ export interface ShoppingListRepository {
     shoppingListItem: ShoppingListItem,
   ): Promise<ShoppingListItem>;
   toggleShoppingListItemById(id: string, value: boolean): Promise<void>;
+  markAsDeleted(shoppingListItem: ShoppingListItem): Promise<void>;
+  restore(shoppingListItem: ShoppingListItem): Promise<void>;
 }
 
 export class DatabaseShoppingListRepository implements ShoppingListRepository {
@@ -226,6 +228,28 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
       };
     } catch (error) {
       return;
+    }
+  }
+
+  async markAsDeleted(shoppingListItem: ShoppingListItem): Promise<void> {
+    try {
+      const daoShoppingListItem = await this.database
+        .get<DAOShoppingListItems>(Tables.shoppingListItems)
+        .find(shoppingListItem.id);
+      await daoShoppingListItem.markAs('deleted');
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async restore(shoppingListItem: ShoppingListItem): Promise<void> {
+    try {
+      const daoShoppingListItem = await this.database
+        .get<DAOShoppingListItems>(Tables.shoppingListItems)
+        .find(shoppingListItem.id);
+      await daoShoppingListItem.markAs('active');
+    } catch (error) {
+      throw error;
     }
   }
 }

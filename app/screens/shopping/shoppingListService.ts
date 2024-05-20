@@ -4,8 +4,9 @@ import {ShoppingListRepository} from '../../model/shoppingListRepository';
 import {StoresRepository} from '../../model/storesRepository';
 import {Category, Product, ShoppingListItem} from '../../model/types';
 import {getUUID, saveDivision} from '../../utils/misc';
+import {UnknownMetadata} from '../../utils/types';
 import {VIEW_ID} from './components/content/types';
-import {ListInfo, UIUncheckedItem} from './types';
+import {ListInfo, RESTORE_TYPE, UIUncheckedItem} from './types';
 
 export interface ShoppingListService {
   getShoppingListByStore(
@@ -19,6 +20,11 @@ export interface ShoppingListService {
   fetchCategories(): Promise<Category[]>;
   findByNameOrFetch(name?: string): Promise<Product[]>;
   toggleShoppingListItemById(id: string, value: boolean): Promise<void>;
+  markShoppingListItemAsDeleted(
+    shoppingListItem: ShoppingListItem,
+  ): Promise<void>;
+  uncheckAllListItems(storeId: string): Promise<ShoppingListItem[]>;
+  restoreShoppingList(metadata: UnknownMetadata): Promise<void>;
 }
 
 export class ShoppingListServiceImpl implements ShoppingListService {
@@ -176,6 +182,49 @@ export class ShoppingListServiceImpl implements ShoppingListService {
         id,
         value,
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async markShoppingListItemAsDeleted(
+    shoppingListItem: ShoppingListItem,
+  ): Promise<void> {
+    try {
+      await this.shoppingListRepository.markAsDeleted(shoppingListItem);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async uncheckAllListItems(storeId: string): Promise<ShoppingListItem[]> {
+    try {
+      const items: ShoppingListItem[] =
+        await this.shoppingListRepository.getCheckedByStoreId(storeId);
+      for (const item of items) {
+        await this.toggleShoppingListItemById(item.id, false);
+      }
+      return items;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async restoreShoppingList(metadata: UnknownMetadata): Promise<void> {
+    try {
+      const shoppingListItems: ShoppingListItem[] =
+        metadata.value as ShoppingListItem[];
+      for (const item of shoppingListItems) {
+        switch (metadata.type) {
+          case RESTORE_TYPE.restoreUnchecked:
+            await this.toggleShoppingListItemById(item.id, true);
+            break;
+
+          case RESTORE_TYPE.restoreDeleted:
+            await this.shoppingListRepository.restore(item);
+            break;
+        }
+      }
     } catch (error) {
       throw error;
     }

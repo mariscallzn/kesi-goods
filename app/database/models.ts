@@ -50,6 +50,7 @@ export class DAOStores extends Model {
 //#endregion
 
 //#region DAOShoppingListItems
+export type ShoppingListItemsStatus = 'active' | 'deleted';
 const ShoppingListItemsColumns = Columns.shoppingListItems;
 export class DAOShoppingListItems extends Model {
   static table = Tables.shoppingListItems;
@@ -57,6 +58,12 @@ export class DAOShoppingListItems extends Model {
     Tables.stores,
     {type: 'belongs_to', key: Columns.shoppingListItems.storeId},
   ]);
+
+  /**
+   * Make sure to use one of these statues {@link DAOStoresStatus}
+   */
+  @text(ShoppingListItemsColumns.status)
+  status!: string;
 
   @relation(Tables.products, ShoppingListItemsColumns.productId)
   product!: Relation<DAOProducts>;
@@ -74,6 +81,14 @@ export class DAOShoppingListItems extends Model {
 
   @immutableRelation(Tables.stores, ShoppingListItemsColumns.storeId)
   store!: Relation<DAOStores>;
+
+  @writer async markAs(
+    status: ShoppingListItemsStatus,
+  ): Promise<DAOShoppingListItems> {
+    return await this.update(_shoppingListItem => {
+      _shoppingListItem.status = status;
+    });
+  }
 
   @writer async updateShoppingListItem(
     checked: boolean,

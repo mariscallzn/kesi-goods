@@ -5,6 +5,7 @@ import {ShoppingListItem} from '../../../../model/types';
 export type BottomSheetCoordinatorProps = {
   action: ActionCallback;
   maxHeight: MaxHeight;
+  storeId: string;
 };
 
 export interface AddOrUpdateBSMetadata {

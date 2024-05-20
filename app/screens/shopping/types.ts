@@ -18,6 +18,16 @@ export type ListInfo = {
   shoppingListItems: UIModelProps[];
 };
 
+type RestoreItemsType = {
+  restoreUnchecked: string;
+  restoreDeleted: string;
+};
+
+export const RESTORE_TYPE: RestoreItemsType = {
+  restoreDeleted: 'restoreDeleted',
+  restoreUnchecked: 'restoreUnchecked',
+};
+
 type ContentActions = {
   header: {
     back: string;
