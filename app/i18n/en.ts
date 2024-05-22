@@ -30,6 +30,7 @@ const en = {
     Snackbar: {
       allItemsUnchecked: 'All items unchecked.',
       checkedItemsRemoved: 'Checked items removed.',
+      itemRemoved: 'Item removed.',
     },
   },
   Units: {

@@ -16,7 +16,7 @@ export interface ShoppingListRepository {
     shoppingListItem: ShoppingListItem,
   ): Promise<ShoppingListItem>;
   toggleShoppingListItemById(id: string, value: boolean): Promise<void>;
-  markAsDeleted(shoppingListItem: ShoppingListItem): Promise<void>;
+  markAsDeleted(shoppingListItem: ShoppingListItem): Promise<ShoppingListItem>;
   restore(shoppingListItem: ShoppingListItem): Promise<void>;
 }
 
@@ -233,12 +233,26 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
     }
   }
 
-  async markAsDeleted(shoppingListItem: ShoppingListItem): Promise<void> {
+  async markAsDeleted(
+    shoppingListItem: ShoppingListItem,
+  ): Promise<ShoppingListItem> {
     try {
       const daoShoppingListItem = await this.database
         .get<DAOShoppingListItems>(Tables.shoppingListItems)
         .find(shoppingListItem.id);
-      await daoShoppingListItem.markAs('deleted');
+      const updatedItem = await daoShoppingListItem.markAs('deleted');
+      const product = await updatedItem.product;
+      const category = await updatedItem.category;
+      return {
+        id: updatedItem.id,
+        checked: updatedItem.checked,
+        quantity: updatedItem.quantity,
+        unit: updatedItem.unit,
+        product: {id: product.id, name: product.name},
+        category: category
+          ? {id: category.id, color: category.color}
+          : undefined,
+      };
     } catch (error) {
       throw error;
     }

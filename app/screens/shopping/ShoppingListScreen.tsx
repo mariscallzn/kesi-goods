@@ -16,6 +16,7 @@ import {
   fetchListInfo,
   handleToggle,
   openBottomSheet,
+  resetState,
   toggleSearch,
 } from './redux-slice/shoppingListSlice';
 import {CONTENT_ACTIONS} from './types';
@@ -29,6 +30,9 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
 
   useEffect(() => {
     dispatch(fetchListInfo({listId: route.params.listId}));
+    return () => {
+      dispatch(resetState());
+    };
   }, [dispatch, route]);
 
   //#region Actions

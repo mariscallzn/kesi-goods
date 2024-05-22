@@ -46,37 +46,65 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
         //@ts-ignore
         ref={categoryRef}
       />
-      <Button
-        style={$createButton}
-        mode="contained"
-        buttonColor={theme.colors.backdrop}
-        labelStyle={$createButtonLabel}
-        onPress={() => {
-          props.action({
-            metadata: {
-              type: isUpdating
-                ? bottomSheetActions.update
-                : bottomSheetActions.add,
-              value: {
-                id: shoppingListItem?.id ?? '',
-                quantity: quantityUnitRef.current?.getQuantity() ?? 0,
-                unit: quantityUnitRef.current?.getUnit() ?? '',
-                product: headerRef.current?.getProduct(),
-                category: categoryRef.current?.getCategory(),
-              } as ShoppingListItem,
-            },
-          });
-        }}>
-        {isUpdating
-          ? translate('ShoppingListScreen.AddOrUpdateBottomSheet.update')
-          : translate('ShoppingListScreen.AddOrUpdateBottomSheet.add')}
-      </Button>
+      <View style={$buttonsContainer}>
+        {isUpdating ? (
+          <Button
+            textColor="#C62828"
+            mode={'text'}
+            style={$deleteButton}
+            onPress={() =>
+              props.action({
+                metadata: {
+                  type: bottomSheetActions.delete,
+                  value: shoppingListItem,
+                },
+              })
+            }>
+            {translate('common.delete').toUpperCase()}
+          </Button>
+        ) : undefined}
+        <Button
+          style={$createOrUpdateButton}
+          mode="contained"
+          buttonColor={theme.colors.backdrop}
+          labelStyle={$createButtonLabel}
+          onPress={() =>
+            props.action({
+              metadata: {
+                type: isUpdating
+                  ? bottomSheetActions.update
+                  : bottomSheetActions.add,
+                value: {
+                  id: shoppingListItem?.id ?? '',
+                  quantity: quantityUnitRef.current?.getQuantity() ?? 0,
+                  unit: quantityUnitRef.current?.getUnit() ?? '',
+                  product: headerRef.current?.getProduct(),
+                  category: categoryRef.current?.getCategory(),
+                } as ShoppingListItem,
+              },
+            })
+          }>
+          {isUpdating
+            ? translate('ShoppingListScreen.AddOrUpdateBottomSheet.update')
+            : translate('ShoppingListScreen.AddOrUpdateBottomSheet.add')}
+        </Button>
+      </View>
     </View>
   );
 };
 
-const $createButton: ViewStyle = {
+const $buttonsContainer: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+};
+
+const $createOrUpdateButton: ViewStyle = {
+  flex: 1,
   margin: 16,
+};
+
+const $deleteButton: ViewStyle = {
+  flex: 1,
 };
 
 const $createButtonLabel: TextStyle = {

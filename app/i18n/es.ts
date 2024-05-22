@@ -30,6 +30,7 @@ const es = {
     Snackbar: {
       allItemsUnchecked: 'Lista de compras restablecida.',
       checkedItemsRemoved: 'Se borraron los artículos marcados.',
+      itemRemoved: 'Articulo borrado.',
     },
   },
   Units: {

@@ -20,7 +20,10 @@ export interface ShoppingListService {
   fetchCategories(): Promise<Category[]>;
   findByNameOrFetch(name?: string): Promise<Product[]>;
   toggleShoppingListItemById(id: string, value: boolean): Promise<void>;
-  markShoppingListItemAsDeleted(storeId: string): Promise<ShoppingListItem[]>;
+  markShoppingListItemAsDeleted(
+    item: ShoppingListItem,
+  ): Promise<ShoppingListItem>;
+  markCheckedItemsAsDeleted(storeId: string): Promise<ShoppingListItem[]>;
   uncheckAllListItems(storeId: string): Promise<ShoppingListItem[]>;
   restoreShoppingList(metadata: UnknownMetadata): Promise<void>;
 }
@@ -186,6 +189,16 @@ export class ShoppingListServiceImpl implements ShoppingListService {
   }
 
   async markShoppingListItemAsDeleted(
+    item: ShoppingListItem,
+  ): Promise<ShoppingListItem> {
+    try {
+      return await this.shoppingListRepository.markAsDeleted(item);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async markCheckedItemsAsDeleted(
     storeId: string,
   ): Promise<ShoppingListItem[]> {
     try {
