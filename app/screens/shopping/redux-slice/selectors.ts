@@ -15,3 +15,8 @@ export const snackbarSelector = createSelector(
   selectRootState,
   state => state.shopping.snackbar,
 );
+
+export const itemsSelector = createSelector(
+  selectRootState,
+  state => state.shopping.items,
+);

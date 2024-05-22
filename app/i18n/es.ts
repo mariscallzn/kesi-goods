@@ -27,6 +27,10 @@ const es = {
       deleteCheckedItems: 'Borrar elementos seleccionados',
       searchList: 'Buscar en la lista',
     },
+    Snackbar: {
+      allItemsUnchecked: 'Lista de compras restablecida.',
+      checkedItemsRemoved: 'Se borraron los artículos marcados.',
+    },
   },
   Units: {
     Imperial: {

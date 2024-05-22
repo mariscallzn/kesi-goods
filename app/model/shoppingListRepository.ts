@@ -38,6 +38,7 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
 
       const query: Q.Clause[] = [];
       query.push(Q.sortBy(Columns.shoppingListItems.checked, asc));
+      query.push(Q.where(Columns.shoppingListItems.status, Q.eq('active')));
 
       if (productsIds) {
         query.push(
@@ -177,6 +178,7 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
             _dao.product.id = shoppingListItem.product.id;
             _dao.store.id = storeId;
             _dao.category.id = shoppingListItem.category?.id;
+            _dao.status = 'active';
           });
       });
       const daoProduct = await dao.product;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {View, ViewStyle} from 'react-native';
 import {
   IconButton,
@@ -149,4 +149,10 @@ const $progressContainer: ViewStyle = {
   marginEnd: 16,
 };
 
-export default StoreItem;
+const shallowEqual = (a: UIStore, b: UIStore) => {
+  return (
+    a.store === b.store && a.multiSelectionEnabled === b.multiSelectionEnabled
+  );
+};
+
+export default memo(StoreItem, shallowEqual);

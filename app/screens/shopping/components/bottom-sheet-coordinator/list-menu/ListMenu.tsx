@@ -1,14 +1,27 @@
 import React from 'react';
 import {Pressable, View, ViewStyle} from 'react-native';
 import {IconButton, Text, useTheme} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSheetToolBar';
 import GenericRow from '../../../../../components/GenericRow';
 import {bottomSheetActions} from '../../../../../components/types';
-import {ListMenuProps} from './types';
 import {translate} from '../../../../../i18n/translate';
+import {itemsSelector} from '../../../redux-slice/selectors';
+import {ListMenuProps} from './types';
+import {ShoppingListItem} from '../../../../../model/types';
 
 const ListMenu: React.FC<ListMenuProps> = props => {
+  const itemSelect = useSelector(itemsSelector);
   const {colors} = useTheme();
+
+  const areMenuItemsEnabled = itemSelect.some(item => {
+    if ('shoppingListItem' in item) {
+      return (item.shoppingListItem as ShoppingListItem).checked;
+    } else {
+      return false;
+    }
+  });
+
   return (
     <View>
       <GenericBottomSheetToolBar
@@ -34,13 +47,15 @@ const ListMenu: React.FC<ListMenuProps> = props => {
         </View>
       </Pressable>
       <GenericRow
+        disabled={!areMenuItemsEnabled}
         title={{
           title: {key: 'ShoppingListScreen.ListMenuBottomSheet.uncheckAll'},
         }}
         leftIcon={{icon: 'checkbox-multiple-blank-circle-outline'}}
         action={{
           rippleColor: '#2ECC7126',
-          action: action => props.action?.(action),
+          action: action =>
+            areMenuItemsEnabled ? props.action?.(action) : undefined,
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.uncheckAll,
@@ -50,6 +65,7 @@ const ListMenu: React.FC<ListMenuProps> = props => {
         }}
       />
       <GenericRow
+        disabled={!areMenuItemsEnabled}
         title={{
           title: {
             key: 'ShoppingListScreen.ListMenuBottomSheet.deleteCheckedItems',
@@ -59,7 +75,8 @@ const ListMenu: React.FC<ListMenuProps> = props => {
         leftIcon={{icon: 'trash-can-outline', color: '#C62828'}}
         action={{
           rippleColor: '#E0627A26',
-          action: action => props.action?.(action),
+          action: action =>
+            areMenuItemsEnabled ? props.action?.(action) : undefined,
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.deleteChecked,

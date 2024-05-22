@@ -1,7 +1,6 @@
 import React, {memo} from 'react';
 import {Pressable, View, ViewStyle} from 'react-native';
 import {Divider, IconButton, Text, useTheme} from 'react-native-paper';
-import {shallowEqual} from 'react-redux';
 import {CONTENT_ACTIONS, UIUncheckedItem} from '../../types';
 import {OnCheckPressType} from './types';
 
@@ -95,6 +94,13 @@ const $amountContainer: ViewStyle = {
 
 const $amount: ViewStyle = {
   marginHorizontal: 16,
+};
+
+const shallowEqual = (a: UIUncheckedItem, b: UIUncheckedItem) => {
+  return (
+    a.itemLocation === b.itemLocation &&
+    a.shoppingListItem === b.shoppingListItem
+  );
 };
 
 export default memo(UncheckedItem, shallowEqual);

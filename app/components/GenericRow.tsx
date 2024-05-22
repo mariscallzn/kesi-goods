@@ -8,6 +8,7 @@ const GenericRow: React.FC<GenericRowProps> = props => {
   const {colors} = useTheme();
   return (
     <TouchableRipple
+      disabled={props.disabled}
       borderless
       rippleColor={
         props.action?.rippleColor ? props.action.rippleColor : undefined
@@ -30,7 +31,11 @@ const GenericRow: React.FC<GenericRowProps> = props => {
             size={24}
             source={props.leftIcon?.icon}
             color={
-              props.leftIcon?.color ? props.leftIcon.color : colors.onBackground
+              props.disabled
+                ? colors.onSurfaceDisabled
+                : props.leftIcon?.color
+                ? props.leftIcon.color
+                : colors.onBackground
             }
           />
         )}
@@ -38,7 +43,9 @@ const GenericRow: React.FC<GenericRowProps> = props => {
           style={[
             $title,
             {
-              color: props.title.color
+              color: props.disabled
+                ? colors.onSurfaceDisabled
+                : props.title.color
                 ? props.title.color
                 : colors.onBackground,
             },

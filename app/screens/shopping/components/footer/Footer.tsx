@@ -43,7 +43,7 @@ const Footer: React.FC<FooterProps> = props => {
             dispatch(dismissSnackbar());
           },
         }}>
-        {translate('common.delete')}
+        {selectFooter.message}
       </Snackbar>
       {!selectHeader.searchEnabled ? (
         <FAB

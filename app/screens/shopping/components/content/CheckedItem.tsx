@@ -3,7 +3,6 @@ import React, {memo} from 'react';
 import {IconButton, Text, useTheme} from 'react-native-paper';
 import {CONTENT_ACTIONS, UICheckedItem} from '../../types';
 import {OnCheckPressType} from './types';
-import {shallowEqual} from 'react-redux';
 
 const CheckedItem: React.FC<UICheckedItem> = props => {
   const [checked, setChecked] = React.useState(props.shoppingListItem.checked);
@@ -44,6 +43,13 @@ const $container: ViewStyle = {
 
 const $title: ViewStyle = {
   flex: 1,
+};
+
+const shallowEqual = (a: UICheckedItem, b: UICheckedItem) => {
+  return (
+    a.itemLocation === b.itemLocation &&
+    a.shoppingListItem === b.shoppingListItem
+  );
 };
 
 export default memo(CheckedItem, shallowEqual);

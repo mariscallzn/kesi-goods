@@ -45,6 +45,7 @@ export type GenericBottomSheetToolBarProps = {
 
 export type GenericRowProps = {
   title: GenericRowTitle;
+  disabled?: boolean;
   action?: GenericAction;
   rightIcon?: GenericRowIcon;
   leftIcon?: GenericRowIcon;

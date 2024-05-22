@@ -96,6 +96,7 @@ export class DAOShoppingListItems extends Model {
     unit: string,
     productId: string,
     categoriesId?: string,
+    status: string = 'active',
   ): Promise<DAOShoppingListItems> {
     return await this.update(item => {
       item.product.id = productId;
@@ -103,6 +104,7 @@ export class DAOShoppingListItems extends Model {
       item.quantity = quantity;
       item.unit = unit;
       item.category.id = categoriesId;
+      item.status = status;
     });
   }
 

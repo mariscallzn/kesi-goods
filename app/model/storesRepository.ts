@@ -43,7 +43,9 @@ export class DatabaseStoresRepository implements StoresRepository {
         )
         .fetch();
       for (const store of daoStores) {
-        const daoItems = await store.shoppingListItems.fetch();
+        const daoItems = await store.shoppingListItems
+          .extend(Q.where(Columns.shoppingListItems.status, Q.eq('active')))
+          .fetch();
         stores.push({
           id: store.id,
           name: store.name,

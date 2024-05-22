@@ -23,6 +23,7 @@ interface BottomSheet {
 
 interface SnackbarState {
   visible: boolean;
+  message: string;
   metadata: UnknownMetadata;
 }
 
@@ -44,12 +45,13 @@ export const initialState: ShoppingListState = {
   toggleItemInteractions: [],
   bottomSheet: {isVisible: false},
   snackbar: {
+    message: '',
     visible: false,
     metadata: {type: '', value: undefined},
   },
 };
 
-export type CreateOrUpdateItemArgs = {
+export type ListIdShoppingItemArgs = {
   listId: string;
   shoppingListItem: ShoppingListItem;
 };

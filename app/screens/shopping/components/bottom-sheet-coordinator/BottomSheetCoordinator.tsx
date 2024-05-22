@@ -8,6 +8,7 @@ import {useAppDispatch} from '../../../../redux/store';
 import {bottomSheetSelector} from '../../redux-slice/selectors';
 import {
   createOrUpdateItem,
+  deleteShoppingList,
   hideBottomSheet,
   toggleSearch,
   uncheckAllListItems,
@@ -64,6 +65,8 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         dispatch(hideBottomSheet());
         break;
       case bottomSheetActions.deleteChecked:
+        dispatch(deleteShoppingList(props.storeId));
+        dispatch(hideBottomSheet());
         break;
 
       default:

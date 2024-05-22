@@ -5,7 +5,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import {
-  CreateOrUpdateItemArgs,
+  ListIdShoppingItemArgs,
   FetchListInfoArgs,
   RestoreShoppingListArgs,
   ShoppingListState,
@@ -26,6 +26,7 @@ import {AppDispatch, RootState} from '../../../redux/store';
 import {debounce} from 'lodash';
 import {fetchStores} from '../../stores/redux-slice/storesSlice';
 import {ShoppingListItem} from '../../../model/types';
+import {translate} from '../../../i18n/translate';
 
 //#region Slice
 const shoppingListSlice = createSlice({
@@ -92,6 +93,7 @@ const shoppingListSlice = createSlice({
     toggleItemReducer(builder);
     uncheckAllListItemsReducer(builder);
     restoreShoppingListReducer(builder);
+    deleteShoppingListReducer(builder);
   },
 });
 //#endregion
@@ -129,7 +131,7 @@ export const fetchListInfoReducer = (
 //#region Create or Update Item
 export const createOrUpdateItem = createAsyncThunk<
   void,
-  CreateOrUpdateItemArgs
+  ListIdShoppingItemArgs
 >(
   'shopping/createOrUpdateItem',
   async (args, {rejectWithValue, dispatch, getState}) => {
@@ -154,9 +156,7 @@ export const createOrUpdateItem = createAsyncThunk<
 export const createOrUpdateItemReducer = (
   builder: ActionReducerMapBuilder<ShoppingListState>,
 ) => {
-  builder.addCase(createOrUpdateItem.fulfilled, (state: ShoppingListState) => {
-    console.log(state.headerInfo.listName);
-  });
+  builder.addCase(createOrUpdateItem.fulfilled, (_: ShoppingListState) => {});
 };
 //#endregion
 
@@ -211,7 +211,7 @@ const debounceSearch = debounce(
   (dispatch: AppDispatch, searchTerm: string, listId: string) => {
     dispatch(fetchListInfo({listId: listId, searchTerm: searchTerm}));
   },
-  500,
+  150,
 );
 
 export const search =
@@ -246,8 +246,47 @@ const uncheckAllListItemsReducer = (
     uncheckAllListItems.fulfilled,
     (state: ShoppingListState, action: PayloadAction<ShoppingListItem[]>) => {
       state.snackbar.visible = true;
+      state.snackbar.message = translate(
+        'ShoppingListScreen.Snackbar.allItemsUnchecked',
+      );
       state.snackbar.metadata = {
         type: RESTORE_TYPE.restoreUnchecked,
+        value: action.payload,
+      };
+    },
+  );
+};
+//#endregion
+
+//#region Mark as delete shopping
+export const deleteShoppingList = createAsyncThunk<ShoppingListItem[], string>(
+  'shopping/deleteShoppingList',
+  async (storeId, {rejectWithValue, dispatch}) => {
+    try {
+      const items = await appComponent
+        .shoppingListService()
+        .markShoppingListItemAsDeleted(storeId);
+      dispatch(fetchListInfo({listId: storeId}));
+      dispatch(fetchStores());
+      return items;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const deleteShoppingListReducer = (
+  builder: ActionReducerMapBuilder<ShoppingListState>,
+) => {
+  builder.addCase(
+    deleteShoppingList.fulfilled,
+    (state: ShoppingListState, action: PayloadAction<ShoppingListItem[]>) => {
+      state.snackbar.visible = true;
+      state.snackbar.message = translate(
+        'ShoppingListScreen.Snackbar.checkedItemsRemoved',
+      );
+      state.snackbar.metadata = {
+        type: RESTORE_TYPE.restoreDeleted,
         value: action.payload,
       };
     },

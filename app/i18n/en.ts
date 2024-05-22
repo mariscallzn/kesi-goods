@@ -27,6 +27,10 @@ const en = {
       deleteCheckedItems: 'Delete checked items',
       searchList: 'Search on the list',
     },
+    Snackbar: {
+      allItemsUnchecked: 'All items unchecked.',
+      checkedItemsRemoved: 'Checked items removed.',
+    },
   },
   Units: {
     Imperial: {
