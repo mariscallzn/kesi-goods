@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
 import {View, ViewProps, ViewStyle} from 'react-native';
 import {Chip, Divider, IconButton, Text} from 'react-native-paper';
-import {ThemeProp} from 'react-native-paper/lib/typescript/types';
 import ControlledTextInput, {
   ControlledTextInputRef,
 } from '../../../../../components/ControlledTextInput';
 import {translate} from '../../../../../i18n/translate';
+import {AppTheme} from '../../../../../theme/theme';
 
 type QuantityUnitState = {
   isDecrementDisabled: boolean;
 };
 type QuantityUnitProps = {
-  theme: ThemeProp;
+  theme: AppTheme;
   viewProps?: ViewProps;
   units?: string[];
 };
@@ -44,6 +44,10 @@ export class QuantityUnit
 
   setQuantity(quantity: number | undefined): void {
     this.quantityRef.current?.setText(quantity ? `${quantity}` : undefined);
+    this.setState({
+      ...this.state,
+      isDecrementDisabled: quantity === 0,
+    });
   }
 
   getUnit(): string | undefined {
@@ -61,6 +65,7 @@ export class QuantityUnit
           <ControlledTextInput
             //@ts-ignore
             ref={this.quantityRef}
+            editable={false}
             style={[
               $commonTextInput,
               $quantityTextInput,
@@ -70,12 +75,11 @@ export class QuantityUnit
               'ShoppingListScreen.AddOrUpdateBottomSheet.quantity',
             )}
             mode="outlined"
-            keyboardType="numeric"
-            underlineStyle={$textInputUnderLine}
           />
           <ControlledTextInput
             //@ts-ignore
             ref={this.unitRef}
+            editable={false}
             style={[
               $commonTextInput,
               $unitTextInput,
@@ -83,7 +87,6 @@ export class QuantityUnit
             ]}
             label={translate('ShoppingListScreen.AddOrUpdateBottomSheet.unit')}
             mode="outlined"
-            underlineStyle={$textInputUnderLine}
           />
           <IconButton
             mode={'contained-tonal'}
@@ -164,10 +167,6 @@ const $quantityTextInput: ViewStyle = {
 const $unitTextInput: ViewStyle = {
   marginEnd: 16,
   marginStart: 8,
-};
-
-const $textInputUnderLine: ViewStyle = {
-  backgroundColor: 'transparent',
 };
 
 const $chip: ViewStyle = {

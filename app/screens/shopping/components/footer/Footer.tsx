@@ -1,23 +1,19 @@
 import React from 'react';
-import {Snackbar, FAB} from 'react-native-paper';
 import {View, ViewStyle} from 'react-native';
+import {FAB, Snackbar} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {translate} from '../../../../i18n/translate';
 import {useAppDispatch} from '../../../../redux/store';
 import {
-  dismissSnackbar,
-  openBottomSheet,
-  restoreShoppingList,
-} from '../../redux-slice/shoppingListSlice';
-import {
-  AddOrUpdateBSMetadata,
-  bottomSheetTypes,
-} from '../bottom-sheet-coordinator/types';
-import {FooterProps} from './types';
-import {
   headerInfoSelector,
   snackbarSelector,
 } from '../../redux-slice/selectors';
+import {
+  dismissSnackbar,
+  restoreShoppingList,
+} from '../../redux-slice/shoppingListSlice';
+import {FooterProps} from './types';
+import {CONTENT_ACTIONS} from '../../types';
 
 const Footer: React.FC<FooterProps> = props => {
   const dispatch = useAppDispatch();
@@ -51,12 +47,12 @@ const Footer: React.FC<FooterProps> = props => {
           icon="plus"
           label={translate('common.add')}
           onPress={() =>
-            dispatch(
-              openBottomSheet({
-                type: bottomSheetTypes.addOrUpdateItem,
-                value: {listId: props.storeListId} as AddOrUpdateBSMetadata,
-              }),
-            )
+            props.action({
+              metadata: {
+                type: CONTENT_ACTIONS.header.navigateToProducts,
+                value: undefined,
+              },
+            })
           }
         />
       ) : null}

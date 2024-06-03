@@ -1,13 +1,8 @@
 import React, {Component} from 'react';
 import {View, ViewStyle} from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
-import {Chip, IconButton} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {ThemeProp} from 'react-native-paper/lib/typescript/types';
-import ControlledTextInput, {
-  ControlledTextInputRef,
-} from '../../../../../components/ControlledTextInput';
-import {appComponent} from '../../../../../di/appComponent';
-import {translate} from '../../../../../i18n/translate';
+import {ControlledTextInputRef} from '../../../../../components/ControlledTextInput';
 import {ActionCallback} from '../../../../../inf/multiViewRenderer';
 import {Product} from '../../../../../model/types';
 import {CONTENT_ACTIONS} from '../../../types';
@@ -19,7 +14,6 @@ type HeaderProps = {
 
 type HeaderState = {
   product?: Product;
-  suggestions: Product[];
 };
 
 export interface HeaderRef {
@@ -29,25 +23,13 @@ export interface HeaderRef {
 
 class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
   private productNameRef!: React.RefObject<ControlledTextInputRef>;
-  private flatListRef!: React.RefObject<FlatList<Product[]>>;
 
   constructor(props: HeaderProps) {
     super(props);
     this.productNameRef = React.createRef();
-    this.flatListRef = React.createRef();
     this.state = {
       product: {id: '', name: ''},
-      suggestions: [],
     };
-    this.fetchSuggestions();
-  }
-
-  private async fetchSuggestions(name?: string) {
-    const suggestions = await appComponent
-      .shoppingListService()
-      .findByNameOrFetch(name);
-    this.setState({...this.state, suggestions: suggestions.slice(0, 5)});
-    this.flatListRef.current?.scrollToIndex({index: 0, animated: false});
   }
 
   getProduct(): Product {
@@ -74,30 +56,16 @@ class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
               })
             }
           />
-          <ControlledTextInput
-            //@ts-ignore
-            ref={this.productNameRef}
+          <View
             style={[
-              $commonTextInput,
-              {borderRadius: this.props.theme.roundness},
-            ]}
-            placeholder={translate(
-              'ShoppingListScreen.AddOrUpdateBottomSheet.addTextInput',
-            )}
-            underlineStyle={$textInputUnderLine}
-            autoFocus={true}
-            onChangeText={async e => {
-              if (
-                e.trim().toLowerCase() !==
-                this.state.product?.name.trim().toLocaleLowerCase()
-              ) {
-                await this.fetchSuggestions(e);
-                this.setState({
-                  product: {id: '', name: e},
-                });
-              }
-            }}
-          />
+              $productContainer,
+              {
+                borderRadius: this.props.theme.roundness,
+                borderColor: this.props.theme.colors?.primary,
+              },
+            ]}>
+            <Text variant="titleLarge">{this.getProduct().name}</Text>
+          </View>
           <IconButton
             icon="open-in-new"
             onPress={() =>
@@ -110,29 +78,6 @@ class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
             }
           />
         </View>
-        {this.state.product?.id === '' && (
-          <FlatList
-            //@ts-ignore
-            ref={this.flatListRef}
-            contentContainerStyle={$flatList}
-            data={this.state.suggestions}
-            keyboardShouldPersistTaps={'always'}
-            // eslint-disable-next-line react/no-unstable-nested-components
-            ItemSeparatorComponent={() => <View style={$chipsSeparator} />}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            renderItem={({item}) => (
-              <Chip
-                style={$suggestionChip}
-                onPress={() => {
-                  this.setState({suggestions: [], product: item});
-                  this.productNameRef.current?.setText(item.name);
-                }}>
-                {item.name}
-              </Chip>
-            )}
-          />
-        )}
       </View>
     );
   }
@@ -144,24 +89,11 @@ const $navigationContainer: ViewStyle = {
   marginEnd: 16,
 };
 
-const $commonTextInput: ViewStyle = {
+const $productContainer: ViewStyle = {
   flex: 1,
-};
-
-const $textInputUnderLine: ViewStyle = {
-  backgroundColor: 'transparent',
-};
-
-const $flatList: ViewStyle = {
-  paddingHorizontal: 16,
-};
-
-const $chipsSeparator: ViewStyle = {
-  width: 12,
-};
-
-const $suggestionChip: ViewStyle = {
-  marginVertical: 8,
+  alignItems: 'center',
+  padding: 16,
+  justifyContent: 'center',
 };
 
 export default Header;

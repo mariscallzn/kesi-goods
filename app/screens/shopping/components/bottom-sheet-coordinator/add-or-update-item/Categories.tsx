@@ -33,9 +33,7 @@ class Categories
   }
 
   setCategory(category: Category | undefined): void {
-    if (category) {
-      this.setState({...this.state, selectedCategory: category});
-    }
+    this.setState({...this.state, selectedCategory: category});
   }
 
   private async fetchCategories() {
@@ -59,15 +57,13 @@ class Categories
             <CategoryItem
               category={item}
               isSelected={this.state.selectedCategory?.id === item.id}
-              onCategoryPress={category =>
-                this.setState({
-                  ...this.state,
-                  selectedCategory:
-                    this.state.selectedCategory === category
-                      ? undefined
-                      : category,
-                })
-              }
+              onCategoryPress={category => {
+                this.setCategory(
+                  this.state.selectedCategory?.id === category.id
+                    ? undefined
+                    : category,
+                );
+              }}
             />
           )}
           // eslint-disable-next-line react/no-unstable-nested-components
@@ -83,7 +79,7 @@ const $flatListContentContainer: ViewStyle = {
 };
 
 const $itemSeparator: ViewStyle = {
-  width: 8,
+  width: 16,
 };
 
 const CategoryItem: React.FC<CategoryProps> = props => {
@@ -116,7 +112,7 @@ const CategoryItem: React.FC<CategoryProps> = props => {
 const $categoryContainer: ViewStyle = {
   borderRadius: 8,
   height: 32,
-  width: 32,
+  width: 48,
   alignItems: 'center',
   justifyContent: 'center',
 };
@@ -125,7 +121,7 @@ const $selectedCategoryBorder: ViewStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   height: 28,
-  width: 28,
+  width: 44,
   borderRadius: 6,
   backgroundColor: 'transparent',
   borderWidth: 5,

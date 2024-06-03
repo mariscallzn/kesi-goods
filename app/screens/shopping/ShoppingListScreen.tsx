@@ -99,7 +99,11 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
         storeId={route.params.listId}
       />
       <Content action={actions} />
-      <Footer style={$footer} storeListId={route.params.listId} />
+      <Footer
+        style={$footer}
+        action={actions}
+        storeListId={route.params.listId}
+      />
     </Screen>
   );
   //#endregion
