@@ -1,12 +1,13 @@
 import {Database, Q} from '@nozbe/watermelondb';
 import {asc} from '@nozbe/watermelondb/QueryDescription';
-import {DAOShoppingListItems, DAOStores} from '../database/models';
+import {DAOShoppingListItems, DAOStores, Status} from '../database/models';
 import {Columns, Tables} from '../database/schema';
 import {ShoppingListItem} from './types';
 
 export interface ShoppingListRepository {
   getByStoreId(
     storeId: string,
+    statues: Status[],
     productsIds?: string[],
   ): Promise<ShoppingListItem[]>;
   getUncheckedItemsByStoreId(storeId: string): Promise<ShoppingListItem[]>;
@@ -17,6 +18,7 @@ export interface ShoppingListRepository {
   ): Promise<ShoppingListItem>;
   toggleShoppingListItemById(id: string, value: boolean): Promise<void>;
   markAsDeleted(shoppingListItem: ShoppingListItem): Promise<ShoppingListItem>;
+  destroy(id: string): Promise<void>;
   restore(shoppingListItem: ShoppingListItem): Promise<void>;
 }
 
@@ -29,6 +31,7 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
 
   async getByStoreId(
     storeId: string,
+    statues: Status[] = ['active'],
     productsIds?: string[],
   ): Promise<ShoppingListItem[]> {
     try {
@@ -38,7 +41,12 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
 
       const query: Q.Clause[] = [];
       query.push(Q.sortBy(Columns.shoppingListItems.checked, asc));
-      query.push(Q.where(Columns.shoppingListItems.status, Q.eq('active')));
+
+      const queryOr: Q.Where[] = [];
+      for (const status of statues) {
+        queryOr.push(Q.where(Columns.shoppingListItems.status, Q.eq(status)));
+      }
+      query.push(Q.or(queryOr));
 
       if (productsIds) {
         query.push(
@@ -66,6 +74,8 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
       }
       return shoppingListItems;
     } catch (error) {
+      console.log(error);
+
       throw error;
     }
   }
@@ -178,7 +188,9 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
             _dao.product.id = shoppingListItem.product.id;
             _dao.store.id = storeId;
             _dao.category.id = shoppingListItem.category?.id;
-            _dao.status = 'active';
+            _dao.status = shoppingListItem.status
+              ? shoppingListItem.status
+              : 'active';
           });
       });
       const daoProduct = await dao.product;
@@ -190,6 +202,7 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
         category: {id: daoCategory?.id, color: daoCategory?.color},
         quantity: dao.quantity,
         unit: dao.unit,
+        status: dao.status as Status,
       };
     } catch (error) {
       throw error;
@@ -217,9 +230,12 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
         shoppingListItem.unit,
         shoppingListItem.product.id,
         shoppingListItem.category?.id,
+        shoppingListItem.status ? shoppingListItem.status : 'active',
       );
+
       const daoProduct = await daoUpdated.product;
       const daoCategory = await daoUpdated.category;
+
       return {
         id: daoUpdated.id,
         checked: daoUpdated.checked,
@@ -227,6 +243,7 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
         quantity: daoUpdated.quantity,
         product: {id: daoProduct.id, name: daoProduct.name},
         category: {id: daoCategory?.id, color: daoCategory?.color},
+        status: daoUpdated.status as Status,
       };
     } catch (error) {
       return;
@@ -253,6 +270,19 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
           ? {id: category.id, color: category.color}
           : undefined,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async destroy(id: string): Promise<void> {
+    try {
+      const daoShoppingListItem = await this.database
+        .get<DAOShoppingListItems>(Tables.shoppingListItems)
+        .find(id);
+      await this.database.write(async () => {
+        await daoShoppingListItem.destroyPermanently();
+      });
     } catch (error) {
       throw error;
     }

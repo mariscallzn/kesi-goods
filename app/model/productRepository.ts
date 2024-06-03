@@ -37,7 +37,7 @@ export class DatabaseProductRepository implements ProductRepository {
           .fetch();
 
         if (exactMatch.length > 0) {
-          return exactMatch;
+          return [{id: exactMatch[0].id, name: exactMatch[0].name}];
         }
 
         result = await this.database
@@ -49,8 +49,6 @@ export class DatabaseProductRepository implements ProductRepository {
             ),
           )
           .fetch();
-
-        result.unshift({id: 'n/a', name: name});
       } else {
         result = (
           await this.database.get<DAOProducts>(Tables.products).query().fetch()

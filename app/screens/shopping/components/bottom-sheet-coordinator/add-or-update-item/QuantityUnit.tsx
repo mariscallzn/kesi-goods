@@ -43,9 +43,7 @@ export class QuantityUnit
   }
 
   setQuantity(quantity: number | undefined): void {
-    if (quantity) {
-      this.quantityRef.current?.setText(`${quantity}`);
-    }
+    this.quantityRef.current?.setText(quantity ? `${quantity}` : undefined);
   }
 
   getUnit(): string | undefined {
@@ -53,9 +51,7 @@ export class QuantityUnit
   }
 
   setUnit(unit: string | undefined): void {
-    if (unit) {
-      this.unitRef.current?.setText(unit);
-    }
+    this.unitRef.current?.setText(unit);
   }
 
   render() {

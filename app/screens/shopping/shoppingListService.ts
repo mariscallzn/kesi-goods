@@ -62,6 +62,7 @@ export class ShoppingListServiceImpl implements ShoppingListService {
 
       const shoppingListItems = await this.shoppingListRepository.getByStoreId(
         storeId,
+        ['active'],
         productIds,
       );
 

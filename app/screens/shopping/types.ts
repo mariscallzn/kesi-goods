@@ -30,6 +30,7 @@ export const RESTORE_TYPE: RestoreItemsType = {
 
 type ContentActions = {
   header: {
+    navigateToProducts: string;
     back: string;
     listMenu: string;
     disableSearchMode: string;
@@ -42,6 +43,7 @@ type ContentActions = {
 
 export const CONTENT_ACTIONS: ContentActions = {
   header: {
+    navigateToProducts: 'navigateToProducts',
     back: 'back',
     listMenu: 'listMenu',
     disableSearchMode: 'disableSearchMode',

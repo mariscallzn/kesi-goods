@@ -68,7 +68,11 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
           mode="contained"
           buttonColor={theme.colors.backdrop}
           labelStyle={$createButtonLabel}
-          onPress={() =>
+          onPress={() => {
+            headerRef.current?.setProduct({id: 'n/a', name: ''});
+            quantityUnitRef.current?.setQuantity(0);
+            quantityUnitRef.current?.setUnit('');
+            categoryRef.current?.setCategory({id: 'n/a', color: ''});
             props.action({
               metadata: {
                 type: isUpdating
@@ -82,8 +86,8 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
                   category: categoryRef.current?.getCategory(),
                 } as ShoppingListItem,
               },
-            })
-          }>
+            });
+          }}>
           {isUpdating
             ? translate('ShoppingListScreen.AddOrUpdateBottomSheet.update')
             : translate('ShoppingListScreen.AddOrUpdateBottomSheet.add')}

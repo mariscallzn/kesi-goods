@@ -11,6 +11,7 @@ import {
   deleteCheckedItems,
   deleteShoppingListItem,
   hideBottomSheet,
+  reloadBottomSheet,
   toggleSearch,
   uncheckAllListItems,
 } from '../../redux-slice/shoppingListSlice';
@@ -29,7 +30,6 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
   const handleAddOrUpdateActions = (action: Action) => {
     switch (action.metadata.type) {
       case bottomSheetActions.update:
-      case bottomSheetActions.add:
         dispatch(
           createOrUpdateItem({
             listId: (selectBottomSheet.metadata?.value as AddOrUpdateBSMetadata)
@@ -38,6 +38,18 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
           }),
         );
         dispatch(hideBottomSheet());
+        break;
+      case bottomSheetActions.add:
+        dispatch(
+          createOrUpdateItem({
+            listId: (selectBottomSheet.metadata?.value as AddOrUpdateBSMetadata)
+              .listId,
+            shoppingListItem: action.metadata.value as ShoppingListItem,
+          }),
+        );
+        if (selectBottomSheet.metadata) {
+          dispatch(reloadBottomSheet(selectBottomSheet.metadata));
+        }
         break;
 
       case bottomSheetActions.back:
@@ -55,6 +67,7 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         break;
 
       default:
+        dispatch(hideBottomSheet());
         props.action(action);
         break;
     }

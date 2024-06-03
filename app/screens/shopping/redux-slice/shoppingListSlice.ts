@@ -4,29 +4,28 @@ import {
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
-import {
-  ListIdShoppingItemArgs,
-  FetchListInfoArgs,
-  RestoreShoppingListArgs,
-  ShoppingListState,
-  ThunkResult,
-  ThunkToggleItems,
-  ToggleItemArgs,
-  ToggledItem,
-  initialState,
-} from './types';
+import {debounce} from 'lodash';
+import {appComponent} from '../../../di/appComponent';
+import {translate} from '../../../i18n/translate';
+import {ShoppingListItem} from '../../../model/types';
+import {AppDispatch, RootState, ThunkResult} from '../../../redux/store';
 import {UnknownMetadata} from '../../../utils/types';
+import {fetchStores} from '../../stores/redux-slice/storesSlice';
 import {
   AddOrUpdateBSMetadata,
   bottomSheetTypes,
 } from '../components/bottom-sheet-coordinator/types';
 import {ListInfo, RESTORE_TYPE} from '../types';
-import {appComponent} from '../../../di/appComponent';
-import {AppDispatch, RootState} from '../../../redux/store';
-import {debounce} from 'lodash';
-import {fetchStores} from '../../stores/redux-slice/storesSlice';
-import {ShoppingListItem} from '../../../model/types';
-import {translate} from '../../../i18n/translate';
+import {
+  FetchListInfoArgs,
+  ListIdShoppingItemArgs,
+  RestoreShoppingListArgs,
+  ShoppingListState,
+  ThunkToggleItems,
+  ToggleItemArgs,
+  ToggledItem,
+  initialState,
+} from './types';
 
 //#region Slice
 const shoppingListSlice = createSlice({
@@ -43,6 +42,13 @@ const shoppingListSlice = createSlice({
     },
     hideBottomSheet: (state: ShoppingListState) => {
       state.bottomSheet.isVisible = false;
+    },
+    reloadBottomSheet: (
+      state: ShoppingListState,
+      action: PayloadAction<UnknownMetadata>,
+    ) => {
+      state.bottomSheet.isVisible = true;
+      state.bottomSheet.metadata = action.payload;
     },
     dismissSnackbar: (state: ShoppingListState) => {
       state.snackbar.visible = false;
@@ -360,6 +366,7 @@ const restoreShoppingListReducer = (
 //#region Exports
 export const {
   resetState,
+  reloadBottomSheet,
   hideBottomSheet,
   openBottomSheet,
   recordToggleInteraction,

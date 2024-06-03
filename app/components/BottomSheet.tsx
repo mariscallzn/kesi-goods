@@ -73,9 +73,11 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
         onStartShouldSetPanResponder: () => sheetHeight <= height * 0.5,
         onStartShouldSetPanResponderCapture: (_, g) =>
           sheetHeight === 0 && g.dy === 0,
-        //Only response to vertical gestures
+        //Only response to vertical gestures and set threshold to a min of 3 to allow clicks
+        // on touchable components
         onMoveShouldSetPanResponder: (_, gestureState) =>
-          Math.abs(gestureState.dy) > Math.abs(gestureState.dx),
+          Math.abs(gestureState.dy) > Math.abs(gestureState.dx) &&
+          gestureState.dy > 3,
         //Update translateY value based on the gesture position
         onPanResponderMove: (_, gestureState) =>
           translateY.setValue(gestureState.dy >= 0 ? gestureState.dy : 0),
@@ -98,7 +100,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     } else {
       collapseContent();
     }
-  }, [isVisible, translateY, expandContent, collapseContent]);
+  }, [isVisible, expandContent, collapseContent]);
 
   return (
     <Modal

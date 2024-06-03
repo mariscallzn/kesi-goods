@@ -1,3 +1,5 @@
+import {Status} from '../database/models';
+
 export type Store = {
   id: string;
   name: string;
@@ -12,6 +14,7 @@ export type ShoppingListItem = {
   quantity: number;
   unit: string;
   checked: boolean;
+  status?: Status;
 };
 
 export type Product = {

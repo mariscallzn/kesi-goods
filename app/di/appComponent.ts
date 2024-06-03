@@ -28,10 +28,15 @@ import {
   SettingsRepository,
   SettingsRepositoryImpl,
 } from '../model/settingsRepository';
+import {
+  ProductService,
+  ProductServiceImpl,
+} from '../screens/products/productService';
 
 export interface AppComponent {
   storesService(): StoresService;
   shoppingListService(): ShoppingListService;
+  productService(): ProductService;
 }
 
 class AppModule {
@@ -109,6 +114,20 @@ class AppModule {
       this.providesStoresRepository(this.providesDatabase()),
     );
   }
+
+  getProductService(): ProductService {
+    return new ProductServiceImpl(
+      this.providesShoppingListRepository(this.providesDatabase()),
+      this.providesProductRepository(
+        this.providesDatabase(),
+        this.providesSettingsRepository(),
+        this.providesProductsEN(),
+        this.providesProductsES(),
+      ),
+      this.providesCategoryRepository(this.providesDatabase()),
+      this.providesStoresRepository(this.providesDatabase()),
+    );
+  }
 }
 
 class AppComponentProd implements AppComponent {
@@ -124,6 +143,10 @@ class AppComponentProd implements AppComponent {
 
   shoppingListService(): ShoppingListService {
     return this.appModule.getShoppingListService();
+  }
+
+  productService(): ProductService {
+    return this.appModule.getProductService();
   }
 }
 

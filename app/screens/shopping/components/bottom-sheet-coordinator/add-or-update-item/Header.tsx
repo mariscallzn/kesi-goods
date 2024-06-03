@@ -98,7 +98,17 @@ class Header extends Component<HeaderProps, HeaderState> implements HeaderRef {
               }
             }}
           />
-          {/* <IconButton icon="open-in-new" onPress={() => props.action()} /> */}
+          <IconButton
+            icon="open-in-new"
+            onPress={() =>
+              this.props.action({
+                metadata: {
+                  type: CONTENT_ACTIONS.header.navigateToProducts,
+                  value: undefined,
+                },
+              })
+            }
+          />
         </View>
         {this.state.product?.id === '' && (
           <FlatList

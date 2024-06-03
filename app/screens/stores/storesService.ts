@@ -79,7 +79,9 @@ export class StoresServiceImpl implements StoresService {
         let items: ShoppingListItem[] = [];
         switch (copyOption) {
           case 'whole-list':
-            items = await this.shoppingListRepository.getByStoreId(store.id);
+            items = await this.shoppingListRepository.getByStoreId(store.id, [
+              'active',
+            ]);
             break;
           case 'checked-items':
             items = await this.shoppingListRepository.getCheckedByStoreId(

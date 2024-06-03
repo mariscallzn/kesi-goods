@@ -1,8 +1,8 @@
-import {configureStore} from '@reduxjs/toolkit';
+import {ThunkAction, configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import storesReducer from '../screens/stores/redux-slice/storesSlice';
 import shoppingListReducer from '../screens/shopping/redux-slice/shoppingListSlice';
-import productsReducer from '../screens/products/productsSlice';
+import productsReducer from '../screens/products/redux-slice/productsSlice';
 
 //#region Redux STORE
 export const store = configureStore({
@@ -25,3 +25,4 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 //#endregion
 
 export const selectRootState = (rootState: RootState) => rootState;
+export type ThunkResult<R> = ThunkAction<R, RootState, undefined, any>;

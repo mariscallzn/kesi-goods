@@ -42,6 +42,10 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
         navigation.goBack();
         break;
 
+      case CONTENT_ACTIONS.header.navigateToProducts:
+        navigation.navigate('Products', {listId: route.params.listId});
+        break;
+
       case CONTENT_ACTIONS.header.disableSearchMode:
         dispatch(toggleSearch(false));
         dispatch(fetchListInfo({listId: route.params.listId}));
@@ -90,7 +94,7 @@ const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
     <Screen safeAreaEdges={['top', 'bottom']}>
       <Header action={actions} listId={route.params.listId} />
       <BottomSheetCoordinator
-        maxHeight={50}
+        maxHeight={85}
         action={actions}
         storeId={route.params.listId}
       />

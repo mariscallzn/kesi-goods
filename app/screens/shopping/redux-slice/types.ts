@@ -1,7 +1,5 @@
-import {ThunkAction} from '@reduxjs/toolkit';
 import {UIModelProps} from '../../../inf/multiViewRenderer';
 import {ShoppingListItem} from '../../../model/types';
-import {RootState} from '../../../redux/store';
 import {UnknownMetadata} from '../../../utils/types';
 
 interface HeaderInfo {
@@ -80,5 +78,3 @@ export type RestoreShoppingListArgs = {
   listId: string;
   metadata: UnknownMetadata;
 };
-
-export type ThunkResult<R> = ThunkAction<R, RootState, undefined, any>;

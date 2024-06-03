@@ -14,3 +14,18 @@ export const saveDivision = (
     return 0;
   }
 };
+
+export function logger<T>(
+  obj: T,
+  preFix?: string,
+  excludeKeys?: (keyof T)[],
+): void {
+  const filteredObj = excludeKeys
+    ? Object.fromEntries(
+        //@ts-ignore
+        Object.entries(obj).filter(([key]) => !excludeKeys!.includes(key)),
+      )
+    : obj;
+
+  console.log(preFix ? `${preFix} ` : '', JSON.stringify(filteredObj, null, 2));
+}
