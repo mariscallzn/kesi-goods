@@ -103,12 +103,24 @@ export const search =
 //#endregion
 
 //#region Draft change
-export const draftChange = createAsyncThunk<UIModelProps[], UserActionArgs>(
+const debounceDraft = debounce(
+  (dispatch: AppDispatch, args: UserActionArgs) => {
+    dispatch(_draftChange(args));
+  },
+  500,
+);
+
+export const draftChange =
+  (args: UserActionArgs): ThunkResult<void> =>
+  dispatch => {
+    debounceDraft(dispatch, args);
+  };
+
+const _draftChange = createAsyncThunk<UIModelProps[], UserActionArgs>(
   'products/draftChange',
   async (args, {rejectWithValue, getState}) => {
     try {
       const state = (getState() as RootState).products;
-      //TODO: Probably debounce it to allow animations
       return await appComponent
         .productService()
         .updateItemsByAction(
@@ -127,7 +139,7 @@ const draftChangeReducer = (
   builder: ActionReducerMapBuilder<ProductsState>,
 ) => {
   builder.addCase(
-    draftChange.fulfilled,
+    _draftChange.fulfilled,
     (state: ProductsState, action: PayloadAction<UIModelProps[]>) => {
       state.items = action.payload;
     },
