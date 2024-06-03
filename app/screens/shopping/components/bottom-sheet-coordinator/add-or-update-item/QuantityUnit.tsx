@@ -6,6 +6,8 @@ import ControlledTextInput, {
 } from '../../../../../components/ControlledTextInput';
 import {translate} from '../../../../../i18n/translate';
 import {AppTheme} from '../../../../../theme/theme';
+import {ActionCallback} from '../../../../../inf/multiViewRenderer';
+import {bottomSheetActions} from '../../../../../components/types';
 
 type QuantityUnitState = {
   isDecrementDisabled: boolean;
@@ -14,6 +16,7 @@ type QuantityUnitProps = {
   theme: AppTheme;
   viewProps?: ViewProps;
   units?: string[];
+  action: ActionCallback;
 };
 export interface QuantityUnitRef {
   getQuantity(): number | undefined;
@@ -46,7 +49,7 @@ export class QuantityUnit
     this.quantityRef.current?.setText(quantity ? `${quantity}` : undefined);
     this.setState({
       ...this.state,
-      isDecrementDisabled: quantity === 0,
+      isDecrementDisabled: quantity === 1,
     });
   }
 
@@ -90,19 +93,25 @@ export class QuantityUnit
           />
           <IconButton
             mode={'contained-tonal'}
+            containerColor={
+              this.state.isDecrementDisabled ? 'transparent' : undefined
+            }
+            iconColor={this.state.isDecrementDisabled ? '#C62828' : undefined}
             size={32}
-            icon={'minus'}
-            disabled={this.state.isDecrementDisabled}
+            icon={
+              this.state.isDecrementDisabled ? 'trash-can-outline' : 'minus'
+            }
             onPress={() => {
               let count = Number(this.quantityRef.current?.getText() ?? 0);
-              count--;
-
-              this.quantityRef.current?.setText(
-                count === 0 ? undefined : `${count}`,
-              );
-
-              if (count === 0) {
-                this.setState({isDecrementDisabled: true});
+              if (count === 1) {
+                this.props.action({
+                  //This is just to create a reference, but the actual action happen on the parent
+                  metadata: {type: bottomSheetActions.delete, value: ''},
+                });
+              } else {
+                count--;
+                this.quantityRef.current?.setText(`${count}`);
+                this.setState({isDecrementDisabled: count === 1});
               }
             }}
           />
@@ -116,7 +125,7 @@ export class QuantityUnit
 
               this.quantityRef.current?.setText(`${count}`);
 
-              if (count >= 0 && this.state.isDecrementDisabled) {
+              if (count >= 1 && this.state.isDecrementDisabled) {
                 //Hack to cause a rerender when quantity is 0
                 this.setState({isDecrementDisabled: false});
               }

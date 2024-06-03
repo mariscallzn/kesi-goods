@@ -41,6 +41,14 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
         ref={quantityUnitRef}
         theme={theme}
         units={units}
+        action={() => {
+          props.action({
+            metadata: {
+              type: bottomSheetActions.delete,
+              value: shoppingListItem,
+            },
+          });
+        }}
       />
       <Categories
         //@ts-ignore

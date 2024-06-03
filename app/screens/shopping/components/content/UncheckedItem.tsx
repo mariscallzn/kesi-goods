@@ -53,7 +53,7 @@ const UncheckedItem: React.FC<UIUncheckedItem> = props => {
             style={[$title, {color: colors.onBackground}]}>
             {props.shoppingListItem.product.name}
           </Text>
-          {props.shoppingListItem.quantity > 0 && (
+          {props.shoppingListItem.quantity > 1 && (
             <View
               style={[$amountContainer, {backgroundColor: colors.onPrimary}]}>
               <Text
