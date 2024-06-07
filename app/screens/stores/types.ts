@@ -6,12 +6,8 @@ export interface UIStore extends UIModelProps {
   multiSelectionEnabled: boolean;
 }
 
-export interface ListSuggestions {
-  stores: string[];
-  misc: string[];
-}
-
 type ContentActions = {
+  addStoreScreen: string;
   navigateToShoppingList: string;
   itemMenu: string;
   enableMultiSelection: string;
@@ -20,6 +16,7 @@ type ContentActions = {
 };
 
 export const CONTENT_ACTIONS: ContentActions = {
+  addStoreScreen: 'addStoreScreen',
   navigateToShoppingList: 'navigateToShoppingList',
   itemMenu: 'itemMenu',
   enableMultiSelection: 'enableMultiSelection',

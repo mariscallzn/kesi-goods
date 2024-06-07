@@ -3,12 +3,11 @@ import {StoresRepository} from '../../model/storesRepository';
 import {ShoppingListItem, Store} from '../../model/types';
 import {getUUID} from '../../utils/misc';
 import {VIEW_ID} from './components/content/types';
-import {CopyListOption, ListSuggestions, UIStore} from './types';
+import {CopyListOption, UIStore} from './types';
 
 export interface StoresService {
   getStores(): Promise<UIStore[]>;
   createOrUpdate(store: Store): Promise<UIStore>;
-  fetchListSuggestions(): Promise<ListSuggestions>;
   copyStoreList(stores: Store[], copyOption: CopyListOption): Promise<void>;
   markStoreListAsDelete(stores: Store[]): Promise<Store[]>;
   restoreStoreList(stores: Store[]): Promise<Store[]>;
@@ -52,22 +51,6 @@ export class StoresServiceImpl implements StoresService {
     } catch (error) {
       throw error;
     }
-  }
-
-  async fetchListSuggestions(): Promise<ListSuggestions> {
-    //TODO: fetch and build suggestions
-    // try {
-    await new Promise(resolve => {
-      setTimeout(resolve, 1);
-    });
-
-    return {
-      stores: ['Walmart', 'DollarTree', 'Home Depot', 'Walgreens', 'CVS'],
-      misc: ['Shopping', 'Goods', 'Groceries', '04/12/2024'],
-    };
-    // } catch (error) {
-    //   throw error;
-    // }
   }
 
   async copyStoreList(

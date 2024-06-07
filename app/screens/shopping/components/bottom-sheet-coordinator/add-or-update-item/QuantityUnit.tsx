@@ -74,9 +74,7 @@ export class QuantityUnit
               $quantityTextInput,
               {borderRadius: this.props.theme.roundness},
             ]}
-            label={translate(
-              'ShoppingListScreen.AddOrUpdateBottomSheet.quantity',
-            )}
+            label={translate('ShoppingListScreen.UpdateBottomSheet.quantity')}
             mode="outlined"
           />
           <ControlledTextInput
@@ -88,7 +86,7 @@ export class QuantityUnit
               $unitTextInput,
               {borderRadius: this.props.theme.roundness},
             ]}
-            label={translate('ShoppingListScreen.AddOrUpdateBottomSheet.unit')}
+            label={translate('ShoppingListScreen.UpdateBottomSheet.unit')}
             mode="outlined"
           />
           <IconButton
@@ -135,7 +133,7 @@ export class QuantityUnit
         <Divider />
         <View style={$unitsContainer}>
           <Text style={$unitText} variant="labelMedium">
-            {translate('ShoppingListScreen.AddOrUpdateBottomSheet.unitCP')}
+            {translate('ShoppingListScreen.UpdateBottomSheet.unitCP')}
           </Text>
           {this.props.units?.map(_unit => (
             <Chip

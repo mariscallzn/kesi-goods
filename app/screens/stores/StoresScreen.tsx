@@ -73,6 +73,10 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
         );
         break;
 
+      case CONTENT_ACTIONS.addStoreScreen:
+        navigation.navigate('AddStore');
+        break;
+
       default:
         break;
     }
@@ -83,7 +87,7 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
       <TopBar />
       <BottomSheetCoordinator maxHeight={50} action={actions} />
       <Content action={actions} />
-      <Footer style={$footer} />
+      <Footer action={actions} style={$footer} />
     </Screen>
   );
 };

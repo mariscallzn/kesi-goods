@@ -97,8 +97,8 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
             });
           }}>
           {isUpdating
-            ? translate('ShoppingListScreen.AddOrUpdateBottomSheet.update')
-            : translate('ShoppingListScreen.AddOrUpdateBottomSheet.add')}
+            ? translate('ShoppingListScreen.UpdateBottomSheet.update')
+            : translate('ShoppingListScreen.UpdateBottomSheet.add')}
         </Button>
       </View>
     </View>

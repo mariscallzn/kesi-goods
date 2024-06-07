@@ -1,21 +1,17 @@
 import React from 'react';
 import {View, ViewStyle} from 'react-native';
 import {FAB, Snackbar} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 import {translate} from '../../../../i18n/translate';
+import {Store} from '../../../../model/types';
 import {useAppDispatch} from '../../../../redux/store';
-import {
-  openBottomSheet,
-  dismissSnackbar,
-  restoreStoreList,
-} from '../../redux-slice/storesSlice';
-import {bottomSheetTypes} from '../bottom-sheet-coordinator/types';
-import {FooterProps} from './types';
 import {
   multiSelectionSelector,
   snackbarSelector,
 } from '../../redux-slice/selectors';
-import {useSelector} from 'react-redux';
-import {Store} from '../../../../model/types';
+import {dismissSnackbar, restoreStoreList} from '../../redux-slice/storesSlice';
+import {CONTENT_ACTIONS} from '../../types';
+import {FooterProps} from './types';
 
 const Footer: React.FC<FooterProps> = props => {
   const dispatch = useAppDispatch();
@@ -44,12 +40,12 @@ const Footer: React.FC<FooterProps> = props => {
           icon="plus"
           label={translate('StoreScreen.addList')}
           onPress={() =>
-            dispatch(
-              openBottomSheet({
-                type: bottomSheetTypes.addOrUpdateList,
+            props.action({
+              metadata: {
+                type: CONTENT_ACTIONS.addStoreScreen,
                 value: undefined,
-              }),
-            )
+              },
+            })
           }
         />
       ) : null}

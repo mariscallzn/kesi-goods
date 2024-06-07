@@ -165,7 +165,7 @@ const ProductItem: React.FC<UIProduct> = props => {
             />
             <View style={$unitsContainer}>
               <Text style={$unitText} variant="labelMedium">
-                {translate('ShoppingListScreen.AddOrUpdateBottomSheet.unitCP')}
+                {translate('ShoppingListScreen.UpdateBottomSheet.unitCP')}
               </Text>
               {props.units?.map(_unit => (
                 <Chip

@@ -32,11 +32,16 @@ import {
   ProductService,
   ProductServiceImpl,
 } from '../screens/products/productService';
+import {
+  AddStoreService,
+  AddStoreServiceImpl,
+} from '../screens/add-store/addStoreService';
 
 export interface AppComponent {
   storesService(): StoresService;
   shoppingListService(): ShoppingListService;
   productService(): ProductService;
+  addStoreService(): AddStoreService;
 }
 
 class AppModule {
@@ -128,6 +133,10 @@ class AppModule {
       this.providesStoresRepository(this.providesDatabase()),
     );
   }
+
+  getAddStoreService(): AddStoreService {
+    return new AddStoreServiceImpl();
+  }
 }
 
 class AppComponentProd implements AppComponent {
@@ -147,6 +156,10 @@ class AppComponentProd implements AppComponent {
 
   productService(): ProductService {
     return this.appModule.getProductService();
+  }
+
+  addStoreService(): AddStoreService {
+    return this.appModule.getAddStoreService();
   }
 }
 

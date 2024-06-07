@@ -11,7 +11,7 @@ import {
   openBottomSheet,
 } from '../../redux-slice/storesSlice';
 import {BottomSheetCoordinatorProps, bottomSheetTypes} from './types';
-import AddOrUpdateList from './add-or-update-list/AddOrUpdateList';
+import UpdateList from './update-list/UpdateList';
 import {bottomSheetActions} from '../../../../components/types';
 import ItemMenu from './item-menu/ItemMenu';
 import {Action} from '../../../../inf/multiViewRenderer';
@@ -91,9 +91,9 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       isVisible={selectBottomSheet.isVisible}
       dismissed={() => dispatch(hideBottomSheet())}>
       {selectBottomSheet.metadata?.type === bottomSheetTypes.addOrUpdateList ? (
-        <AddOrUpdateList
+        <UpdateList
           action={action => bottomSheetActionsHandler(action)}
-          metadata={{store: selectBottomSheet.metadata.value as Store}}
+          metadata={selectBottomSheet.metadata.value as Store}
         />
       ) : selectBottomSheet.metadata?.type === bottomSheetTypes.openItemMenu ? (
         <ItemMenu

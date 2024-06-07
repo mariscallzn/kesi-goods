@@ -11,9 +11,10 @@ const en = {
     edit: 'Edit',
     copy: 'Copy',
     search: 'Search',
+    create: 'Create',
   },
   ShoppingListScreen: {
-    AddOrUpdateBottomSheet: {
+    UpdateBottomSheet: {
       add: 'Add',
       update: 'Update',
       unitCP: 'UNIT',
@@ -46,11 +47,29 @@ const en = {
     },
     pkg: 'pkg',
   },
+  Suggestions: {
+    misc: {
+      groceries: 'Groceries',
+      shopping: 'Shopping',
+      weekend: 'Weekend',
+      trip: 'Trip',
+      todo: 'To-do',
+      reminders: 'Reminders',
+    },
+    stores: {
+      walmart: 'Walmart',
+      samsclub: "Sam's Club",
+      costco: 'Costco',
+      seven11: '7/11',
+      homedepot: 'Home depot',
+      officeDepot: 'Office depot',
+    },
+  },
   StoreScreen: {
     topBarTitle: 'Hello! 👋',
     addList: 'Add',
     storeDeleted: 'List deleted',
-    AddOrUpdateBottomSheet: {
+    UpdateBottomSheet: {
       createList: 'Create list',
       newList: 'New List',
       renameList: 'Rename list',

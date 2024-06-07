@@ -11,9 +11,28 @@ const es = {
     edit: 'Editar',
     copy: 'Copiar',
     search: 'Buscar',
+    create: 'Crear',
+  },
+  Suggestions: {
+    misc: {
+      groceries: 'Despensa',
+      shopping: 'Compras',
+      weekend: 'Fin de semana',
+      trip: 'Viaje',
+      todo: 'Por hacer',
+      reminders: 'Recordatorios',
+    },
+    stores: {
+      walmart: 'Walmart',
+      samsclub: "Sam's Club",
+      costco: 'Costco',
+      seven11: '7/11',
+      homedepot: 'Home depot',
+      officeDepot: 'Office depot',
+    },
   },
   ShoppingListScreen: {
-    AddOrUpdateBottomSheet: {
+    UpdateBottomSheet: {
       add: 'Agregar',
       update: 'Actualizar',
       unitCP: 'UNIDAD',
@@ -50,7 +69,7 @@ const es = {
     topBarTitle: 'Hola! 👋',
     addList: 'Agregar',
     storeDeleted: 'Lista eliminada',
-    AddOrUpdateBottomSheet: {
+    UpdateBottomSheet: {
       createList: 'Crear lista',
       newList: 'Nueva lista',
       renameList: 'Renombrar lista',
