@@ -4,9 +4,11 @@ import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSh
 import GenericRow from '../../../../../components/GenericRow';
 import {bottomSheetActions} from '../../../../../components/types';
 import {ItemMenuProps} from './types';
+import {useAppTheme} from '../../../../../theme/theme';
 
 //TODO: Adjust ripple colors from theme
 const ItemMenu: React.FC<ItemMenuProps> = props => {
+  const {colors} = useAppTheme();
   return (
     <View>
       <GenericBottomSheetToolBar
@@ -17,7 +19,7 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
         title={{title: {key: 'StoreScreen.ItemMenuBottomSheet.rename'}}}
         leftIcon={{icon: 'pencil'}}
         action={{
-          rippleColor: '#2ECC7126',
+          rippleColor: colors.primaryContainerAlpha,
           action: action => props.action?.(action),
           passOnMetadata: {
             metadata: {
@@ -32,7 +34,7 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
         leftIcon={{icon: 'content-copy'}}
         rightIcon={{icon: 'chevron-right'}}
         action={{
-          rippleColor: '#2ECC7126',
+          rippleColor: colors.primaryContainerAlpha,
           action: action => props.action?.(action),
           passOnMetadata: {
             metadata: {
@@ -45,11 +47,11 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
       <GenericRow
         title={{
           title: {key: 'StoreScreen.ItemMenuBottomSheet.delete'},
-          color: '#C62828',
+          color: colors.error,
         }}
-        leftIcon={{icon: 'trash-can-outline', color: '#C62828'}}
+        leftIcon={{icon: 'trash-can-outline', color: colors.error}}
         action={{
-          rippleColor: '#E0627A26',
+          rippleColor: colors.errorContainer,
           action: action => props.action?.(action),
           passOnMetadata: {
             metadata: {

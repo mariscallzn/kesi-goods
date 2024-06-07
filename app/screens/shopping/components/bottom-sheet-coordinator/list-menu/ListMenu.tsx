@@ -1,18 +1,19 @@
 import React from 'react';
 import {Pressable, View, ViewStyle} from 'react-native';
-import {IconButton, Text, useTheme} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSheetToolBar';
 import GenericRow from '../../../../../components/GenericRow';
 import {bottomSheetActions} from '../../../../../components/types';
 import {translate} from '../../../../../i18n/translate';
+import {ShoppingListItem} from '../../../../../model/types';
+import {useAppTheme} from '../../../../../theme/theme';
 import {itemsSelector} from '../../../redux-slice/selectors';
 import {ListMenuProps} from './types';
-import {ShoppingListItem} from '../../../../../model/types';
 
 const ListMenu: React.FC<ListMenuProps> = props => {
   const itemSelect = useSelector(itemsSelector);
-  const {colors} = useTheme();
+  const {colors} = useAppTheme();
 
   const areMenuItemsEnabled = itemSelect.some(item => {
     if ('shoppingListItem' in item) {
@@ -53,7 +54,7 @@ const ListMenu: React.FC<ListMenuProps> = props => {
         }}
         leftIcon={{icon: 'checkbox-multiple-blank-circle-outline'}}
         action={{
-          rippleColor: '#2ECC7126',
+          rippleColor: colors.primaryContainerAlpha,
           action: action =>
             areMenuItemsEnabled ? props.action?.(action) : undefined,
           passOnMetadata: {
@@ -70,11 +71,11 @@ const ListMenu: React.FC<ListMenuProps> = props => {
           title: {
             key: 'ShoppingListScreen.ListMenuBottomSheet.deleteCheckedItems',
           },
-          color: '#C62828',
+          color: colors.error,
         }}
-        leftIcon={{icon: 'trash-can-outline', color: '#C62828'}}
+        leftIcon={{icon: 'trash-can-outline', color: colors.error}}
         action={{
-          rippleColor: '#E0627A26',
+          rippleColor: colors.errorContainer,
           action: action =>
             areMenuItemsEnabled ? props.action?.(action) : undefined,
           passOnMetadata: {

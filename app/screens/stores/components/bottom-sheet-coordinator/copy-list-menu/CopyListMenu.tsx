@@ -1,11 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
 import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSheetToolBar';
-import {CopyListMenuProps} from './types';
 import GenericRow from '../../../../../components/GenericRow';
 import {bottomSheetActions} from '../../../../../components/types';
+import {useAppTheme} from '../../../../../theme/theme';
+import {CopyListMenuProps} from './types';
 
 const CopyListMenu: React.FC<CopyListMenuProps> = props => {
+  const {colors} = useAppTheme();
   return (
     <View>
       <GenericBottomSheetToolBar
@@ -16,9 +18,8 @@ const CopyListMenu: React.FC<CopyListMenuProps> = props => {
         title={{title: {key: 'StoreScreen.CopyListMenuBottomSheet.wholeList'}}}
         leftIcon={{icon: 'format-list-checkbox'}}
         action={{
-          rippleColor: '#2ECC7126',
+          rippleColor: colors.primaryContainerAlpha,
           action: action => props.action?.(action),
-          // TODO: Value must send the store an the action that must be taken: whole list
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.wholeList,
@@ -31,7 +32,7 @@ const CopyListMenu: React.FC<CopyListMenuProps> = props => {
         title={{title: {key: 'StoreScreen.CopyListMenuBottomSheet.checkItems'}}}
         leftIcon={{icon: 'checkbox-multiple-marked-circle-outline'}}
         action={{
-          rippleColor: '#2ECC7126',
+          rippleColor: colors.primaryContainerAlpha,
           action: action => props.action?.(action),
           // TODO: Value must send the store an the action that must be taken: checked items
           passOnMetadata: {
@@ -48,7 +49,7 @@ const CopyListMenu: React.FC<CopyListMenuProps> = props => {
         }}
         leftIcon={{icon: 'checkbox-multiple-blank-circle-outline'}}
         action={{
-          rippleColor: '#2ECC7126',
+          rippleColor: colors.primaryContainerAlpha,
           action: action => props.action?.(action),
           // TODO: Value must send the store an the action that must be taken: unchecked items
           passOnMetadata: {

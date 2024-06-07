@@ -83,16 +83,14 @@ const ProductItem: React.FC<UIProduct> = props => {
           {!props.checked && isAdded && (
             <View style={$infoDeleteContainer}>
               {isMoreThanOne || unit ? (
-                <Text
-                  variant="titleMedium"
-                  style={{color: colors.surfaceVariant}}>
+                <Text variant="titleMedium" style={{color: colors.tertiary}}>
                   {`${quantity}${unit ? unit : ''}`}
                 </Text>
               ) : null}
               <IconButton
                 style={$iconButton}
                 size={24}
-                iconColor={'#C62828'}
+                iconColor={colors.error}
                 icon={isMoreThanOne ? 'minus' : 'close'}
                 onPress={() => {
                   if (isMoreThanOne) {
@@ -122,7 +120,7 @@ const ProductItem: React.FC<UIProduct> = props => {
               <IconButton
                 style={$iconButton}
                 size={24}
-                iconColor={colors.surfaceVariant}
+                iconColor={colors.tertiary}
                 icon={isExpanded ? 'chevron-up' : 'chevron-down'}
                 onPress={() => {
                   setExpanded(!isExpanded);

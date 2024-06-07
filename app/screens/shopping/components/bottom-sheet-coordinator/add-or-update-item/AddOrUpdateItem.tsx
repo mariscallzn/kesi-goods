@@ -1,13 +1,14 @@
 import React, {useEffect} from 'react';
 import {TextStyle, View, ViewStyle} from 'react-native';
-import {Button, useTheme} from 'react-native-paper';
+import {Button} from 'react-native-paper';
+import {bottomSheetActions} from '../../../../../components/types';
 import {translate} from '../../../../../i18n/translate';
 import {ShoppingListItem} from '../../../../../model/types';
+import {useAppTheme} from '../../../../../theme/theme';
 import Categories, {CategoriesRef} from './Categories';
 import Header, {HeaderRef} from './Header';
 import QuantityUnit, {QuantityUnitRef} from './QuantityUnit';
 import {AddOrUpdateItemProps} from './types';
-import {bottomSheetActions} from '../../../../../components/types';
 
 const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
   const shoppingListItem = props.metadata?.shoppingListItem;
@@ -15,7 +16,7 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
   const isUpdating =
     props.metadata?.shoppingListItem?.id &&
     props.metadata?.shoppingListItem?.id !== '';
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const headerRef = React.useRef<HeaderRef>(null);
   const quantityUnitRef = React.useRef<QuantityUnitRef>(null);
@@ -57,7 +58,7 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
       <View style={$buttonsContainer}>
         {isUpdating ? (
           <Button
-            textColor="#C62828"
+            textColor={theme.colors.error}
             mode={'text'}
             style={$deleteButton}
             onPress={() =>
@@ -74,7 +75,6 @@ const AddOrUpdateItem: React.FC<AddOrUpdateItemProps> = props => {
         <Button
           style={$createOrUpdateButton}
           mode="contained"
-          buttonColor={theme.colors.backdrop}
           labelStyle={$createButtonLabel}
           onPress={() => {
             headerRef.current?.setProduct({id: 'n/a', name: ''});

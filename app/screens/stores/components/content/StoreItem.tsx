@@ -68,13 +68,15 @@ const StoreItem: React.FC<UIStore> = ({
           multiSelectionEnabled && isSelected
             ? {
                 ...$multiSelectionContainer,
-                borderColor: colors.primaryContainer,
+                borderColor: colors.primary,
               }
             : undefined,
-          {backgroundColor: colors.backdrop, borderRadius: roundness},
+          {backgroundColor: colors.surfaceVariant, borderRadius: roundness},
         ]}>
         <View style={$upperSection}>
-          <Text style={$title} variant="headlineSmall">
+          <Text
+            style={[$title, {color: colors.onSurfaceVariant}]}
+            variant="headlineSmall">
             {store.name}
           </Text>
           <IconButton
@@ -85,7 +87,7 @@ const StoreItem: React.FC<UIStore> = ({
                 ? 'check-circle'
                 : 'dots-vertical'
             }
-            iconColor={isSelected ? colors.primaryContainer : undefined}
+            iconColor={isSelected ? colors.primary : colors.onSurfaceVariant}
             onPress={() => {
               if (multiSelectionEnabled) {
                 setSelected(!isSelected);
@@ -100,12 +102,17 @@ const StoreItem: React.FC<UIStore> = ({
         <View style={$bottomContainer}>
           <View style={$progressContainer}>
             <ProgressBar
-              style={[$progressBar, {borderRadius: roundness}]}
-              theme={{colors: {primary: 'green'}}}
+              style={[
+                $progressBar,
+                {
+                  borderRadius: roundness,
+                  backgroundColor: colors.surface,
+                },
+              ]}
               animatedValue={saveDivision(store.checkedItems, store.totalItems)}
             />
           </View>
-          <Text variant="titleMedium">
+          <Text variant="titleMedium" style={{color: colors.onSurfaceVariant}}>
             {store.checkedItems}/{store.totalItems}
           </Text>
         </View>

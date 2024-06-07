@@ -26,6 +26,7 @@ const MultiSelection: React.FC<MultiSelectionProps> = props => {
         ]}>
         <IconButton
           size={22}
+          iconColor={colors.onPrimaryContainer}
           style={$closeButton}
           icon={'close'}
           onPress={() =>
@@ -38,7 +39,10 @@ const MultiSelection: React.FC<MultiSelectionProps> = props => {
       <View style={[$buttonsContainer]}>
         {isEditDisabled ? (
           <View style={[$shadow, $actionButton]}>
-            <Button>{`(${props.selectedItems.length})`}</Button>
+            <Button
+              textColor={
+                colors.onPrimaryContainer
+              }>{`(${props.selectedItems.length})`}</Button>
           </View>
         ) : (
           <Button
@@ -64,8 +68,7 @@ const MultiSelection: React.FC<MultiSelectionProps> = props => {
           {translate('common.copy').toUpperCase()}
         </Button>
         <Button
-          // TODO: Color
-          textColor="red"
+          textColor={colors.error}
           style={$actionButton}
           onPress={() =>
             props.action({

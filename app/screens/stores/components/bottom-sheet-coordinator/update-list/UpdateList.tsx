@@ -11,7 +11,7 @@ import {Store} from '../../../../../model/types';
 import {UpdateListProps} from './types';
 
 const UpdateList: React.FC<UpdateListProps> = props => {
-  const {colors, roundness} = useTheme();
+  const {roundness} = useTheme();
   const store: Store = props.metadata;
   const listNameRef = React.useRef<ControlledTextInputRef>(null);
 
@@ -38,7 +38,6 @@ const UpdateList: React.FC<UpdateListProps> = props => {
       <Button
         style={$createButton}
         mode="contained"
-        buttonColor={colors.backdrop}
         labelStyle={$createButtonLabel}
         onPress={() => {
           props.action({

@@ -5,9 +5,9 @@ import ControlledTextInput, {
   ControlledTextInputRef,
 } from '../../../../../components/ControlledTextInput';
 import {translate} from '../../../../../i18n/translate';
-import {AppTheme} from '../../../../../theme/theme';
 import {ActionCallback} from '../../../../../inf/multiViewRenderer';
 import {bottomSheetActions} from '../../../../../components/types';
+import {AppTheme} from '../../../../../theme/types';
 
 type QuantityUnitState = {
   isDecrementDisabled: boolean;
@@ -94,7 +94,11 @@ export class QuantityUnit
             containerColor={
               this.state.isDecrementDisabled ? 'transparent' : undefined
             }
-            iconColor={this.state.isDecrementDisabled ? '#C62828' : undefined}
+            iconColor={
+              this.state.isDecrementDisabled
+                ? this.props.theme.colors.error
+                : undefined
+            }
             size={32}
             icon={
               this.state.isDecrementDisabled ? 'trash-can-outline' : 'minus'

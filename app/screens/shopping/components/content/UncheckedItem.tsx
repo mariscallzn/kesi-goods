@@ -9,7 +9,6 @@ const UncheckedItem: React.FC<UIUncheckedItem> = props => {
   const {colors} = useTheme();
   return (
     <Pressable
-      style={[{backgroundColor: colors.backdrop}]}
       onLongPress={() =>
         props.action?.({
           metadata: {
@@ -50,7 +49,7 @@ const UncheckedItem: React.FC<UIUncheckedItem> = props => {
           />
           <Text
             variant="bodyLarge"
-            style={[$title, {color: colors.onBackground}]}>
+            style={[$title, {color: colors.onSurfaceVariant}]}>
             {props.shoppingListItem.product.name}
           </Text>
           {props.shoppingListItem.quantity > 1 && (
