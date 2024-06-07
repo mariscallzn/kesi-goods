@@ -18,13 +18,15 @@ import {CategoryProps} from './types';
 const ProductItem: React.FC<UIProduct> = props => {
   const {colors} = useTheme();
   const [isExpanded, setExpanded] = useState(false);
-  const [isAdded, setAdded] = useState((props.quantity ?? 0) > 0);
+  const [isAdded, setAdded] = useState((props.quantity ?? 0) >= 1);
   const [quantity, setQuantity] = useState(props.quantity ?? 0);
   const [unit, setUnit] = useState<string | undefined>(props.selectedUnit);
   const [selectedCategory, setSelectedCategory] = useState<
     Category | undefined
   >(props.selectedCategory);
   const isMoreThanOne = quantity > 1;
+
+  console.log(isAdded);
 
   const action = (updatedItem: UIProduct) => {
     props.action?.({
@@ -51,13 +53,13 @@ const ProductItem: React.FC<UIProduct> = props => {
             style={$iconButton}
             size={32}
             iconColor={
-              isAdded
-                ? colors.primary
-                : props.checked
+              props.checked
                 ? 'green'
+                : isAdded
+                ? colors.primary
                 : colors.surfaceVariant
             }
-            icon={props.checked && !isAdded ? 'check' : 'plus-circle'}
+            icon={props.checked ? 'check' : 'plus-circle'}
             onPress={() => {
               if (quantity === 0) {
                 setAdded(true);
@@ -67,6 +69,7 @@ const ProductItem: React.FC<UIProduct> = props => {
               setQuantity(total);
               action({
                 ...props,
+                checked: false,
                 quantity: total,
                 selectedUnit: unit,
                 selectedCategory: selectedCategory,
@@ -77,7 +80,7 @@ const ProductItem: React.FC<UIProduct> = props => {
           <Text style={$productName} variant="bodyLarge">
             {props.product.name}
           </Text>
-          {isAdded && (
+          {!props.checked && isAdded && (
             <View style={$infoDeleteContainer}>
               {isMoreThanOne || unit ? (
                 <Text
