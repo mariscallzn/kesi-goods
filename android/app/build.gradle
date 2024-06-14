@@ -85,9 +85,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.kesigoods"
+    namespace "com.kesicollection.kesigoods"
     defaultConfig {
-        applicationId "com.kesigoods"
+        applicationId "com.kesicollection.kesigoods"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

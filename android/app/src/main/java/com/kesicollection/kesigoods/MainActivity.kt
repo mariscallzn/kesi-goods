@@ -1,4 +1,4 @@
-package com.kesigoods
+package com.kesicollection.kesigoods
 import expo.modules.ReactActivityDelegateWrapper
 
 import com.facebook.react.ReactActivity
