@@ -62,13 +62,13 @@ export class ProductServiceImpl implements ProductService {
     listId: string,
     searchTerm?: string | undefined,
   ): Promise<UIProduct[]> {
-    //TODO: WHat to do with checked items?
     try {
+      const _searchTerm = searchTerm?.trim();
       const categories = await this.categoryRepository.fetch();
       //TODO: We should read some setting to know which metric system to load
       const units = ['gal', 'oz', 'lb', 'pkg'];
       const products: Product[] =
-        await this.productRepository.findByNameOrFetch(searchTerm);
+        await this.productRepository.findByNameOrFetch(_searchTerm);
 
       const shoppingListItems = await this.shoppingListRepository.getByStoreId(
         listId,
@@ -111,17 +111,17 @@ export class ProductServiceImpl implements ProductService {
       ];
 
       if (
-        (searchTerm &&
+        (_searchTerm &&
           products.length > 0 &&
-          products[0].name !== searchTerm) ||
-        (searchTerm && products.length === 0)
+          products[0].name !== _searchTerm) ||
+        (_searchTerm && products.length === 0)
       ) {
         uiProducts = [
           {
             shoppingListId: 'invalid',
             id: getUUID(),
             type: VIEW_ID.productItem,
-            product: {id: 'n/a', name: searchTerm},
+            product: {id: 'n/a', name: _searchTerm},
             checked: false,
             categories: categories,
             units: units,

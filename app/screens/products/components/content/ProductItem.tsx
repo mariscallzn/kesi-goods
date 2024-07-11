@@ -26,8 +26,6 @@ const ProductItem: React.FC<UIProduct> = props => {
   >(props.selectedCategory);
   const isMoreThanOne = quantity > 1;
 
-  console.log(isAdded);
-
   const action = (updatedItem: UIProduct) => {
     props.action?.({
       metadata: {type: PRODUCT_ITEM_ACTION.update, value: updatedItem},

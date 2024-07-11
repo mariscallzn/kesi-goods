@@ -29,11 +29,12 @@ export class DatabaseProductRepository implements ProductRepository {
 
   async findByNameOrFetch(name?: string): Promise<Product[]> {
     try {
+      const _name = name?.trim();
       let result: Product[] = [];
-      if (name) {
+      if (_name) {
         const exactMatch = await this.database
           .get<DAOProducts>(Tables.products)
-          .query(Q.where(Columns.products.name, Q.eq(name)))
+          .query(Q.where(Columns.products.name, Q.eq(_name)))
           .fetch();
 
         if (exactMatch.length > 0) {
@@ -45,7 +46,7 @@ export class DatabaseProductRepository implements ProductRepository {
           .query(
             Q.where(
               Columns.products.name,
-              Q.like(`${Q.sanitizeLikeString(name)}%`),
+              Q.like(`${Q.sanitizeLikeString(_name)}%`),
             ),
           )
           .fetch();

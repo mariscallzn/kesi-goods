@@ -107,7 +107,7 @@ const debounceDraft = debounce(
   (dispatch: AppDispatch, args: UserActionArgs) => {
     dispatch(_draftChange(args));
   },
-  500,
+  250,
 );
 
 export const draftChange =
