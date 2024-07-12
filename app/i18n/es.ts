@@ -32,6 +32,7 @@ const es = {
     },
   },
   ShoppingListScreen: {
+    emptyMessage: 'Tu lista de artículos esta limpia',
     UpdateBottomSheet: {
       add: 'Agregar',
       update: 'Actualizar',
@@ -69,6 +70,7 @@ const es = {
     topBarTitle: 'Hola! 👋',
     addList: 'Agregar',
     storeDeleted: 'Lista eliminada',
+    emptyMessage: 'Lista vacía',
     UpdateBottomSheet: {
       createList: 'Crear lista',
       newList: 'Nueva lista',

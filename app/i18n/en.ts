@@ -14,6 +14,7 @@ const en = {
     create: 'Create',
   },
   ShoppingListScreen: {
+    emptyMessage: 'Your shopping list is clear',
     UpdateBottomSheet: {
       add: 'Add',
       update: 'Update',
@@ -69,6 +70,7 @@ const en = {
     topBarTitle: 'Hello! 👋',
     addList: 'Add',
     storeDeleted: 'List deleted',
+    emptyMessage: 'Your list is empty, press in the + button to add a new list',
     UpdateBottomSheet: {
       createList: 'Create list',
       newList: 'New List',
