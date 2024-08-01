@@ -131,7 +131,7 @@ export class ShoppingListServiceImpl implements ShoppingListService {
     shoppingListItem: ShoppingListItem,
   ): Promise<UIUncheckedItem> {
     try {
-      const product = await this.productRepository.findOrCreate(
+      const product = await this.productRepository.findOrCreateById(
         shoppingListItem.product,
       );
 

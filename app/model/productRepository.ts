@@ -6,7 +6,8 @@ import {Product} from './types';
 
 export interface ProductRepository {
   findByNameOrFetch(name?: string): Promise<Product[]>;
-  findOrCreate(product: Product): Promise<Product>;
+  findOrCreateById(product: Product): Promise<Product>;
+  findOrCreateByName(product: Product): Promise<Product>;
 }
 
 export class DatabaseProductRepository implements ProductRepository {
@@ -64,13 +65,29 @@ export class DatabaseProductRepository implements ProductRepository {
     }
   }
 
-  async findOrCreate(product: Product): Promise<Product> {
+  async findOrCreateById(product: Product): Promise<Product> {
     try {
       const daoProduct = await this.findProductById(product.id);
       if (daoProduct) {
         return {id: daoProduct.id, name: daoProduct.name};
       } else {
         return await this.save(product.name);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOrCreateByName(product: Product): Promise<Product> {
+    try {
+      const exactMatch = await this.database
+        .get<DAOProducts>(Tables.products)
+        .query(Q.where(Columns.products.name, Q.eq(product.name)))
+        .fetch();
+      if (exactMatch.length > 0) {
+        return {id: exactMatch[0].id, name: exactMatch[0].name};
+      } else {
+        return this.save(product.name);
       }
     } catch (error) {
       throw error;

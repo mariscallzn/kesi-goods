@@ -153,7 +153,7 @@ export class ProductServiceImpl implements ProductService {
         let product = incomingItem.product;
 
         if (product.id === 'n/a') {
-          product = await this.productRepository.findOrCreate(
+          product = await this.productRepository.findOrCreateById(
             incomingItem.product,
           );
         }
