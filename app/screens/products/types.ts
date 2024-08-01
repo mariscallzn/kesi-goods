@@ -1,7 +1,7 @@
-import {UIModelProps} from '../../inf/multiViewRenderer';
 import {Category, Product} from '../../model/types';
+import {IView} from './components/content/types';
 
-export interface UIProduct extends UIModelProps {
+export interface UIProduct extends IView {
   shoppingListId: string;
   product: Product;
   checked: boolean;

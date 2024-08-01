@@ -1,11 +1,11 @@
-import {Action, UIModelProps} from '../../inf/multiViewRenderer';
+import {Action} from '../../inf/types';
 import {CategoryRepository} from '../../model/categoryRepository';
 import {ProductRepository} from '../../model/productRepository';
 import {ShoppingListRepository} from '../../model/shoppingListRepository';
 import {StoresRepository} from '../../model/storesRepository';
 import {Product, ShoppingListItem} from '../../model/types';
 import {getUUID} from '../../utils/misc';
-import {VIEW_ID} from './components/content/types';
+import {IView, VIEW_ID} from './components/content/types';
 import {InitData} from './redux-slice/types';
 import {UIProduct} from './types';
 
@@ -16,8 +16,8 @@ export interface ProductService {
     listId: string,
     snapshot: ShoppingListItem[],
     action: Action,
-    items: UIModelProps[],
-  ): Promise<UIModelProps[]>;
+    items: IView[],
+  ): Promise<IView[]>;
   addSelection(listId: string): Promise<void>;
   deleteDraftItemsByList(
     listId: string,
@@ -81,7 +81,7 @@ export class ProductServiceImpl implements ProductService {
         ...shoppingListItems.map<UIProduct>(e => ({
           id: getUUID(),
           shoppingListId: e.id,
-          type: VIEW_ID.productItem,
+          type: 'productItem',
           product: e.product,
           checked: e.checked,
           selectedCategory: e.category,
@@ -95,7 +95,7 @@ export class ProductServiceImpl implements ProductService {
       const dbProducts = products.map<UIProduct>(e => ({
         shoppingListId: 'invalid',
         id: getUUID(),
-        type: VIEW_ID.productItem,
+        type: 'productItem',
         product: e,
         checked: false,
         categories: categories,
@@ -140,10 +140,10 @@ export class ProductServiceImpl implements ProductService {
     listId: string,
     snapshot: ShoppingListItem[],
     action: Action,
-    items: UIModelProps[],
-  ): Promise<UIModelProps[]> {
+    items: IView[],
+  ): Promise<IView[]> {
     try {
-      const incomingItem = action.metadata.value as UIProduct;
+      const incomingItem = action.value as UIProduct;
       const snapshotFound = snapshot.find(
         e => e.product.id === incomingItem.product.id,
       );

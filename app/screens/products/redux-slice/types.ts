@@ -1,5 +1,6 @@
-import {Action, UIModelProps} from '../../../inf/multiViewRenderer';
+import {Action} from '../../../inf/types';
 import {ShoppingListItem} from '../../../model/types';
+import {IView} from '../components/content/types';
 
 interface HeaderInfo {
   searchTerm?: string;
@@ -7,7 +8,7 @@ interface HeaderInfo {
 
 export interface ProductsState {
   headerInfo: HeaderInfo;
-  items: UIModelProps[];
+  items: IView[];
   snapshot: ShoppingListItem[];
   goBack: boolean;
 }
@@ -20,7 +21,7 @@ export const initialState: ProductsState = {
 };
 
 export type InitData = {
-  items: UIModelProps[];
+  items: IView[];
   snapshot: ShoppingListItem[];
 };
 

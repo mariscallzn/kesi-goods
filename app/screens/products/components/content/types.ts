@@ -1,8 +1,7 @@
-import React from 'react';
-import {ActionCallback} from '../../../../inf/multiViewRenderer';
+import {ActionCallback, ComponentMap, UIModel} from '../../../../inf/types';
+import {Category} from '../../../../model/types';
 import {UIProduct} from '../../types';
 import ProductItem from './ProductItem';
-import {Category} from '../../../../model/types';
 
 export type ContentProps = {
   action: ActionCallback;
@@ -15,18 +14,12 @@ export type CategoryProps = {
   isSelected: boolean;
 };
 
-type CustomViewTypes = {
-  productItem: React.FC<UIProduct>;
+type ComponentTypeMap = {
+  productItem: UIProduct;
 };
 
-export type ViewIds = {
-  productItem: string;
-};
+export type IView = UIModel<ComponentTypeMap> & {};
 
-export const CUSTOM_VIEWS: CustomViewTypes = {
+export const componentMap: ComponentMap<ComponentTypeMap> = {
   productItem: ProductItem,
-};
-
-export const VIEW_ID: ViewIds = {
-  productItem: 'productItem',
 };

@@ -6,7 +6,6 @@ import {
 } from '@reduxjs/toolkit';
 import {debounce} from 'lodash';
 import {appComponent} from '../../../di/appComponent';
-import {UIModelProps} from '../../../inf/multiViewRenderer';
 import {AppDispatch, RootState, ThunkResult} from '../../../redux/store';
 import {
   InitData,
@@ -17,6 +16,7 @@ import {
 } from './types';
 import {fetchListInfo} from '../../shopping/redux-slice/shoppingListSlice';
 import {fetchStores} from '../../stores/redux-slice/storesSlice';
+import {IView} from '../components/content/types';
 
 //#region Slice
 const productsSlice = createSlice({
@@ -61,25 +61,25 @@ const initializeReducer = (builder: ActionReducerMapBuilder<ProductsState>) => {
 //#endregion
 
 //#region Fetch products
-export const fetchProducts = createAsyncThunk<
-  UIModelProps[],
-  ListIdSearchTermArgs
->('products/fetchProducts', async (args, {rejectWithValue}) => {
-  try {
-    return await appComponent
-      .productService()
-      .fetchProducts(args.listId, args.term);
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
+export const fetchProducts = createAsyncThunk<IView[], ListIdSearchTermArgs>(
+  'products/fetchProducts',
+  async (args, {rejectWithValue}) => {
+    try {
+      return await appComponent
+        .productService()
+        .fetchProducts(args.listId, args.term);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 const fetchProductsReducer = (
   builder: ActionReducerMapBuilder<ProductsState>,
 ) => {
   builder.addCase(
     fetchProducts.fulfilled,
-    (state: ProductsState, action: PayloadAction<UIModelProps[]>) => {
+    (state: ProductsState, action: PayloadAction<IView[]>) => {
       state.items = action.payload;
     },
   );
@@ -116,7 +116,7 @@ export const draftChange =
     debounceDraft(dispatch, args);
   };
 
-const _draftChange = createAsyncThunk<UIModelProps[], UserActionArgs>(
+const _draftChange = createAsyncThunk<IView[], UserActionArgs>(
   'products/draftChange',
   async (args, {rejectWithValue, getState}) => {
     try {
@@ -140,7 +140,7 @@ const draftChangeReducer = (
 ) => {
   builder.addCase(
     _draftChange.fulfilled,
-    (state: ProductsState, action: PayloadAction<UIModelProps[]>) => {
+    (state: ProductsState, action: PayloadAction<IView[]>) => {
       state.items = action.payload;
     },
   );
