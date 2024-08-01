@@ -21,6 +21,7 @@ export const Tables = {
 export const Columns = {
   stores: {
     name: columnName('name'),
+    cloudId: columnName('cloud_id'),
     status: columnName('status'),
     createdAt: columnName('created_at'),
     updatedAt: columnName('updated_at'),

@@ -24,6 +24,9 @@ export class DAOStores extends Model {
 
   @text(DAOStoresColumns.name)
   name!: string;
+
+  @text(DAOStoresColumns.cloudId)
+  cloudId!: string | undefined;
   /**
    * Make sure to use one of these statues {@link Status}
    */
@@ -35,9 +38,13 @@ export class DAOStores extends Model {
   @children(Tables.shoppingListItems)
   shoppingListItems!: Query<DAOShoppingListItems>;
 
-  @writer async updateStore(name: string): Promise<DAOStores> {
+  @writer async updateStore(
+    name: string,
+    cloudId?: string,
+  ): Promise<DAOStores> {
     return await this.update(_store => {
       _store.name = name;
+      _store.cloudId = cloudId;
     });
   }
 
