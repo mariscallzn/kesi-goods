@@ -11,6 +11,8 @@ type BottomSheetActions = {
   rename: string;
   update: string;
   copy: string;
+  share: string;
+  createLink: string;
   delete: string;
   wholeList: string;
   checkedItems: string;
@@ -29,6 +31,8 @@ export const bottomSheetActions: BottomSheetActions = {
   rename: 'rename',
   update: 'update',
   copy: 'copy',
+  share: 'share',
+  createLink: 'createLink',
   delete: 'delete',
   wholeList: 'wholeList',
   checkedItems: 'checkedItems',

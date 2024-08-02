@@ -78,6 +78,7 @@ const storesSlice = createSlice({
     copyListReducer(builder);
     markStoreListAsDeleteReducer(builder);
     restoreStoreListReducer(builder);
+    createSharedLinkReducer(builder);
   },
 });
 //#endregion
@@ -205,6 +206,46 @@ const restoreStoreListReducer = (
   builder: ActionReducerMapBuilder<StoresState>,
 ) => {
   builder.addCase(restoreStoreList.fulfilled, () => {});
+};
+//#endregion
+
+//#region Create shared link
+export const createSharedLink = createAsyncThunk<
+  {store: Store; button: string},
+  {store: Store; button: string}
+>('stores/createSharedLink', async (args, {rejectWithValue}) => {
+  try {
+    return new Promise((r, _) =>
+      setTimeout(
+        () =>
+          r({
+            button: args.button,
+            store: {...args.store, cloudId: '9009asd09u09j0a9i'},
+          }),
+        1500,
+      ),
+    );
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+const createSharedLinkReducer = (
+  builder: ActionReducerMapBuilder<StoresState>,
+) => {
+  builder.addCase(
+    createSharedLink.fulfilled,
+    (
+      state: StoresState,
+      action: PayloadAction<{store: Store; button: string}>,
+    ) => {
+      state.bottomSheet.metadata = {
+        ...state.bottomSheet.metadata,
+        value: action.payload,
+      } as UnknownMetadata;
+    },
+  );
+  // builder.addCase(createSharedLink.rejected, (state: StoresState) => {});
 };
 //#endregion
 

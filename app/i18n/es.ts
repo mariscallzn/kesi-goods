@@ -12,6 +12,7 @@ const es = {
     copy: 'Copiar',
     search: 'Buscar',
     create: 'Crear',
+    linkCopied: 'El enlace ha sido copiado al portapapeles.',
   },
   Suggestions: {
     misc: {
@@ -79,9 +80,18 @@ const es = {
       update: 'ACTUALIZAR',
       suggestions: 'Sugerencias',
     },
+    ShareBottomSheet: {
+      shareList: 'Comparte esta lista',
+      copyLink: 'Copy enlace',
+      message: 'Mensaje',
+      more: 'Otro',
+      linkContent:
+        'He armado una lista de compras para víveres y pensé que te podría interesar. Aquí tienes el enlace: http://kesigoods.kesicollection.com/share/{{cloudId}}\n\nSiéntete libre de agregar o cambiar lo que necesites. 😊\n\nTambién, descarga la app si aún no lo has hecho: {{storeLink}}',
+    },
     ItemMenuBottomSheet: {
       manageList: 'Gestionar lista',
       rename: 'Renombrar',
+      share: 'Compartir',
       copy: 'Copiar',
       delete: 'Borrar',
     },

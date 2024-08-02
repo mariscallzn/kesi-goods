@@ -1,22 +1,25 @@
+import BottomSheet from '@/components/BottomSheet';
+import {Action} from '@/inf/multiViewRenderer';
+import {Store} from '@/model/types';
+import {useAppDispatch} from '@/redux/store';
 import React from 'react';
 import {useSelector} from 'react-redux';
-import BottomSheet from '../../../../components/BottomSheet';
-import {useAppDispatch} from '../../../../redux/store';
+import {bottomSheetActions} from '../../../../components/types';
 import {bottomSheetSelector} from '../../redux-slice/selectors';
 import {
   copyList,
   createOrUpdateStore,
+  createSharedLink,
   hideBottomSheet,
   markStoreListAsDelete,
   openBottomSheet,
 } from '../../redux-slice/storesSlice';
+import CopyListMenu from './copy-list-menu/CopyListMenu';
+import ItemMenu from './item-menu/ItemMenu';
+import ShareLink from './share-link/ShareLink';
+import {ShareLinkMetadata} from './share-link/types';
 import {BottomSheetCoordinatorProps, bottomSheetTypes} from './types';
 import UpdateList from './update-list/UpdateList';
-import {bottomSheetActions} from '../../../../components/types';
-import ItemMenu from './item-menu/ItemMenu';
-import {Action} from '../../../../inf/multiViewRenderer';
-import {Store} from '../../../../model/types';
-import CopyListMenu from './copy-list-menu/CopyListMenu';
 
 const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
   const selectBottomSheet = useSelector(bottomSheetSelector);
@@ -78,6 +81,20 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       case bottomSheetActions.create:
         dispatch(createOrUpdateStore(action.metadata.value as Store));
         break;
+      case bottomSheetActions.share:
+        dispatch(
+          openBottomSheet({
+            type: bottomSheetTypes.shareList,
+            value: {store: action.metadata.value, button: ''},
+          }),
+        );
+        break;
+      case bottomSheetActions.createLink:
+        const metadata = action.metadata.value as ShareLinkMetadata;
+        dispatch(
+          createSharedLink({store: metadata.store, button: metadata.button}),
+        );
+        break;
 
       default:
         props.action(action);
@@ -105,6 +122,11 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         <CopyListMenu
           store={selectBottomSheet.metadata.value as Store}
           action={action => bottomSheetActionsHandler(action)}
+        />
+      ) : selectBottomSheet.metadata?.type === bottomSheetTypes.shareList ? (
+        <ShareLink
+          action={action => bottomSheetActionsHandler(action)}
+          metadata={selectBottomSheet.metadata.value as ShareLinkMetadata}
         />
       ) : null}
     </BottomSheet>

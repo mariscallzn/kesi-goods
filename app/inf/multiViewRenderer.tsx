@@ -2,10 +2,10 @@ import React from 'react';
 import {Text} from 'react-native';
 import {UnknownMetadata} from '../utils/types';
 
-export type ActionCallback = (action: Action) => void;
+export type ActionCallback<T = unknown> = (action: Action<T>) => void;
 
-export interface Action {
-  metadata: UnknownMetadata;
+export interface Action<T = unknown> {
+  metadata: UnknownMetadata<T>;
 }
 
 export interface UIModelProps {

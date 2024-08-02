@@ -13,6 +13,7 @@ type BottomSheetTypes = {
   openItemMenu: string;
   addOrUpdateList: string;
   copyListOptions: string;
+  shareList: string;
   deleteList: string;
 };
 
@@ -20,5 +21,6 @@ export const bottomSheetTypes: BottomSheetTypes = {
   openItemMenu: 'openItemMenu',
   addOrUpdateList: 'addOrUpdateList',
   copyListOptions: 'copyListOptions',
+  shareList: 'shareList',
   deleteList: 'deleteList',
 };

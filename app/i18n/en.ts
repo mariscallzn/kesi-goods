@@ -12,6 +12,7 @@ const en = {
     copy: 'Copy',
     search: 'Search',
     create: 'Create',
+    linkCopied: 'The link has been copied in the clipboard',
   },
   ShoppingListScreen: {
     emptyMessage: 'Your shopping list is clear',
@@ -79,9 +80,18 @@ const en = {
       update: 'UPDATE',
       suggestions: 'Suggestions',
     },
+    ShareBottomSheet: {
+      shareList: 'Share this list',
+      copyLink: 'Copy link',
+      message: 'Message',
+      more: 'More',
+      linkContent:
+        "Hey, I've put together a shopping list for groceries and thought you might want to check it out. Here's the link: http://kesigoods.kesicollection.com/share/{{cloudId}}\n\nFeel free to add or change anything you need. 😊\n\nAlso, download the app if you haven't already: {{storeLink}}",
+    },
     ItemMenuBottomSheet: {
       manageList: 'Manage list',
       rename: 'Rename',
+      share: 'Share',
       copy: 'Copy',
       delete: 'Delete',
     },

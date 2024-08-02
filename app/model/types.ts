@@ -3,6 +3,7 @@ import {Status} from '../database/models';
 export type Store = {
   id: string;
   name: string;
+  cloudId?: string;
   checkedItems?: number;
   totalItems?: number;
 };

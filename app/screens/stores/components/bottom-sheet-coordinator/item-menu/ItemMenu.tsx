@@ -30,6 +30,20 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
         }}
       />
       <GenericRow
+        title={{title: {key: 'StoreScreen.ItemMenuBottomSheet.share'}}}
+        leftIcon={{icon: 'account-plus'}}
+        action={{
+          rippleColor: colors.primaryContainerAlpha,
+          action: action => props.action?.(action),
+          passOnMetadata: {
+            metadata: {
+              type: bottomSheetActions.share,
+              value: props.store,
+            },
+          },
+        }}
+      />
+      <GenericRow
         title={{title: {key: 'StoreScreen.ItemMenuBottomSheet.copy'}}}
         leftIcon={{icon: 'content-copy'}}
         rightIcon={{icon: 'chevron-right'}}
@@ -44,6 +58,7 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
           },
         }}
       />
+
       <GenericRow
         title={{
           title: {key: 'StoreScreen.ItemMenuBottomSheet.delete'},

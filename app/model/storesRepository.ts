@@ -25,6 +25,7 @@ export class DatabaseStoresRepository implements StoresRepository {
       return {
         id: daoStore.id,
         name: daoStore.name,
+        cloudId: daoStore.cloudId,
       };
     } catch (error) {
       throw error;
@@ -49,6 +50,7 @@ export class DatabaseStoresRepository implements StoresRepository {
         stores.push({
           id: store.id,
           name: store.name,
+          cloudId: store.cloudId,
           checkedItems: daoItems.filter(f => f.checked === true).length,
           totalItems: daoItems.length,
         });
@@ -70,8 +72,15 @@ export class DatabaseStoresRepository implements StoresRepository {
         const daoStore = await this.database
           .get<DAOStores>(Tables.stores)
           .find(store.id);
-        const updatedStore = await daoStore.updateStore(store.name);
-        _store = {...store, name: updatedStore.name};
+        const updatedStore = await daoStore.updateStore(
+          store.name,
+          store.cloudId,
+        );
+        _store = {
+          ...store,
+          name: updatedStore.name,
+          cloudId: updatedStore.cloudId,
+        };
       } catch (error) {
         //Create Store
         const newStore = await this.database.write(async () => {
