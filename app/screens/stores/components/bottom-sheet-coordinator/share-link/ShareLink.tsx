@@ -1,7 +1,7 @@
 import {bottomSheetActions} from '@/components/types';
 import {translate} from '@/i18n/translate';
 import React from 'react';
-import {Platform, View, ViewStyle} from 'react-native';
+import {Linking, Platform, Share, View, ViewStyle} from 'react-native';
 import {IconButton, Snackbar, Text} from 'react-native-paper';
 import {ShareLinkProps} from './types';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -16,21 +16,30 @@ const ShareLink: React.FC<ShareLinkProps> = props => {
   const messageLabel = translate('StoreScreen.ShareBottomSheet.message');
   const moreLabel = translate('StoreScreen.ShareBottomSheet.more');
 
+  const messageText = translate('StoreScreen.ShareBottomSheet.linkContent', {
+    cloudId: store.cloudId,
+    storeLink:
+      //TODO: find the right link: web page with the 2 stores
+      Platform.OS === 'android'
+        ? 'http://www.android-link.com'
+        : 'http://www.ios-link.com',
+  });
+
   const handleUpdate = React.useCallback(
     (button: string) => {
       switch (button) {
         case copyLinkLabel:
-          Clipboard.setString(
-            translate('StoreScreen.ShareBottomSheet.linkContent', {
-              cloudId: store.cloudId,
-              storeLink:
-                //TODO: find the right link: web page with the 2 stores
-                Platform.OS === 'android'
-                  ? 'http://www.android-link.com'
-                  : 'http://www.ios-link.com',
-            }),
-          );
+          Clipboard.setString(messageText);
           setShowSnackbar(true);
+          break;
+
+        case messageLabel:
+          const url = `sms:?body=${encodeURIComponent(messageText)}`;
+          Linking.openURL(url);
+          break;
+
+        case moreLabel:
+          Share.share({message: messageText});
           break;
 
         default:
@@ -38,7 +47,7 @@ const ShareLink: React.FC<ShareLinkProps> = props => {
       }
       setButtonPressed('');
     },
-    [copyLinkLabel, store.cloudId],
+    [messageText, copyLinkLabel, messageLabel, moreLabel],
   );
 
   React.useEffect(() => {
