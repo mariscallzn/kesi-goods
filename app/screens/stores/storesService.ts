@@ -1,9 +1,9 @@
-import {ShoppingListRepository} from '../../model/shoppingListRepository';
-import {StoresRepository} from '../../model/storesRepository';
-import {ShoppingListItem, Store} from '../../model/types';
-import {getUUID} from '../../utils/misc';
+import {ShoppingListItem, Store} from '@/model/types';
 import {VIEW_ID} from './components/content/types';
 import {CopyListOption, UIStore} from './types';
+import {StoresRepository} from '@/model/storesRepository';
+import {ShoppingListRepository} from '@/model/shoppingListRepository';
+import {getUUID} from '@/utils/misc';
 
 export interface StoresService {
   getStores(): Promise<UIStore[]>;

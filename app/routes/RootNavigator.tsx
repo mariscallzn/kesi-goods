@@ -27,19 +27,11 @@ export interface NavigationProps
 //#region App Navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const RootStack = () => {
+export const RootStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Shopping" component={ShoppingNavigator} />
     </Stack.Navigator>
-  );
-};
-
-export const RootNavigator = (): React.JSX.Element => {
-  return (
-    <NavigationContainer>
-      <RootStack />
-    </NavigationContainer>
   );
 };
 //#endregion

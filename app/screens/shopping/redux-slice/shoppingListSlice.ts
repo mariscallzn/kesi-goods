@@ -111,6 +111,7 @@ export const fetchListInfo = createAsyncThunk<ListInfo, FetchListInfoArgs>(
   'shopping/fetchListInfo',
   async (args, {rejectWithValue}) => {
     try {
+      //TODO: Fetch cloud or DB
       return await appComponent
         .shoppingListService()
         .getShoppingListByStore(args.listId, args.searchTerm);
