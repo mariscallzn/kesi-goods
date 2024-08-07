@@ -26,9 +26,14 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'KesiGoods' do
+target 'KesiList' do
   use_expo_modules!
   post_integrate do |installer|
+    begin
+      expo_patch_react_imports!(installer)
+    rescue => e
+      Pod::UI.warn e
+    end
     begin
       expo_patch_react_imports!(installer)
     rescue => e
@@ -51,7 +56,7 @@ target 'KesiGoods' do
   # WatermelonDB dependency
   pod 'simdjson', path: '../node_modules/@nozbe/simdjson', modular_headers: true
 
-  target 'KesiGoodsTests' do
+  target 'KesiListTests' do
     inherit! :complete
     # Pods for testing
   end

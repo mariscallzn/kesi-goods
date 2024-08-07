@@ -1,7 +1,5 @@
 {
-  "name": "KesiGoods",
-  "displayName": "KesiGoods",
-  "plugins": [
-    "expo-localization"
-  ]
+  "name": "KesiList",
+  "displayName": "KesiList",
+  "plugins": ["expo-localization"]
 }

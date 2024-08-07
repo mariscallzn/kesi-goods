@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "KesiGoods.app"
-               BlueprintName = "KesiGoods"
-               ReferencedContainer = "container:KesiGoods.xcodeproj">
+               BuildableName = "KesiList.app"
+               BlueprintName = "KesiList"
+               ReferencedContainer = "container:KesiList.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "KesiGoodsTests.xctest"
-               BlueprintName = "KesiGoodsTests"
-               ReferencedContainer = "container:KesiGoods.xcodeproj">
+               BuildableName = "KesiListTests.xctest"
+               BlueprintName = "KesiListTests"
+               ReferencedContainer = "container:KesiList.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "KesiGoods.app"
-            BlueprintName = "KesiGoods"
-            ReferencedContainer = "container:KesiGoods.xcodeproj">
+            BuildableName = "KesiList.app"
+            BlueprintName = "KesiList"
+            ReferencedContainer = "container:KesiList.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "KesiGoods.app"
-            BlueprintName = "KesiGoods"
-            ReferencedContainer = "container:KesiGoods.xcodeproj">
+            BuildableName = "KesiList.app"
+            BlueprintName = "KesiList"
+            ReferencedContainer = "container:KesiList.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

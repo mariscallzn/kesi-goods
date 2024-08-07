@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">KesiGoods</string>
+  <string name="app_name">Kesilist</string>
+  <string name="ExpoLocalization_supportsRTL" translatable="false">undefined</string>
 </resources>

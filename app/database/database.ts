@@ -10,7 +10,7 @@ import {
 } from './models';
 
 const adapter = new SQLiteAdapter({
-  dbName: 'KesiGoodsDB',
+  dbName: 'KesiListDB',
   schema: schema,
   //   migrations: migrations,
   jsi: Platform.OS === 'ios',
