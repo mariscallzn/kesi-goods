@@ -5,7 +5,7 @@ import {ShoppingListRepository} from '../../model/shoppingListRepository';
 import {StoresRepository} from '../../model/storesRepository';
 import {Product, ShoppingListItem} from '../../model/types';
 import {getUUID} from '../../utils/misc';
-import {IView, VIEW_ID} from './components/content/types';
+import {IView} from './components/content/types';
 import {InitData} from './redux-slice/types';
 import {UIProduct} from './types';
 
@@ -120,7 +120,7 @@ export class ProductServiceImpl implements ProductService {
           {
             shoppingListId: 'invalid',
             id: getUUID(),
-            type: VIEW_ID.productItem,
+            type: 'productItem',
             product: {id: 'n/a', name: _searchTerm},
             checked: false,
             categories: categories,
