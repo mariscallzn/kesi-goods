@@ -3,7 +3,7 @@ import 'react-native-get-random-values';
 
 export const getUUID = () => uuidv4();
 
-export const saveDivision = (
+export const safeDivision = (
   divisor: number | undefined,
   dividend: number | undefined,
 ): number => {

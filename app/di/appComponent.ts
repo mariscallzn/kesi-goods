@@ -36,6 +36,7 @@ import {
   AddStoreService,
   AddStoreServiceImpl,
 } from '../screens/add-store/addStoreService';
+import {AWSStoreApi, StoreApi} from '@/api/storesApi';
 
 export interface AppComponent {
   storesService(): StoresService;
@@ -99,6 +100,10 @@ class AppModule {
     return new SettingsRepositoryImpl();
   }
 
+  private providesStoreApi(): StoreApi {
+    return new AWSStoreApi();
+  }
+
   getStoresService(): StoresService {
     return new StoresServiceImpl(
       this.providesStoresRepository(this.providesDatabase()),
@@ -117,6 +122,7 @@ class AppModule {
       ),
       this.providesCategoryRepository(this.providesDatabase()),
       this.providesStoresRepository(this.providesDatabase()),
+      this.providesStoreApi(),
     );
   }
 

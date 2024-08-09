@@ -9,7 +9,7 @@ import {
 } from 'react-native-paper';
 import {CONTENT_ACTIONS, UIStore} from '../../types';
 import {ShoppingListNavigationMetadata} from './types';
-import {saveDivision} from '../../../../utils/misc';
+import {safeDivision} from '../../../../utils/misc';
 
 const StoreItem: React.FC<UIStore> = ({
   store,
@@ -109,7 +109,7 @@ const StoreItem: React.FC<UIStore> = ({
                   backgroundColor: colors.surface,
                 },
               ]}
-              animatedValue={saveDivision(store.checkedItems, store.totalItems)}
+              animatedValue={safeDivision(store.checkedItems, store.totalItems)}
             />
           </View>
           <Text variant="titleMedium" style={{color: colors.onSurfaceVariant}}>

@@ -1,12 +1,13 @@
-import {CategoryRepository} from '../../model/categoryRepository';
-import {ProductRepository} from '../../model/productRepository';
-import {ShoppingListRepository} from '../../model/shoppingListRepository';
-import {StoresRepository} from '../../model/storesRepository';
-import {Category, Product, ShoppingListItem} from '../../model/types';
-import {getUUID, saveDivision} from '../../utils/misc';
-import {UnknownMetadata} from '../../utils/types';
+import {StoreApi} from '@/api/storesApi';
 import {VIEW_ID} from './components/content/types';
 import {ListInfo, RESTORE_TYPE, UIUncheckedItem} from './types';
+import {ShoppingListRepository} from '@/model/shoppingListRepository';
+import {ProductRepository} from '@/model/productRepository';
+import {CategoryRepository} from '@/model/categoryRepository';
+import {StoresRepository} from '@/model/storesRepository';
+import {Category, Product, ShoppingListItem} from '@/model/types';
+import {UnknownMetadata} from '@/utils/types';
+import {getUUID, safeDivision} from '@/utils/misc';
 
 export interface ShoppingListService {
   getShoppingListByStore(
@@ -33,17 +34,20 @@ export class ShoppingListServiceImpl implements ShoppingListService {
   private readonly productRepository: ProductRepository;
   private readonly categoryRepository: CategoryRepository;
   private readonly storeRepository: StoresRepository;
+  private readonly storeApi: StoreApi;
 
   constructor(
     shoppingListRepository: ShoppingListRepository,
     productRepository: ProductRepository,
     categoryRepository: CategoryRepository,
     storeRepository: StoresRepository,
+    storeApi: StoreApi,
   ) {
     this.shoppingListRepository = shoppingListRepository;
     this.productRepository = productRepository;
     this.categoryRepository = categoryRepository;
     this.storeRepository = storeRepository;
+    this.storeApi = storeApi;
   }
 
   async getShoppingListByStore(
@@ -51,7 +55,20 @@ export class ShoppingListServiceImpl implements ShoppingListService {
     searchTerm?: string,
   ): Promise<ListInfo> {
     try {
+      let listName = '';
       let productIds: string[] | undefined;
+      try {
+        listName = (await this.storeRepository.getById(storeId)).name;
+      } catch (error) {
+        //TODO:
+        // - Fetch from API
+        // - Map products because this is a shared list
+        // - Save ShoppingList Items on new list
+        // this.productRepository.findOrCreateByName()
+        // This could be a function because the observer will do the same and override all what local DB has
+        //Think about the cloudId property you added
+      }
+
       if (searchTerm) {
         productIds = (
           await this.productRepository.findByNameOrFetch(searchTerm)
@@ -115,9 +132,9 @@ export class ShoppingListServiceImpl implements ShoppingListService {
       );
 
       const listInfo: ListInfo = {
-        listName: (await this.storeRepository.getById(storeId)).name,
+        listName: listName,
         shoppingListItems: uncheckedFormatted.concat(checkedFormatted),
-        progress: saveDivision(checkItems.length, shoppingListItems.length),
+        progress: safeDivision(checkItems.length, shoppingListItems.length),
       };
 
       return listInfo;
