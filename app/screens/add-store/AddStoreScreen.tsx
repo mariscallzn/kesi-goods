@@ -1,14 +1,14 @@
 import React, {useEffect} from 'react';
 import {Screen} from '../../components/Screen';
-import {ShoppingStackScreenProps} from '../../routes/ShoppingNavigator';
 import Content from './components/content/Content';
 import Footer from './components/footer/Footer';
 import Header from './components/header/Header';
 import {ControlledTextInputRef} from '../../components/ControlledTextInput';
 import {useAppDispatch} from '../../redux/store';
 import {createList, resetState} from './redux-slice/addStoreSlice';
+import {RootStackScreenProps} from '@/routes/RootNavigator';
 
-const AddStoreScreen: React.FC<ShoppingStackScreenProps<'AddStore'>> = ({
+const AddStoreScreen: React.FC<RootStackScreenProps<'AddStore'>> = ({
   navigation,
 }) => {
   const dispatch = useAppDispatch();

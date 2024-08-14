@@ -4,6 +4,8 @@ const en = {
     cancel: 'Cancel',
     back: 'Back',
     logOut: 'Log Out',
+    logIn: 'Log in',
+    loginMessage: 'Log in to share and sync lists',
     add: 'Add',
     done: 'Done',
     undo: 'Undo',
@@ -12,6 +14,7 @@ const en = {
     copy: 'Copy',
     search: 'Search',
     create: 'Create',
+    settings: 'Settings',
     linkCopied: 'The link has been copied in the clipboard',
   },
   ShoppingListScreen: {

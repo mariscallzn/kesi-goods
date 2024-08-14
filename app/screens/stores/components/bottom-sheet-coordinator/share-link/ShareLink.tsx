@@ -1,12 +1,16 @@
+import LoginBanner from '@/components/login-banner/LoginBanner';
 import {bottomSheetActions} from '@/components/types';
 import {translate} from '@/i18n/translate';
+import {useAppSelector} from '@/redux/store';
+import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
 import {Linking, Platform, Share, View, ViewStyle} from 'react-native';
-import {IconButton, Snackbar, Text} from 'react-native-paper';
+import {IconButton, Snackbar, Text, useTheme} from 'react-native-paper';
 import {ShareLinkProps} from './types';
-import Clipboard from '@react-native-clipboard/clipboard';
 
 const ShareLink: React.FC<ShareLinkProps> = props => {
+  const accountSelect = useAppSelector(state => state.stores.user);
+  const {colors} = useTheme();
   const store = props.metadata.store;
 
   const [buttonPressed, setButtonPressed] = React.useState('');
@@ -75,20 +79,42 @@ const ShareLink: React.FC<ShareLinkProps> = props => {
       <Text variant="headlineSmall">
         {translate('StoreScreen.ShareBottomSheet.shareList')}
       </Text>
+      {!accountSelect ? (
+        <View style={$loginBannerContainer}>
+          <LoginBanner
+            onPress={() => {
+              props.action({
+                metadata: {
+                  type: bottomSheetActions.login,
+                  value: {store: store, button: 'login'},
+                },
+              });
+            }}
+          />
+          <View style={$dividerContainer}>
+            <View
+              style={[$divider, {backgroundColor: colors.onSurfaceDisabled}]}
+            />
+          </View>
+        </View>
+      ) : null}
       <View style={$buttonsContainer}>
         <ShareButton
+          disable={!accountSelect}
           loading={buttonPressed === copyLinkLabel}
           icon="link-variant"
           label={copyLinkLabel}
           onPress={() => handleAction(copyLinkLabel)}
         />
         <ShareButton
+          disable={!accountSelect}
           loading={buttonPressed === messageLabel}
           icon="message-processing-outline"
           label={messageLabel}
           onPress={() => handleAction(messageLabel)}
         />
         <ShareButton
+          disable={!accountSelect}
           loading={buttonPressed === moreLabel}
           icon="share-variant"
           label={moreLabel}
@@ -108,6 +134,15 @@ const ShareLink: React.FC<ShareLinkProps> = props => {
   );
 };
 
+const $loginBannerContainer: ViewStyle = {
+  marginTop: 16,
+  width: '100%',
+};
+
+const $dividerContainer: ViewStyle = {width: '100%', flexDirection: 'column'};
+
+const $divider: ViewStyle = {height: 1, margin: 16};
+
 const $container: ViewStyle = {
   alignItems: 'center',
 };
@@ -115,20 +150,24 @@ const $container: ViewStyle = {
 const $buttonsContainer: ViewStyle = {
   flexDirection: 'row',
   gap: 32,
-  marginVertical: 16,
+  marginBottom: 16,
+  marginTop: 8,
   justifyContent: 'space-between',
 };
 
 const ShareButton: React.FC<{
   label: string;
+  disable: boolean;
   loading: boolean;
   icon: string;
   onPress: () => void;
 }> = props => {
+  const {colors} = useTheme();
   return (
     <View style={$container}>
       <View>
         <IconButton
+          disabled={props.disable}
           loading={props.loading}
           mode="contained"
           icon={props.icon}
@@ -136,7 +175,14 @@ const ShareButton: React.FC<{
           onPress={props.onPress}
         />
       </View>
-      <Text variant="labelSmall">{props.label}</Text>
+      <Text
+        disabled={props.disable}
+        style={{
+          color: props.disable ? colors.onSurfaceDisabled : colors.onBackground,
+        }}
+        variant="labelSmall">
+        {props.label}
+      </Text>
     </View>
   );
 };

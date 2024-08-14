@@ -1,9 +1,10 @@
+import {RootStackScreenProps} from '@/routes/RootNavigator';
 import React, {FC, useEffect} from 'react';
 import {ViewStyle} from 'react-native/types';
 import {Screen} from '../../components/Screen';
 import {Action, ActionCallback} from '../../inf/multiViewRenderer';
+import {Store} from '../../model/types';
 import {useAppDispatch} from '../../redux/store';
-import {ShoppingStackScreenProps} from '../../routes/ShoppingNavigator';
 import BottomSheetCoordinator from './components/bottom-sheet-coordinator/BottomSheetCoordinator';
 import {bottomSheetTypes} from './components/bottom-sheet-coordinator/types';
 import Content from './components/content/Content';
@@ -17,9 +18,10 @@ import {
   toggleMultiSelection,
 } from './redux-slice/storesSlice';
 import {CONTENT_ACTIONS} from './types';
-import {Store} from '../../model/types';
+import {topBarActions} from './components/topbar/types';
+import {bottomSheetActions} from '@/components/types';
 
-const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
+const StoresScreen: FC<RootStackScreenProps<'Stores'>> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -77,6 +79,14 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
         navigation.navigate('AddStore');
         break;
 
+      case topBarActions.settings:
+        navigation.navigate('GlobalSettings');
+        break;
+
+      case bottomSheetActions.login:
+        navigation.navigate('Login');
+        break;
+
       default:
         break;
     }
@@ -84,7 +94,7 @@ const StoresScreen: FC<ShoppingStackScreenProps<'Stores'>> = ({navigation}) => {
 
   return (
     <Screen safeAreaEdges={['top', 'bottom']}>
-      <TopBar />
+      <TopBar action={actions} />
       <BottomSheetCoordinator maxHeight={50} action={actions} />
       <Content action={actions} />
       <Footer action={actions} style={$footer} />

@@ -5,8 +5,8 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-import {appComponent} from '../../../di/appComponent';
-import {UnknownMetadata} from '../../../utils/types';
+import {appComponent} from '@/di/appComponent';
+import {UnknownMetadata} from '@/utils/types';
 import {UIStore} from '../types';
 import {
   CopyListThunkArgs,
@@ -14,7 +14,8 @@ import {
   StoresState,
   initialState,
 } from './types';
-import {Store} from '../../../model/types';
+import {Store} from '@/model/types';
+import {RootState} from '@/redux/store';
 
 //#region Slice
 const storesSlice = createSlice({
@@ -79,15 +80,41 @@ const storesSlice = createSlice({
     markStoreListAsDeleteReducer(builder);
     restoreStoreListReducer(builder);
     createSharedLinkReducer(builder);
+    getCurrentUserReducer(builder);
   },
 });
+//#endregion
+
+//#region Get current user
+export const getCurrentUser = createAsyncThunk(
+  'stores/getCurrentUser',
+  async (_, {rejectWithValue}) => {
+    try {
+      return appComponent.storesService().getUser();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const getCurrentUserReducer = (
+  builder: ActionReducerMapBuilder<StoresState>,
+) => {
+  builder.addCase(getCurrentUser.fulfilled, (state, action) => {
+    state.user = action.payload;
+  });
+};
 //#endregion
 
 //#region Fetch Stores
 export const fetchStores = createAsyncThunk<UIStore[], void>(
   'stores/fetchStores',
-  async (_, {rejectWithValue}) => {
+  async (_, {rejectWithValue, dispatch, getState}) => {
     try {
+      const state = (getState() as RootState).stores;
+      if (state.user === undefined) {
+        dispatch(getCurrentUser());
+      }
       return await appComponent.storesService().getStores();
     } catch (error) {
       return rejectWithValue(error);

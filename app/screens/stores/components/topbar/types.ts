@@ -1,8 +1,10 @@
 import {ViewProps} from 'react-native/types';
-import {ActionCallback} from '../../../../inf/multiViewRenderer';
-import {Store} from '../../../../model/types';
+import {Store} from '@/model/types';
+import {ActionCallback} from '@/inf/multiViewRenderer';
 
-export type TopBarPros = ViewProps & {};
+export type TopBarPros = ViewProps & {
+  action: ActionCallback;
+};
 
 export type MultiSelectionProps = {
   selectedItems: Store[];
@@ -14,6 +16,7 @@ type TopBarActions = {
   edit: string;
   copy: string;
   delete: string;
+  settings: string;
 };
 
 export const topBarActions: TopBarActions = {
@@ -21,4 +24,5 @@ export const topBarActions: TopBarActions = {
   edit: 'edit',
   copy: 'copy',
   delete: 'delete',
+  settings: 'settings',
 };

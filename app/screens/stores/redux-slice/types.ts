@@ -1,8 +1,9 @@
-import {Store} from '../../../model/types';
-import {UnknownMetadata} from '../../../utils/types';
+import {UnknownMetadata} from '@/utils/types';
 import {CopyListOption, UIStore} from '../types';
+import {KUser, Store} from '@/model/types';
 
 export interface StoresState {
+  user?: KUser;
   stores: UIStore[];
   bottomSheet: BottomSheet;
   snackbar: SnackbarState;

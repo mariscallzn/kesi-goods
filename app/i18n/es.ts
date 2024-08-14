@@ -4,6 +4,8 @@ const es = {
     cancel: 'Cancelar',
     back: 'Atrás',
     logOut: 'Cerrar sesión',
+    logIn: 'Iniciar sesión',
+    loginMessage: 'Inicia sesión para compartir y guardar listas.',
     add: 'Agregar',
     done: 'Listo',
     undo: 'Deshacer',
@@ -12,6 +14,7 @@ const es = {
     copy: 'Copiar',
     search: 'Buscar',
     create: 'Crear',
+    settings: 'Configuraciones',
     linkCopied: 'El enlace ha sido copiado al portapapeles.',
   },
   Suggestions: {

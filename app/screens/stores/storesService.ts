@@ -1,11 +1,13 @@
-import {ShoppingListItem, Store} from '@/model/types';
+import {KUser, ShoppingListItem, Store} from '@/model/types';
 import {VIEW_ID} from './components/content/types';
 import {CopyListOption, UIStore} from './types';
 import {StoresRepository} from '@/model/storesRepository';
 import {ShoppingListRepository} from '@/model/shoppingListRepository';
 import {getUUID} from '@/utils/misc';
+import {AuthRepository} from '@/model/authRepository';
 
 export interface StoresService {
+  getUser(): Promise<KUser | undefined>;
   getStores(): Promise<UIStore[]>;
   createOrUpdate(store: Store): Promise<UIStore>;
   copyStoreList(stores: Store[], copyOption: CopyListOption): Promise<void>;
@@ -16,13 +18,20 @@ export interface StoresService {
 export class StoresServiceImpl implements StoresService {
   private readonly storesRepository: StoresRepository;
   private readonly shoppingListRepository: ShoppingListRepository;
+  private readonly authRepo: AuthRepository;
 
   constructor(
     storesRepository: StoresRepository,
     shoppingListRepository: ShoppingListRepository,
+    authRepo: AuthRepository,
   ) {
     this.storesRepository = storesRepository;
     this.shoppingListRepository = shoppingListRepository;
+    this.authRepo = authRepo;
+  }
+
+  async getUser(): Promise<KUser | undefined> {
+    return await this.authRepo.getUser();
   }
 
   async getStores(): Promise<UIStore[]> {

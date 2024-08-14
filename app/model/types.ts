@@ -29,3 +29,7 @@ export type Category = {
 };
 
 export type MeasurementSystem = 'imperial' | 'metric';
+
+export type KUser = {
+  email: string;
+};

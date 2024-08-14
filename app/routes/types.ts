@@ -1,6 +1,6 @@
-import {ShoppingStackParamList} from './ShoppingNavigator';
+import {RootStackParamList} from './RootNavigator';
 
-export type Route = keyof ShoppingStackParamList;
+export type Route = keyof RootStackParamList;
 
 export interface NavigationMetadata {
   route: Route;

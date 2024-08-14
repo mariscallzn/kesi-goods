@@ -1,7 +1,7 @@
-import {ActionCallback, ComponentMap, UIModel} from '../../../../inf/types';
-import {Category} from '../../../../model/types';
-import {UIProduct} from '../../types';
+import {ActionCallback, ComponentMap, UIModel} from '@/inf/types';
 import ProductItem from './ProductItem';
+import {Category} from '@/model/types';
+import {UIProduct} from '../../types';
 
 export type ContentProps = {
   action: ActionCallback;

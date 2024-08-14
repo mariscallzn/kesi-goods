@@ -2,7 +2,6 @@ import React, {FC, useEffect} from 'react';
 import {Screen} from '../../components/Screen';
 import {Action, ActionCallback} from '../../inf/multiViewRenderer';
 import {useAppDispatch} from '../../redux/store';
-import {ShoppingStackScreenProps} from '../../routes/ShoppingNavigator';
 import BottomSheetCoordinator from './components/bottom-sheet-coordinator/BottomSheetCoordinator';
 import {
   AddOrUpdateBSMetadata,
@@ -21,8 +20,9 @@ import {
 } from './redux-slice/shoppingListSlice';
 import {CONTENT_ACTIONS} from './types';
 import {ViewStyle} from 'react-native';
+import {RootStackScreenProps} from '@/routes/RootNavigator';
 
-const ShoppingListScreen: FC<ShoppingStackScreenProps<'ShoppingList'>> = ({
+const ShoppingListScreen: FC<RootStackScreenProps<'ShoppingList'>> = ({
   route,
   navigation,
 }) => {

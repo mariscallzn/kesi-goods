@@ -4,7 +4,6 @@ import {Store} from '@/model/types';
 import {useAppDispatch} from '@/redux/store';
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {bottomSheetActions} from '../../../../components/types';
 import {bottomSheetSelector} from '../../redux-slice/selectors';
 import {
   copyList,
@@ -20,6 +19,7 @@ import ShareLink from './share-link/ShareLink';
 import {ShareLinkMetadata} from './share-link/types';
 import {BottomSheetCoordinatorProps, bottomSheetTypes} from './types';
 import UpdateList from './update-list/UpdateList';
+import {bottomSheetActions} from '@/components/types';
 
 const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
   const selectBottomSheet = useSelector(bottomSheetSelector);
@@ -97,6 +97,7 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
         break;
 
       default:
+        dispatch(hideBottomSheet());
         props.action(action);
         break;
     }

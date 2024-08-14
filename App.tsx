@@ -1,25 +1,30 @@
-import React, {useEffect} from 'react';
+import {RootStack, RootStackParamList} from '@/routes/RootNavigator';
+
 import {
   NavigationContainer,
   useNavigationContainerRef,
 } from '@react-navigation/native';
+import {Amplify} from 'aws-amplify';
+import React, {useEffect} from 'react';
+import {Linking, ViewStyle, useColorScheme} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {PaperProvider} from 'react-native-paper';
 import {
   SafeAreaProvider,
   initialWindowMetrics,
 } from 'react-native-safe-area-context';
-import {PaperProvider} from 'react-native-paper';
 import {Provider} from 'react-redux';
+import outputs from './amplify_outputs.json';
 import {store} from './app/redux/store';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {Linking, ViewStyle, useColorScheme} from 'react-native';
 import {KesiDarkTheme, KesiLightTheme} from './app/theme/theme';
-import {RootStack} from '@/routes/RootNavigator';
-import {ShoppingStackParamList} from '@/routes/ShoppingNavigator';
+import {Authenticator} from '@aws-amplify/ui-react-native';
+
+Amplify.configure(outputs);
 
 //💡 Unlock a year of premium if users goes through all X adds 💡
 function App(): React.JSX.Element {
   const colorScheme = useColorScheme();
-  const navigationRef = useNavigationContainerRef<ShoppingStackParamList>();
+  const navigationRef = useNavigationContainerRef<RootStackParamList>();
 
   useEffect(() => {
     const handleUrl = (event: {url: string}) => {
@@ -51,9 +56,11 @@ function App(): React.JSX.Element {
         <Provider store={store}>
           <PaperProvider
             theme={colorScheme === 'dark' ? KesiDarkTheme : KesiLightTheme}>
-            <NavigationContainer ref={navigationRef}>
-              <RootStack />
-            </NavigationContainer>
+            <Authenticator.Provider>
+              <NavigationContainer ref={navigationRef}>
+                <RootStack />
+              </NavigationContainer>
+            </Authenticator.Provider>
           </PaperProvider>
         </Provider>
       </GestureHandlerRootView>

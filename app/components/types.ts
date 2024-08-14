@@ -13,6 +13,7 @@ type BottomSheetActions = {
   copy: string;
   share: string;
   createLink: string;
+  login: string;
   delete: string;
   wholeList: string;
   checkedItems: string;
@@ -33,6 +34,7 @@ export const bottomSheetActions: BottomSheetActions = {
   copy: 'copy',
   share: 'share',
   createLink: 'createLink',
+  login: 'login',
   delete: 'delete',
   wholeList: 'wholeList',
   checkedItems: 'checkedItems',

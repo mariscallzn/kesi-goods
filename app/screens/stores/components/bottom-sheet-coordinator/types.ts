@@ -1,5 +1,5 @@
-import {MaxHeight} from '../../../../components/BottomSheet';
-import {ActionCallback} from '../../../../inf/multiViewRenderer';
+import {MaxHeight} from '@/components/BottomSheet';
+import {ActionCallback} from '@/inf/multiViewRenderer';
 
 export type BottomSheetCoordinatorProps = {
   action: ActionCallback;

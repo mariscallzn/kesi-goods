@@ -1,18 +1,28 @@
 import React from 'react';
-
-import ShoppingNavigator, {ShoppingStackParamList} from './ShoppingNavigator';
+import AddStoreScreen from '@/screens/add-store/AddStoreScreen';
+import GlobalSettingsScreen from '@/screens/global-settings/GlobalSettingsScreen';
+import ProductsScreen from '@/screens/products/ProductsScreen';
+import ShoppingListScreen from '@/screens/shopping/ShoppingListScreen';
+import StoresScreen from '@/screens/stores/StoresScreen';
+import {NavigationContainer} from '@react-navigation/native';
 import {
   NativeStackScreenProps,
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
-import {
-  NavigationContainer,
-  NavigatorScreenParams,
-} from '@react-navigation/native';
+import Login from '@/screens/login/Login';
 
 //#region Types
 export type RootStackParamList = {
-  Shopping: NavigatorScreenParams<ShoppingStackParamList>;
+  AddStore: undefined;
+  Stores: undefined;
+  ShoppingList: {
+    listId: string;
+  };
+  Products: {
+    listId: string;
+  };
+  GlobalSettings: undefined;
+  Login: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -30,7 +40,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export const RootStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Shopping" component={ShoppingNavigator} />
+      <Stack.Screen name="Stores" component={StoresScreen} />
+      <Stack.Screen name="AddStore" component={AddStoreScreen} />
+      <Stack.Screen name="ShoppingList" component={ShoppingListScreen} />
+      <Stack.Screen name="Products" component={ProductsScreen} />
+      <Stack.Screen name="GlobalSettings" component={GlobalSettingsScreen} />
+      <Stack.Screen name="Login" component={Login} />
     </Stack.Navigator>
   );
 };

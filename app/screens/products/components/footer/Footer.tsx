@@ -14,9 +14,7 @@ const Footer: React.FC<FooterProps> = props => {
 
   useEffect(() => {
     if (goBackSelect) {
-      props.action({
-        metadata: {type: CONTENT_ACTIONS.back, value: undefined},
-      });
+      props.action({type: CONTENT_ACTIONS.back, value: undefined});
     }
   }, [goBackSelect, props]);
 

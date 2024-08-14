@@ -21,10 +21,8 @@ const Header: React.FC<HeaderProps> = ({action, listId}) => {
           icon="arrow-left"
           onPress={() =>
             action({
-              metadata: {
-                type: CONTENT_ACTIONS.back,
-                value: undefined,
-              },
+              type: CONTENT_ACTIONS.back,
+              value: undefined,
             })
           }
         />

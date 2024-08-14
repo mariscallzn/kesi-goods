@@ -23,7 +23,7 @@ export const dark: KColors = {
   onTertiary: 'rgb(0, 54, 61)',
   tertiaryContainer: 'rgb(31, 77, 84)',
   onTertiaryContainer: 'rgb(189, 234, 243)',
-  error: 'rgb(255, 180, 171)',
+  error: 'rgb(186, 26, 26)',
   onError: 'rgb(105, 0, 5)',
   errorContainer: 'rgba(147, 0, 10, 0.38)',
   onErrorContainer: 'rgb(255, 180, 171)',

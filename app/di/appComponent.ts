@@ -37,12 +37,18 @@ import {
   AddStoreServiceImpl,
 } from '../screens/add-store/addStoreService';
 import {AWSStoreApi, StoreApi} from '@/api/storesApi';
+import {
+  GlobalSettingsService,
+  GlobalSettingsServiceImpl,
+} from '@/screens/global-settings/globalSettingsService';
+import {AuthRepository, AuthRepositoryImpl} from '@/model/authRepository';
 
 export interface AppComponent {
   storesService(): StoresService;
   shoppingListService(): ShoppingListService;
   productService(): ProductService;
   addStoreService(): AddStoreService;
+  globalSettingsService(): GlobalSettingsService;
 }
 
 class AppModule {
@@ -104,10 +110,15 @@ class AppModule {
     return new AWSStoreApi();
   }
 
+  private providesAuthRepository(): AuthRepository {
+    return new AuthRepositoryImpl();
+  }
+
   getStoresService(): StoresService {
     return new StoresServiceImpl(
       this.providesStoresRepository(this.providesDatabase()),
       this.providesShoppingListRepository(this.providesDatabase()),
+      this.providesAuthRepository(),
     );
   }
 
@@ -143,6 +154,10 @@ class AppModule {
   getAddStoreService(): AddStoreService {
     return new AddStoreServiceImpl();
   }
+
+  getGlobalSettingsService(): GlobalSettingsService {
+    return new GlobalSettingsServiceImpl(this.providesAuthRepository());
+  }
 }
 
 class AppComponentProd implements AppComponent {
@@ -166,6 +181,10 @@ class AppComponentProd implements AppComponent {
 
   addStoreService(): AddStoreService {
     return this.appModule.getAddStoreService();
+  }
+
+  globalSettingsService(): GlobalSettingsService {
+    return this.appModule.getGlobalSettingsService();
   }
 }
 
