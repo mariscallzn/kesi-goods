@@ -20,6 +20,7 @@ export interface ShoppingListRepository {
   markAsDeleted(shoppingListItem: ShoppingListItem): Promise<ShoppingListItem>;
   destroy(id: string): Promise<void>;
   restore(shoppingListItem: ShoppingListItem): Promise<void>;
+  destroyRecords(): Promise<void>;
 }
 
 export class DatabaseShoppingListRepository implements ShoppingListRepository {
@@ -294,6 +295,22 @@ export class DatabaseShoppingListRepository implements ShoppingListRepository {
         .get<DAOShoppingListItems>(Tables.shoppingListItems)
         .find(shoppingListItem.id);
       await daoShoppingListItem.markAs('active');
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async destroyRecords(): Promise<void> {
+    try {
+      return await this.database.write(async () => {
+        const items = await this.database
+          .get<DAOShoppingListItems>(Tables.shoppingListItems)
+          .query();
+        for (const item of items) {
+          await item.destroyPermanently();
+        }
+        return;
+      });
     } catch (error) {
       throw error;
     }

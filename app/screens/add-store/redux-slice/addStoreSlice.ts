@@ -6,7 +6,7 @@ import {
 import {AddStoreState, initialState} from './types';
 import {Store} from '../../../model/types';
 import {appComponent} from '../../../di/appComponent';
-import {fetchStores} from '../../stores/redux-slice/storesSlice';
+import {syncUp} from '../../stores/redux-slice/storesSlice';
 
 //#region Slice
 const addStoreSlice = createSlice({
@@ -30,7 +30,7 @@ export const createList = createAsyncThunk<void, Store>(
   async (store: Store, {rejectWithValue, dispatch}) => {
     try {
       await appComponent.storesService().createOrUpdate(store);
-      dispatch(fetchStores());
+      dispatch(syncUp());
     } catch (error) {
       return rejectWithValue(error);
     }

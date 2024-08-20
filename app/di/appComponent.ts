@@ -119,6 +119,14 @@ class AppModule {
       this.providesStoresRepository(this.providesDatabase()),
       this.providesShoppingListRepository(this.providesDatabase()),
       this.providesAuthRepository(),
+      this.providesProductRepository(
+        this.providesDatabase(),
+        this.providesSettingsRepository(),
+        this.providesProductsEN(),
+        this.providesProductsES(),
+      ),
+      this.providesCategoryRepository(this.providesDatabase()),
+      this.providesStoreApi(),
     );
   }
 
@@ -156,7 +164,11 @@ class AppModule {
   }
 
   getGlobalSettingsService(): GlobalSettingsService {
-    return new GlobalSettingsServiceImpl(this.providesAuthRepository());
+    return new GlobalSettingsServiceImpl(
+      this.providesAuthRepository(),
+      this.providesStoresRepository(this.providesDatabase()),
+      this.providesShoppingListRepository(this.providesDatabase()),
+    );
   }
 }
 

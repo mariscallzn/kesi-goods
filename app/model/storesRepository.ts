@@ -9,6 +9,7 @@ export interface StoresRepository {
   addOrUpdate(store: Store): Promise<Store>;
   markAsDelete(store: Store): Promise<Store>;
   restore(store: Store): Promise<Store>;
+  destroyRecords(): Promise<void>;
 }
 
 export class DatabaseStoresRepository implements StoresRepository {
@@ -62,44 +63,59 @@ export class DatabaseStoresRepository implements StoresRepository {
   }
 
   async addOrUpdate(store: Store): Promise<Store> {
+    console.log('Really here? ' + JSON.stringify(store));
+
     try {
       let _store: Store;
 
       //database.find rejects the promise if it's not found, which force us
       //to have this nested try-catch
       try {
+        console.log('No mms!' + store.id);
         //Update Store
         const daoStore = await this.database
           .get<DAOStores>(Tables.stores)
           .find(store.id);
+        console.log('addOrUpdate 1 ' + daoStore.name);
+
         const updatedStore = await daoStore.updateStore(
           store.name,
           store.cloudId,
         );
+
+        console.log('addOrUpdate 2');
         _store = {
           ...store,
           name: updatedStore.name,
           cloudId: updatedStore.cloudId,
         };
+        console.log('addOrUpdate 3');
       } catch (error) {
+        console.log('addOrUpdate 1.1');
         //Create Store
         const newStore = await this.database.write(async () => {
           return await this.database
             .get<DAOStores>(Tables.stores)
             .create(_newStore => {
               _newStore.name = store.name;
+              _newStore.cloudId = store.cloudId;
             });
         });
+        console.log('addOrUpdate 2.1');
 
         _store = {
           id: newStore.id,
           name: newStore.name,
+          cloudId: newStore.cloudId,
           checkedItems: 0,
           totalItems: 0,
         };
       }
+      console.log('addOrUpdate 3.1');
       return _store;
     } catch (error) {
+      console.log('Naaaaah?! ' + error);
+
       throw error;
     }
   }
@@ -123,6 +139,22 @@ export class DatabaseStoresRepository implements StoresRepository {
         .find(store.id);
       const updatedDaoStore = await daoStore.markAs('active');
       return {id: updatedDaoStore.id, name: updatedDaoStore.name};
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async destroyRecords(): Promise<void> {
+    try {
+      return await this.database.write(async () => {
+        const stores = await this.database
+          .get<DAOStores>(Tables.stores)
+          .query();
+        for (const store of stores) {
+          await store.destroyPermanently();
+        }
+        return;
+      });
     } catch (error) {
       throw error;
     }

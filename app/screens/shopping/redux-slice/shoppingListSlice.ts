@@ -10,7 +10,7 @@ import {translate} from '../../../i18n/translate';
 import {ShoppingListItem} from '../../../model/types';
 import {AppDispatch, RootState, ThunkResult} from '../../../redux/store';
 import {UnknownMetadata} from '../../../utils/types';
-import {fetchStores} from '../../stores/redux-slice/storesSlice';
+import {syncUp} from '../../stores/redux-slice/storesSlice';
 import {
   AddOrUpdateBSMetadata,
   bottomSheetTypes,
@@ -155,7 +155,7 @@ export const createOrUpdateItem = createAsyncThunk<
           searchTerm: state.headerInfo.searchTerm,
         }),
       );
-      dispatch(fetchStores());
+      dispatch(syncUp());
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -186,7 +186,7 @@ const toggleItem = createAsyncThunk<void, ToggleItemArgs>(
           searchTerm: state.headerInfo.searchTerm,
         }),
       );
-      dispatch(fetchStores());
+      dispatch(syncUp());
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -240,7 +240,7 @@ export const uncheckAllListItems = createAsyncThunk<ShoppingListItem[], string>(
         .shoppingListService()
         .uncheckAllListItems(storeId);
       dispatch(fetchListInfo({listId: storeId}));
-      dispatch(fetchStores());
+      dispatch(syncUp());
       return items;
     } catch (error) {
       return rejectWithValue(error);
@@ -279,7 +279,7 @@ export const deleteShoppingListItem = createAsyncThunk<
         .shoppingListService()
         .markShoppingListItemAsDeleted(args.shoppingListItem);
       dispatch(fetchListInfo({listId: args.listId}));
-      dispatch(fetchStores());
+      dispatch(syncUp());
       return [updatedItem];
     } catch (error) {
       return rejectWithValue(error);
@@ -315,7 +315,7 @@ export const deleteCheckedItems = createAsyncThunk<ShoppingListItem[], string>(
         .shoppingListService()
         .markCheckedItemsAsDeleted(storeId);
       dispatch(fetchListInfo({listId: storeId}));
-      dispatch(fetchStores());
+      dispatch(syncUp());
       return items;
     } catch (error) {
       return rejectWithValue(error);
@@ -351,7 +351,7 @@ export const restoreShoppingList = createAsyncThunk<
   try {
     await appComponent.shoppingListService().restoreShoppingList(args.metadata);
     dispatch(fetchListInfo({listId: args.listId}));
-    dispatch(fetchStores());
+    dispatch(syncUp());
   } catch (error) {
     return rejectWithValue(error);
   }

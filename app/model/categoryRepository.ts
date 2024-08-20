@@ -1,11 +1,12 @@
-import {Database} from '@nozbe/watermelondb';
+import {Database, Q} from '@nozbe/watermelondb';
 import {Category} from './types';
 import {DAOCategories} from '../database/models';
-import {Tables} from '../database/schema';
+import {Columns, Tables} from '../database/schema';
 
 export interface CategoryRepository {
   fetch(): Promise<Category[]>;
   findOrCreate(category: Category): Promise<Category>;
+  findOrCreateByName(category: Category): Promise<Category>;
 }
 
 export class DatabaseCategoryRepository implements CategoryRepository {
@@ -40,6 +41,22 @@ export class DatabaseCategoryRepository implements CategoryRepository {
         return daoCategory;
       } else {
         return await this.save(category.color);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOrCreateByName(category: Category): Promise<Category> {
+    try {
+      const exactMatch = await this.database
+        .get<DAOCategories>(Tables.categories)
+        .query(Q.where(Columns.categories.color, Q.eq(category.color)))
+        .fetch();
+      if (exactMatch.length > 0) {
+        return {id: exactMatch[0].id, color: exactMatch[0].color};
+      } else {
+        return this.save(category.color);
       }
     } catch (error) {
       throw error;

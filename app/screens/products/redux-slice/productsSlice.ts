@@ -15,7 +15,7 @@ import {
   initialState,
 } from './types';
 import {fetchListInfo} from '../../shopping/redux-slice/shoppingListSlice';
-import {fetchStores} from '../../stores/redux-slice/storesSlice';
+import {syncUp} from '../../stores/redux-slice/storesSlice';
 import {IView} from '../components/content/types';
 
 //#region Slice
@@ -154,7 +154,7 @@ export const addSelection = createAsyncThunk<void, string>(
     try {
       await appComponent.productService().addSelection(listId);
       dispatch(fetchListInfo({listId: listId}));
-      dispatch(fetchStores());
+      dispatch(syncUp());
     } catch (error) {
       return rejectWithValue(error);
     }

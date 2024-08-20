@@ -1,4 +1,6 @@
 import {AuthRepository} from '@/model/authRepository';
+import {ShoppingListRepository} from '@/model/shoppingListRepository';
+import {StoresRepository} from '@/model/storesRepository';
 import {KUser} from '@/model/types';
 
 export interface GlobalSettingsService {
@@ -8,9 +10,17 @@ export interface GlobalSettingsService {
 
 export class GlobalSettingsServiceImpl implements GlobalSettingsService {
   private readonly authRepository: AuthRepository;
+  private readonly storeRepository: StoresRepository;
+  private readonly shoppingListRepository: ShoppingListRepository;
 
-  constructor(authRepository: AuthRepository) {
+  constructor(
+    authRepository: AuthRepository,
+    storeRepo: StoresRepository,
+    shoppingListRepo: ShoppingListRepository,
+  ) {
     this.authRepository = authRepository;
+    this.storeRepository = storeRepo;
+    this.shoppingListRepository = shoppingListRepo;
   }
 
   async getActiveSession(): Promise<KUser | undefined> {
@@ -23,7 +33,10 @@ export class GlobalSettingsServiceImpl implements GlobalSettingsService {
 
   async logOut(): Promise<void> {
     try {
-      return await this.authRepository.logOut();
+      await this.authRepository.logOut();
+      await this.shoppingListRepository.destroyRecords();
+      await this.storeRepository.destroyRecords();
+      return;
     } catch (error) {
       throw error;
     }

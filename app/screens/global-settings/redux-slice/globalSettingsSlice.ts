@@ -6,7 +6,7 @@ import {
 import {GlobalSettingsState, initialState} from './types';
 import {KUser} from '@/model/types';
 import {appComponent} from '@/di/appComponent';
-import {getCurrentUser as resetUser} from '@/screens/stores/redux-slice/storesSlice';
+import {syncUp} from '@/screens/stores/redux-slice/storesSlice';
 
 //#region Slice
 const globalSettingSlice = createSlice({
@@ -50,7 +50,7 @@ export const logOut = createAsyncThunk(
   async (_, {rejectWithValue, dispatch}) => {
     try {
       await appComponent.globalSettingsService().logOut();
-      dispatch(resetUser());
+      dispatch(syncUp());
       //TODO: Delete all
     } catch (error) {
       return rejectWithValue(error);

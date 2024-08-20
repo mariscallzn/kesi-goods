@@ -14,8 +14,7 @@ import {
   StoresState,
   initialState,
 } from './types';
-import {Store} from '@/model/types';
-import {RootState} from '@/redux/store';
+import {KUser, Store} from '@/model/types';
 
 //#region Slice
 const storesSlice = createSlice({
@@ -74,63 +73,40 @@ const storesSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    fetchStoresReducer(builder);
+    syncUpReducer(builder);
     createOrUpdateStoreReducer(builder);
     copyListReducer(builder);
     markStoreListAsDeleteReducer(builder);
     restoreStoreListReducer(builder);
     createSharedLinkReducer(builder);
-    getCurrentUserReducer(builder);
   },
 });
 //#endregion
 
-//#region Get current user
-export const getCurrentUser = createAsyncThunk(
-  'stores/getCurrentUser',
-  async (_, {rejectWithValue}) => {
-    try {
-      return appComponent.storesService().getUser();
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
+//#region Sync up
+export const syncUp = createAsyncThunk<
+  {user: KUser | undefined; stores: UIStore[]},
+  void
+>('stores/syncUp', async (_, {rejectWithValue}) => {
+  try {
+    const {user, stores} = await appComponent.storesService().syncUp();
+    return {user: user, stores: stores};
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
 
-const getCurrentUserReducer = (
-  builder: ActionReducerMapBuilder<StoresState>,
-) => {
-  builder.addCase(getCurrentUser.fulfilled, (state, action) => {
-    state.user = action.payload;
+const syncUpReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
+  // builder.addCase(syncUp.pending, (state: StoresState) => {
+  // TODO: I have to show that I'm syncing the lists
+  //});
+  builder.addCase(syncUp.fulfilled, (state: StoresState, action) => {
+    state.stores = action.payload.stores;
+    state.user = action.payload.user;
   });
-};
-//#endregion
-
-//#region Fetch Stores
-export const fetchStores = createAsyncThunk<UIStore[], void>(
-  'stores/fetchStores',
-  async (_, {rejectWithValue, dispatch, getState}) => {
-    try {
-      const state = (getState() as RootState).stores;
-      if (state.user === undefined) {
-        dispatch(getCurrentUser());
-      }
-      return await appComponent.storesService().getStores();
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
-
-const fetchStoresReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
-  // builder.addCase(fetchStores.pending, (state: StoresState) => {});
-  builder.addCase(
-    fetchStores.fulfilled,
-    (state: StoresState, action: PayloadAction<UIStore[]>) => {
-      state.stores = action.payload;
-    },
-  );
-  // builder.addCase(fetchStores.rejected, (state: StoresState) => {});
+  builder.addCase(syncUp.rejected, (_: StoresState, action) => {
+    console.log(action.error);
+  });
 };
 //#endregion
 
@@ -140,7 +116,7 @@ export const createOrUpdateStore = createAsyncThunk<void, Store>(
   async (store: Store, {rejectWithValue, dispatch}) => {
     try {
       await appComponent.storesService().createOrUpdate(store);
-      dispatch(fetchStores());
+      dispatch(syncUp());
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -167,7 +143,7 @@ export const copyList = createAsyncThunk<void, CopyListThunkArgs>(
       await appComponent
         .storesService()
         .copyStoreList(args.stores, args.copyOption);
-      dispatch(fetchStores());
+      dispatch(syncUp());
       dispatch(toggleMultiSelection(false));
     } catch (error) {
       return rejectWithValue(error);
@@ -188,7 +164,7 @@ export const markStoreListAsDelete = createAsyncThunk<Store[], Store[]>(
       const result = await appComponent
         .storesService()
         .markStoreListAsDelete(stores);
-      dispatch(fetchStores());
+      dispatch(syncUp());
       dispatch(toggleMultiSelection(false));
       return result;
     } catch (error) {
@@ -221,7 +197,7 @@ export const restoreStoreList = createAsyncThunk<Store[], Store[]>(
       const _stores = await appComponent
         .storesService()
         .restoreStoreList(stores);
-      dispatch(fetchStores());
+      dispatch(syncUp());
       return _stores;
     } catch (error) {
       return rejectWithValue(error);

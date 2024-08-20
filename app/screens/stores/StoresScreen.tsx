@@ -13,7 +13,7 @@ import Footer from './components/footer/Footer';
 import TopBar from './components/topbar/TopBar';
 import {
   addOrRemoveSelection,
-  fetchStores,
+  syncUp,
   openBottomSheet,
   toggleMultiSelection,
 } from './redux-slice/storesSlice';
@@ -25,7 +25,7 @@ const StoresScreen: FC<RootStackScreenProps<'Stores'>> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchStores());
+    dispatch(syncUp());
   }, [dispatch]);
 
   const actions: ActionCallback = (action: Action) => {
