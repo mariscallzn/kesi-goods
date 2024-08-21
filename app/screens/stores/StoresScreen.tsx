@@ -1,9 +1,10 @@
+import {bottomSheetActions} from '@/components/types';
 import {RootStackScreenProps} from '@/routes/RootNavigator';
 import React, {FC, useEffect} from 'react';
 import {ViewStyle} from 'react-native/types';
 import {Screen} from '../../components/Screen';
 import {Action, ActionCallback} from '../../inf/multiViewRenderer';
-import {Store} from '../../model/types';
+import {Store, StoreUser} from '../../model/types';
 import {useAppDispatch} from '../../redux/store';
 import BottomSheetCoordinator from './components/bottom-sheet-coordinator/BottomSheetCoordinator';
 import {bottomSheetTypes} from './components/bottom-sheet-coordinator/types';
@@ -11,21 +12,21 @@ import Content from './components/content/Content';
 import {ShoppingListNavigationMetadata} from './components/content/types';
 import Footer from './components/footer/Footer';
 import TopBar from './components/topbar/TopBar';
+import {topBarActions} from './components/topbar/types';
 import {
   addOrRemoveSelection,
-  syncUp,
+  backupList,
+  init,
   openBottomSheet,
   toggleMultiSelection,
 } from './redux-slice/storesSlice';
 import {CONTENT_ACTIONS} from './types';
-import {topBarActions} from './components/topbar/types';
-import {bottomSheetActions} from '@/components/types';
 
 const StoresScreen: FC<RootStackScreenProps<'Stores'>> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(syncUp());
+    dispatch(init(['fetch-local', 'fetch-cloud', 'get-user']));
   }, [dispatch]);
 
   const actions: ActionCallback = (action: Action) => {
@@ -87,7 +88,12 @@ const StoresScreen: FC<RootStackScreenProps<'Stores'>> = ({navigation}) => {
         navigation.navigate('Login');
         break;
 
+      case bottomSheetActions.syncUp:
+        dispatch(backupList(action.metadata.value as StoreUser));
+        break;
+
       default:
+        console.log('Screen Global action' + JSON.stringify(action.metadata));
         break;
     }
   };

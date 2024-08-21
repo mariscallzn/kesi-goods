@@ -9,7 +9,7 @@ import {
 import React, {useEffect} from 'react';
 import {useColorScheme} from 'react-native';
 import {useTheme} from 'react-native-paper';
-import {syncUp} from '../stores/redux-slice/storesSlice';
+import {init} from '../stores/redux-slice/storesSlice';
 
 const Login: React.FC<RootStackScreenProps<'Login'>> = ({navigation}) => {
   const {route} = useAuthenticator();
@@ -19,7 +19,7 @@ const Login: React.FC<RootStackScreenProps<'Login'>> = ({navigation}) => {
 
   useEffect(() => {
     if (route === 'authenticated') {
-      dispatch(syncUp());
+      dispatch(init(['get-user', 'fetch-cloud']));
       navigation.popToTop();
     }
   }, [navigation, route, dispatch]);

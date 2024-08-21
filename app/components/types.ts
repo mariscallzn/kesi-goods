@@ -12,6 +12,7 @@ type BottomSheetActions = {
   update: string;
   copy: string;
   share: string;
+  syncUp: string;
   createLink: string;
   login: string;
   delete: string;
@@ -33,6 +34,7 @@ export const bottomSheetActions: BottomSheetActions = {
   update: 'update',
   copy: 'copy',
   share: 'share',
+  syncUp: 'syncUp',
   createLink: 'createLink',
   login: 'login',
   delete: 'delete',

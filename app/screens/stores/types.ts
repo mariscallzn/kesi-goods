@@ -1,6 +1,5 @@
-import {UIModelProps} from '../../inf/multiViewRenderer';
-import {Store} from '../../model/types';
-
+import {UIModelProps} from '@/inf/multiViewRenderer';
+import {Store} from '@/model/types';
 export interface UIStore extends UIModelProps {
   store: Store;
   multiSelectionEnabled: boolean;

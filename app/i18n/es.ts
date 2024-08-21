@@ -96,6 +96,7 @@ const es = {
       rename: 'Renombrar',
       share: 'Compartir',
       copy: 'Copiar',
+      syncUp: 'Respaldar lista',
       delete: 'Borrar',
     },
     CopyListMenuBottomSheet: {

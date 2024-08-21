@@ -1,14 +1,15 @@
 import React from 'react';
 import {View} from 'react-native';
-import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSheetToolBar';
-import GenericRow from '../../../../../components/GenericRow';
-import {bottomSheetActions} from '../../../../../components/types';
 import {ItemMenuProps} from './types';
-import {useAppTheme} from '../../../../../theme/theme';
+import GenericBottomSheetToolBar from '@/components/GenericBottomSheetToolBar';
+import {useAppTheme} from '@/theme/theme';
+import {bottomSheetActions} from '@/components/types';
+import GenericRow from '@/components/GenericRow';
 
 //TODO: Adjust ripple colors from theme
 const ItemMenu: React.FC<ItemMenuProps> = props => {
   const {colors} = useAppTheme();
+  const store = props.storeUser;
   return (
     <View>
       <GenericBottomSheetToolBar
@@ -24,11 +25,29 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.rename,
-              value: props.store,
+              value: store,
             },
           },
         }}
       />
+      {!store.cloudId && (
+        <GenericRow
+          title={{title: {key: 'StoreScreen.ItemMenuBottomSheet.syncUp'}}}
+          leftIcon={{icon: 'cloud-upload-outline'}}
+          action={{
+            rippleColor: colors.primaryContainerAlpha,
+            action: action => props.action?.(action),
+            passOnMetadata: {
+              metadata: {
+                type: store.user
+                  ? bottomSheetActions.syncUp
+                  : bottomSheetActions.login,
+                value: store,
+              },
+            },
+          }}
+        />
+      )}
       <GenericRow
         title={{title: {key: 'StoreScreen.ItemMenuBottomSheet.share'}}}
         leftIcon={{icon: 'account-plus'}}
@@ -38,7 +57,7 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.share,
-              value: props.store,
+              value: store,
             },
           },
         }}
@@ -53,7 +72,7 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.copy,
-              value: props.store,
+              value: store,
             },
           },
         }}
@@ -71,7 +90,7 @@ const ItemMenu: React.FC<ItemMenuProps> = props => {
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.delete,
-              value: props.store,
+              value: store,
             },
           },
         }}

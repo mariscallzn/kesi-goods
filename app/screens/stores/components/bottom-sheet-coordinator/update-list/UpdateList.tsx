@@ -1,18 +1,18 @@
 import React, {useEffect} from 'react';
 import {TextStyle, View, ViewStyle} from 'react-native';
 import {Button, useTheme} from 'react-native-paper';
+import {UpdateListProps} from './types';
 import ControlledTextInput, {
   ControlledTextInputRef,
-} from '../../../../../components/ControlledTextInput';
-import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSheetToolBar';
-import {bottomSheetActions} from '../../../../../components/types';
-import {translate} from '../../../../../i18n/translate';
-import {Store} from '../../../../../model/types';
-import {UpdateListProps} from './types';
+} from '@/components/ControlledTextInput';
+import GenericBottomSheetToolBar from '@/components/GenericBottomSheetToolBar';
+import {bottomSheetActions} from '@/components/types';
+import {translate} from '@/i18n/translate';
+import {Store} from '@/model/types';
 
 const UpdateList: React.FC<UpdateListProps> = props => {
   const {roundness} = useTheme();
-  const store: Store = props.metadata;
+  const store = props.metadata;
   const listNameRef = React.useRef<ControlledTextInputRef>(null);
 
   useEffect(() => {

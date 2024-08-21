@@ -1,6 +1,6 @@
 import BottomSheet from '@/components/BottomSheet';
 import {Action} from '@/inf/multiViewRenderer';
-import {Store} from '@/model/types';
+import {Store, StoreUser} from '@/model/types';
 import {useAppDispatch} from '@/redux/store';
 import React from 'react';
 import {useSelector} from 'react-redux';
@@ -111,17 +111,17 @@ const BottomSheetCoordinator: React.FC<BottomSheetCoordinatorProps> = props => {
       {selectBottomSheet.metadata?.type === bottomSheetTypes.addOrUpdateList ? (
         <UpdateList
           action={action => bottomSheetActionsHandler(action)}
-          metadata={selectBottomSheet.metadata.value as Store}
+          metadata={selectBottomSheet.metadata.value as StoreUser}
         />
       ) : selectBottomSheet.metadata?.type === bottomSheetTypes.openItemMenu ? (
         <ItemMenu
-          store={selectBottomSheet.metadata.value as Store}
+          storeUser={selectBottomSheet.metadata.value as StoreUser}
           action={action => bottomSheetActionsHandler(action)}
         />
       ) : selectBottomSheet.metadata?.type ===
         bottomSheetTypes.copyListOptions ? (
         <CopyListMenu
-          store={selectBottomSheet.metadata.value as Store}
+          storeUser={selectBottomSheet.metadata.value as StoreUser}
           action={action => bottomSheetActionsHandler(action)}
         />
       ) : selectBottomSheet.metadata?.type === bottomSheetTypes.shareList ? (

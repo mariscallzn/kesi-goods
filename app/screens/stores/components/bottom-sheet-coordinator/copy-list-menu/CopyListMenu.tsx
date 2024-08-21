@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from 'react-native';
-import GenericBottomSheetToolBar from '../../../../../components/GenericBottomSheetToolBar';
-import GenericRow from '../../../../../components/GenericRow';
-import {bottomSheetActions} from '../../../../../components/types';
-import {useAppTheme} from '../../../../../theme/theme';
 import {CopyListMenuProps} from './types';
+import GenericBottomSheetToolBar from '@/components/GenericBottomSheetToolBar';
+import GenericRow from '@/components/GenericRow';
+import {useAppTheme} from '@/theme/theme';
+import {bottomSheetActions} from '@/components/types';
 
 const CopyListMenu: React.FC<CopyListMenuProps> = props => {
   const {colors} = useAppTheme();
@@ -23,7 +23,7 @@ const CopyListMenu: React.FC<CopyListMenuProps> = props => {
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.wholeList,
-              value: props.store,
+              value: props.storeUser,
             },
           },
         }}
@@ -38,7 +38,7 @@ const CopyListMenu: React.FC<CopyListMenuProps> = props => {
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.checkedItems,
-              value: props.store,
+              value: props.storeUser,
             },
           },
         }}
@@ -55,7 +55,7 @@ const CopyListMenu: React.FC<CopyListMenuProps> = props => {
           passOnMetadata: {
             metadata: {
               type: bottomSheetActions.uncheckedItems,
-              value: props.store,
+              value: props.storeUser,
             },
           },
         }}

@@ -1,7 +1,7 @@
-import {ActionCallback} from '../../../../../inf/multiViewRenderer';
-import {Store} from '../../../../../model/types';
+import {ActionCallback} from '@/inf/multiViewRenderer';
+import {StoreUser} from '@/model/types';
 
 export type CopyListMenuProps = {
-  store: Store;
+  storeUser: StoreUser;
   action: ActionCallback;
 };

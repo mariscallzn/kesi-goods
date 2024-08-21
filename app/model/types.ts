@@ -33,3 +33,7 @@ export type MeasurementSystem = 'imperial' | 'metric';
 export type KUser = {
   email: string;
 };
+
+export type StoreUser = Store & {
+  user: KUser | undefined;
+};

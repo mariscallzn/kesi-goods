@@ -10,8 +10,10 @@ import {ProductRepository} from '@/model/productRepository';
 import {CategoryRepository} from '@/model/categoryRepository';
 
 export interface StoresService {
+  fetchStores(): Promise<UIStore[]>;
   getUser(): Promise<KUser | undefined>;
-  syncUp(): Promise<{user: KUser | undefined; stores: UIStore[]}>;
+  syncUp(): Promise<UIStore[]>;
+  backupList(store: Store): Promise<UIStore>;
   createOrUpdate(store: Store): Promise<UIStore>;
   copyStoreList(stores: Store[], copyOption: CopyListOption): Promise<void>;
   markStoreListAsDelete(stores: Store[]): Promise<Store[]>;
@@ -46,82 +48,102 @@ export class StoresServiceImpl implements StoresService {
     return await this.authRepo.getUser();
   }
 
-  async syncUp(): Promise<{user: KUser | undefined; stores: UIStore[]}> {
+  async backupList(store: Store): Promise<UIStore> {
     try {
       const user = await this.authRepo.getUser();
-      const localStores = await this.storesRepository.fetch();
-      console.log('Here 1');
-
-      //backup in the cloud all local lists if the user is authenticated
       if (user) {
-        console.log('Here 2');
-        for (const store of localStores) {
-          console.log('Loop 2.1 ' + JSON.stringify(store, null, 2));
-          if (store.cloudId === undefined || store.cloudId.length === 0) {
-            const shoppingListItems =
-              await this.shoppingListRepository.getByStoreId(store.id, [
-                'active',
-                'pinned',
-              ]);
-
-            const newStore = await this.storeApi.backupList(
-              store,
-              shoppingListItems,
-              user,
-            );
-            console.log('Loop 2.2 ' + JSON.stringify(newStore));
-
-            await this.storesRepository.addOrUpdate(newStore);
-          }
-        }
-        console.log('Here 3');
-
-        //Exclude the already updated stores
-        const updatedLocalStores = await this.storesRepository.fetch();
-        const lists = (await this.storeApi.fetchListByUser(user)).filter(
-          i => !updatedLocalStores.map(e => e.cloudId ?? '').includes(i.id),
+        const shoppingList = await this.shoppingListRepository.getByStoreId(
+          store.id,
+          ['active', 'pinned'],
         );
 
-        console.log('Here 4');
+        const backedUpStore = await this.storeApi.backupList(
+          store,
+          shoppingList,
+          user,
+        );
+
+        return {
+          id: getUUID(),
+          multiSelectionEnabled: false,
+          store: {
+            ...backedUpStore,
+            totalItems: shoppingList.length,
+            checkedItems: shoppingList.filter(e => e.checked).length,
+          },
+          type: VIEW_ID.store,
+        };
+      } else {
+        throw new Error('User must be logged in to backup lists');
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async fetchStores(): Promise<UIStore[]> {
+    try {
+      const result: UIStore[] = [];
+      const stores = await this.storesRepository.fetch();
+      for (const store of stores) {
+        const totalItems = await this.shoppingListRepository.getByStoreId(
+          store.id,
+          ['active', 'pinned'],
+        );
+        result.push({
+          id: getUUID(),
+          store: {
+            ...store,
+            totalItems: totalItems.length,
+            checkedItems: totalItems.filter(e => e.checked).length,
+          },
+          type: VIEW_ID.store,
+          multiSelectionEnabled: false,
+        });
+      }
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async syncUp(): Promise<UIStore[]> {
+    try {
+      const user = await this.authRepo.getUser();
+      if (user) {
+        const lists = await this.storeApi.fetchListByUser(user);
+
         for (const list of lists) {
-          const newStore = await this.storesRepository.addOrUpdate({
+          const newOrUpdatedStore = await this.storesRepository.addOrUpdate({
             id: 'n/a',
             name: list.name ?? '',
             cloudId: list.id,
           });
 
           for (const item of list.items) {
-            await this.shoppingListRepository.addOrUpdate(newStore.id, {
-              id: 'n/a',
-              checked: item.checked,
-              product: await this.productRepository.findOrCreateByName({
+            await this.shoppingListRepository.addOrUpdate(
+              newOrUpdatedStore.id,
+              {
                 id: 'n/a',
-                name: item.name,
-              }),
-              category: await this.categoryRepository.findOrCreateByName({
-                id: 'n/a',
-                color: item.category ?? '',
-              }),
-              quantity: item.quantity ?? 0,
-              unit: item.unit ?? '',
-              status: 'active',
-            });
+                checked: item.checked,
+                product: await this.productRepository.findOrCreateByName({
+                  id: 'n/a',
+                  name: item.name,
+                }),
+                category: await this.categoryRepository.findOrCreateByName({
+                  id: 'n/a',
+                  color: item.category ?? '',
+                }),
+                quantity: item.quantity ?? 0,
+                unit: item.unit ?? '',
+                status: 'active',
+              },
+            );
           }
         }
-        console.log('Here 5');
       }
 
-      const result = {
-        user: user,
-        //Fetch updated stores again
-        stores: (await this.storesRepository.fetch()).map(store => ({
-          id: getUUID(),
-          store: store,
-          type: VIEW_ID.store,
-          multiSelectionEnabled: false,
-        })),
-      };
-      return result;
+      return await this.fetchStores();
     } catch (error) {
       throw error;
     }

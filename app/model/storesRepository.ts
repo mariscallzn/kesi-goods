@@ -63,35 +63,46 @@ export class DatabaseStoresRepository implements StoresRepository {
   }
 
   async addOrUpdate(store: Store): Promise<Store> {
-    console.log('Really here? ' + JSON.stringify(store));
-
     try {
       let _store: Store;
 
       //database.find rejects the promise if it's not found, which force us
       //to have this nested try-catch
       try {
-        console.log('No mms!' + store.id);
         //Update Store
-        const daoStore = await this.database
-          .get<DAOStores>(Tables.stores)
-          .find(store.id);
-        console.log('addOrUpdate 1 ' + daoStore.name);
+        let daoStore: DAOStores;
+        if (
+          (store.id === 'n/a' || store.id.length === 0) &&
+          store.cloudId &&
+          store.cloudId.length > 0
+        ) {
+          const syncStore = await this.database
+            .get<DAOStores>(Tables.stores)
+            .query(Q.where(Columns.stores.cloudId, Q.eq(store.cloudId)))
+            .fetch();
+
+          if (syncStore.length === 0) {
+            throw new Error(`CloudId ${store.cloudId} not found`);
+          } else {
+            daoStore = syncStore[0];
+          }
+        } else {
+          daoStore = await this.database
+            .get<DAOStores>(Tables.stores)
+            .find(store.id);
+        }
 
         const updatedStore = await daoStore.updateStore(
           store.name,
           store.cloudId,
         );
 
-        console.log('addOrUpdate 2');
         _store = {
           ...store,
           name: updatedStore.name,
           cloudId: updatedStore.cloudId,
         };
-        console.log('addOrUpdate 3');
       } catch (error) {
-        console.log('addOrUpdate 1.1');
         //Create Store
         const newStore = await this.database.write(async () => {
           return await this.database
@@ -101,8 +112,6 @@ export class DatabaseStoresRepository implements StoresRepository {
               _newStore.cloudId = store.cloudId;
             });
         });
-        console.log('addOrUpdate 2.1');
-
         _store = {
           id: newStore.id,
           name: newStore.name,
@@ -111,11 +120,8 @@ export class DatabaseStoresRepository implements StoresRepository {
           totalItems: 0,
         };
       }
-      console.log('addOrUpdate 3.1');
       return _store;
     } catch (error) {
-      console.log('Naaaaah?! ' + error);
-
       throw error;
     }
   }

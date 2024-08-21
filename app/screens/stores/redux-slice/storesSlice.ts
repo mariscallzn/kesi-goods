@@ -10,11 +10,13 @@ import {UnknownMetadata} from '@/utils/types';
 import {UIStore} from '../types';
 import {
   CopyListThunkArgs,
+  InitRequest,
   MultiSelectionArgs,
   StoresState,
+  initSequence,
   initialState,
 } from './types';
-import {KUser, Store} from '@/model/types';
+import {KUser, Store, StoreUser} from '@/model/types';
 
 //#region Slice
 const storesSlice = createSlice({
@@ -39,7 +41,11 @@ const storesSlice = createSlice({
       action: PayloadAction<UnknownMetadata>,
     ) => {
       state.bottomSheet.isVisible = true;
-      state.bottomSheet.metadata = action.payload;
+      state.bottomSheet.metadata = {
+        type: action.payload.type,
+        //@ts-ignore
+        value: {...action.payload.value, user: state.user},
+      };
     },
     dismissSnackbar: (state: StoresState) => {
       state.snackbar.visible = false;
@@ -79,30 +85,114 @@ const storesSlice = createSlice({
     markStoreListAsDeleteReducer(builder);
     restoreStoreListReducer(builder);
     createSharedLinkReducer(builder);
+    getUserReducer(builder);
+    fetchLocalDataReducer(builder);
+    backupListReducer(builder);
   },
 });
 //#endregion
 
+//#region Init
+export const init = createAsyncThunk<void, InitRequest[]>(
+  'stores/init',
+  (args, {dispatch}) => {
+    const sequenceMap: Record<InitRequest, () => void> = {
+      'fetch-local': () => dispatch(fetchLocalData()),
+      'fetch-cloud': () => dispatch(syncUp()),
+      'get-user': () => dispatch(getUser()),
+    };
+
+    args.forEach(sequence => {
+      const i = initSequence.indexOf(sequence);
+      sequenceMap[initSequence[i]]();
+    });
+  },
+);
+//#endregion
+
+//#region Get user
+const getUser = createAsyncThunk<KUser | undefined, void>(
+  'store/getUser',
+  async (_, {rejectWithValue}) => {
+    try {
+      return await appComponent.storesService().getUser();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const getUserReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
+  // builder.addCase(getUser.pending, (state) => {});
+  builder.addCase(getUser.fulfilled, (state, action) => {
+    state.user = action.payload;
+  });
+  // builder.addCase(getUser.rejected, () => {});
+};
+//#endregion
+
+//#region Backup list
+export const backupList = createAsyncThunk<UIStore, StoreUser>(
+  'store/backupList',
+  async (args, {rejectWithValue}) => {
+    try {
+      return appComponent.storesService().backupList(args);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const backupListReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
+  builder.addCase(backupList.pending, () => {});
+  builder.addCase(backupList.fulfilled, () => {
+    console.log('List backed up');
+  });
+  builder.addCase(backupList.rejected, () => {});
+};
+//#region
+
+//#region Fetch local data
+export const fetchLocalData = createAsyncThunk<UIStore[], void>(
+  'store/fetchLocalData',
+  async (_, {rejectWithValue}) => {
+    try {
+      return await appComponent.storesService().fetchStores();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const fetchLocalDataReducer = (
+  builder: ActionReducerMapBuilder<StoresState>,
+) => {
+  // builder.addCase(fetchLocalData.pending, () => {});
+  builder.addCase(fetchLocalData.fulfilled, (state, action) => {
+    state.stores = action.payload;
+  });
+  // builder.addCase(fetchLocalData.rejected, () => {});
+};
+//#endregion
+
 //#region Sync up
-export const syncUp = createAsyncThunk<
-  {user: KUser | undefined; stores: UIStore[]},
-  void
->('stores/syncUp', async (_, {rejectWithValue}) => {
-  try {
-    const {user, stores} = await appComponent.storesService().syncUp();
-    return {user: user, stores: stores};
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
+const syncUp = createAsyncThunk<UIStore[], void>(
+  'stores/syncUp',
+  async (_, {rejectWithValue}) => {
+    try {
+      return await appComponent.storesService().syncUp();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 const syncUpReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
   // builder.addCase(syncUp.pending, (state: StoresState) => {
   // TODO: I have to show that I'm syncing the lists
   //});
   builder.addCase(syncUp.fulfilled, (state: StoresState, action) => {
-    state.stores = action.payload.stores;
-    state.user = action.payload.user;
+    state.stores = action.payload;
   });
   builder.addCase(syncUp.rejected, (_: StoresState, action) => {
     console.log(action.error);
@@ -116,7 +206,7 @@ export const createOrUpdateStore = createAsyncThunk<void, Store>(
   async (store: Store, {rejectWithValue, dispatch}) => {
     try {
       await appComponent.storesService().createOrUpdate(store);
-      dispatch(syncUp());
+      dispatch(fetchLocalData());
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -143,7 +233,7 @@ export const copyList = createAsyncThunk<void, CopyListThunkArgs>(
       await appComponent
         .storesService()
         .copyStoreList(args.stores, args.copyOption);
-      dispatch(syncUp());
+      dispatch(fetchLocalData());
       dispatch(toggleMultiSelection(false));
     } catch (error) {
       return rejectWithValue(error);
@@ -164,7 +254,7 @@ export const markStoreListAsDelete = createAsyncThunk<Store[], Store[]>(
       const result = await appComponent
         .storesService()
         .markStoreListAsDelete(stores);
-      dispatch(syncUp());
+      dispatch(fetchLocalData());
       dispatch(toggleMultiSelection(false));
       return result;
     } catch (error) {
@@ -197,7 +287,7 @@ export const restoreStoreList = createAsyncThunk<Store[], Store[]>(
       const _stores = await appComponent
         .storesService()
         .restoreStoreList(stores);
-      dispatch(syncUp());
+      dispatch(fetchLocalData());
       return _stores;
     } catch (error) {
       return rejectWithValue(error);

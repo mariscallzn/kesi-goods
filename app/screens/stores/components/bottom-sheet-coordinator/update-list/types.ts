@@ -1,7 +1,7 @@
-import {ActionCallback} from '../../../../../inf/multiViewRenderer';
-import {Store} from '../../../../../model/types';
+import {ActionCallback} from '@/inf/multiViewRenderer';
+import {StoreUser} from '@/model/types';
 
 export type UpdateListProps = {
-  metadata: Store;
+  metadata: StoreUser;
   action: ActionCallback;
 };

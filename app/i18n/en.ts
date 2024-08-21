@@ -96,6 +96,7 @@ const en = {
       rename: 'Rename',
       share: 'Share',
       copy: 'Copy',
+      syncUp: 'Sync up list',
       delete: 'Delete',
     },
     CopyListMenuBottomSheet: {

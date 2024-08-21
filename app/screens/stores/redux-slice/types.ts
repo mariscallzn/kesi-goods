@@ -54,3 +54,10 @@ export type MultiSelectionArgs = {
   addOrRemove: 'add' | 'remove';
   store: Store;
 };
+
+export type InitRequest = 'fetch-local' | 'fetch-cloud' | 'get-user';
+export const initSequence: InitRequest[] = [
+  'fetch-local',
+  'fetch-cloud',
+  'get-user',
+];
