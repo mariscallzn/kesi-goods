@@ -1,5 +1,6 @@
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
+import {ReplacePair} from './types';
 
 export const getUUID = () => uuidv4();
 
@@ -60,3 +61,24 @@ export function logger<T>(
 
   console.log(preFix ? `${preFix} ` : '', JSON.stringify(filteredObj, null, 2));
 }
+
+export const replace = <T>(
+  arr: T[],
+  predicate: (item: T) => boolean,
+  newItem: T,
+): T[] => {
+  return arr.map(item => (predicate(item) ? newItem : item));
+};
+
+export const replaceMultipleInArray = <T>(
+  arr: T[],
+  replacements: ReplacePair<T>[],
+): T[] => {
+  return arr.map(item => {
+    // Find the first replacement where the predicate matches
+    const replacement = replacements.find(({predicate}) => predicate(item));
+
+    // If a replacement is found, return the new item, otherwise return the original item
+    return replacement ? replacement.newItem : item;
+  });
+};

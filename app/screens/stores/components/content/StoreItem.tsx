@@ -157,9 +157,7 @@ const $progressContainer: ViewStyle = {
 };
 
 const shallowEqual = (a: UIStore, b: UIStore) => {
-  return (
-    a.store === b.store && a.multiSelectionEnabled === b.multiSelectionEnabled
-  );
+  return a.id === b.id && a.multiSelectionEnabled === b.multiSelectionEnabled;
 };
 
 export default memo(StoreItem, shallowEqual);

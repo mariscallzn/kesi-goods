@@ -22,14 +22,11 @@ export class AWSStoreApi implements StoreApi {
     user: KUser,
   ): Promise<Store> {
     try {
-      console.log('backup Here 1');
-      const {errors, data: newList} = await this.client.models.List.create({
+      const {data: newList} = await this.client.models.List.create({
         name: store.name,
       });
-      console.log('backup Here 2 ' + errors);
 
       if (newList) {
-        console.log('backup Here 3');
         for (const item of items) {
           await this.client.models.Item.create({
             listId: newList.id,
@@ -40,34 +37,27 @@ export class AWSStoreApi implements StoreApi {
             unit: item.unit,
           });
         }
-        console.log('backup Here 4');
 
         let personResponse = await this.client.models.Person.get({
           email: user.email,
         });
 
-        console.log('personResponse: ' + JSON.stringify(personResponse));
-
         if (personResponse.data === null) {
-          console.log('backup Here 5.1');
           personResponse = await this.client.models.Person.create({
             email: user.email,
           });
         }
-        console.log('backup Here 6');
 
         if (personResponse.data !== null) {
-          console.log('backup Here 6.1');
           await this.client.models.PersonList.create({
             listId: newList.id,
             email: personResponse.data.email,
           });
         }
-        console.log('backup Here 7');
+
         return {...store, cloudId: newList.id};
       }
       //We return the original store to no block the user for using the app
-      console.log('backup Here DAM!');
       return store;
     } catch (error) {
       //We return the original store to no block the user for using the app
@@ -95,7 +85,6 @@ export class AWSStoreApi implements StoreApi {
         //@ts-ignore
         result.push({...list.list, items: items?.items ?? []});
       }
-      console.log('cloud data' + JSON.stringify(result, null, 2));
       return result;
     } catch (error) {
       throw error;

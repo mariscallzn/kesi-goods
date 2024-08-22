@@ -17,6 +17,8 @@ import {
   initialState,
 } from './types';
 import {KUser, Store, StoreUser} from '@/model/types';
+import {replace} from '@/utils/misc';
+import {ShareLinkMetadata} from '../components/bottom-sheet-coordinator/share-link/types';
 
 //#region Slice
 const storesSlice = createSlice({
@@ -145,8 +147,12 @@ export const backupList = createAsyncThunk<UIStore, StoreUser>(
 
 const backupListReducer = (builder: ActionReducerMapBuilder<StoresState>) => {
   builder.addCase(backupList.pending, () => {});
-  builder.addCase(backupList.fulfilled, () => {
-    console.log('List backed up');
+  builder.addCase(backupList.fulfilled, (state, action) => {
+    state.stores = replace(
+      state.stores,
+      item => item.store.id === action.payload.store.id,
+      action.payload,
+    );
   });
   builder.addCase(backupList.rejected, () => {});
 };
@@ -304,20 +310,14 @@ const restoreStoreListReducer = (
 
 //#region Create shared link
 export const createSharedLink = createAsyncThunk<
-  {store: Store; button: string},
+  {uiStore: UIStore; button: string},
   {store: Store; button: string}
 >('stores/createSharedLink', async (args, {rejectWithValue}) => {
   try {
-    return new Promise((r, _) =>
-      setTimeout(
-        () =>
-          r({
-            button: args.button,
-            store: {...args.store, cloudId: '9009asd09u09j0a9i'},
-          }),
-        1500,
-      ),
-    );
+    return {
+      button: args.button,
+      uiStore: await appComponent.storesService().backupList(args.store),
+    };
   } catch (error) {
     return rejectWithValue(error);
   }
@@ -330,12 +330,21 @@ const createSharedLinkReducer = (
     createSharedLink.fulfilled,
     (
       state: StoresState,
-      action: PayloadAction<{store: Store; button: string}>,
+      action: PayloadAction<{uiStore: UIStore; button: string}>,
     ) => {
       state.bottomSheet.metadata = {
         ...state.bottomSheet.metadata,
-        value: action.payload,
+        value: {
+          button: action.payload.button,
+          store: action.payload.uiStore.store,
+        } as ShareLinkMetadata,
       } as UnknownMetadata;
+
+      state.stores = replace(
+        state.stores,
+        item => item.store.id === action.payload.uiStore.store.id,
+        action.payload.uiStore,
+      );
     },
   );
   // builder.addCase(createSharedLink.rejected, (state: StoresState) => {});
