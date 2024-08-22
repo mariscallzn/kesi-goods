@@ -16,6 +16,7 @@ export type ShoppingListItem = {
   unit: string;
   checked: boolean;
   status?: Status;
+  cloudId?: string;
 };
 
 export type Product = {

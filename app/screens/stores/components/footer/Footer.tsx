@@ -9,7 +9,11 @@ import {
   multiSelectionSelector,
   snackbarSelector,
 } from '../../redux-slice/selectors';
-import {dismissSnackbar, restoreStoreList} from '../../redux-slice/storesSlice';
+import {
+  destroyDeletedStores,
+  dismissSnackbar,
+  restoreStoreList,
+} from '../../redux-slice/storesSlice';
 import {CONTENT_ACTIONS} from '../../types';
 import {FooterProps} from './types';
 
@@ -24,7 +28,10 @@ const Footer: React.FC<FooterProps> = props => {
         style={$snackbar}
         duration={3000}
         visible={selectFooter.visible}
-        onDismiss={() => dispatch(dismissSnackbar())}
+        onDismiss={() => {
+          dispatch(dismissSnackbar());
+          dispatch(destroyDeletedStores());
+        }}
         action={{
           label: translate('common.undo'),
           onPress: () => {

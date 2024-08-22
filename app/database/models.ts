@@ -53,6 +53,11 @@ export class DAOStores extends Model {
       _store.status = status;
     });
   }
+
+  @writer async destroyWithChildren(): Promise<void> {
+    await this.shoppingListItems.destroyAllPermanently();
+    await super.destroyPermanently();
+  }
 }
 //#endregion
 

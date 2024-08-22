@@ -11,6 +11,8 @@ export interface StoreApi {
   ): Promise<Store>;
 
   fetchListByUser(user: KUser): Promise<ListWithItems[]>;
+  deleteLists(stores: Store[]): Promise<void>;
+  deleteItems(items: ShoppingListItem[]): Promise<void>;
 }
 
 export class AWSStoreApi implements StoreApi {
@@ -86,6 +88,52 @@ export class AWSStoreApi implements StoreApi {
         result.push({...list.list, items: items?.items ?? []});
       }
       return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteLists(stores: Store[]): Promise<void> {
+    try {
+      //First we delete the join table relationship
+      for (const store of stores) {
+        if (store.cloudId) {
+          //Find all persons associated to that list
+          const {data: ids} = await this.client.models.PersonList.list({
+            filter: {
+              and: [
+                {
+                  listId: {eq: store.cloudId},
+                },
+              ],
+            },
+            selectionSet: ['id'],
+          });
+
+          for (const id of ids) {
+            //Delete relationship for all users
+            await this.client.models.PersonList.delete(id);
+          }
+
+          //Finally the list is deleted
+          await this.client.models.List.delete({id: store.cloudId});
+        } else {
+          throw new Error(
+            'This is not a synced list, therefore we cannot attempt to delete it',
+          );
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  async deleteItems(items: ShoppingListItem[]): Promise<void> {
+    try {
+      for (const item of items) {
+        if (item.cloudId) {
+          await this.client.models.Item.delete({id: item.cloudId});
+        }
+      }
     } catch (error) {
       throw error;
     }

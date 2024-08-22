@@ -1,15 +1,16 @@
 import {Database, Q} from '@nozbe/watermelondb';
-import {DAOStores} from '../database/models';
+import {DAOStores, Status} from '../database/models';
 import {Columns, Tables} from '../database/schema';
 import {Store} from './types';
+import {logger} from '@/utils/misc';
 
 export interface StoresRepository {
   getById(id: string): Promise<Store>;
-  fetch(): Promise<Store[]>;
+  fetch(statues?: Status[]): Promise<Store[]>;
   addOrUpdate(store: Store): Promise<Store>;
   markAsDelete(store: Store): Promise<Store>;
   restore(store: Store): Promise<Store>;
-  destroyRecords(): Promise<void>;
+  destroyRecords(statues?: Status[]): Promise<void>;
 }
 
 export class DatabaseStoresRepository implements StoresRepository {
@@ -33,17 +34,30 @@ export class DatabaseStoresRepository implements StoresRepository {
     }
   }
 
-  async fetch(): Promise<Store[]> {
+  async fetch(statues?: Status[]): Promise<Store[]> {
     try {
       const stores: Store[] = [];
-      const daoStores = await this.database
-        .get<DAOStores>(Tables.stores)
-        .query(
-          Q.where(Columns.stores.status, Q.notIn(['deleted', 'archived'])),
-          Q.sortBy(Columns.stores.createdAt, Q.desc),
-          Q.sortBy(Columns.stores.status, Q.desc),
-        )
-        .fetch();
+      const queries: Q.Where[] = [];
+
+      if (statues) {
+        statues.forEach(s => queries.push(Q.where(Columns.stores.status, s)));
+      }
+
+      const daoStoresTable = this.database.get<DAOStores>(Tables.stores);
+
+      const daoStores =
+        queries.length >= 1
+          ? await daoStoresTable.query(Q.or(queries)).fetch()
+          : await daoStoresTable
+              .query(
+                Q.where(
+                  Columns.stores.status,
+                  Q.notIn(['deleted', 'archived']),
+                ),
+                Q.sortBy(Columns.stores.createdAt, Q.desc),
+                Q.sortBy(Columns.stores.status, Q.desc),
+              )
+              .fetch();
       for (const store of daoStores) {
         const daoItems = await store.shoppingListItems
           .extend(Q.where(Columns.shoppingListItems.status, Q.eq('active')))
@@ -150,18 +164,29 @@ export class DatabaseStoresRepository implements StoresRepository {
     }
   }
 
-  async destroyRecords(): Promise<void> {
+  async destroyRecords(statues?: Status[]): Promise<void> {
     try {
       return await this.database.write(async () => {
-        const stores = await this.database
-          .get<DAOStores>(Tables.stores)
-          .query();
-        for (const store of stores) {
-          await store.destroyPermanently();
+        const queries: Q.Where[] = [];
+
+        if (statues) {
+          statues.forEach(s => queries.push(Q.where(Columns.stores.status, s)));
         }
+
+        const storesTable = this.database.get<DAOStores>(Tables.stores);
+        const stores =
+          queries.length >= 1
+            ? await storesTable.query(Q.or(queries)).fetch()
+            : await storesTable.query().fetch();
+
+        for (const store of stores) {
+          await store.destroyWithChildren();
+        }
+
         return;
       });
     } catch (error) {
+      logger(error);
       throw error;
     }
   }

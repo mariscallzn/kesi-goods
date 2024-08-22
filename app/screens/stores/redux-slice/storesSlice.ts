@@ -285,6 +285,19 @@ const markStoreListAsDeleteReducer = (
 };
 //#endregion
 
+//#region Destroy deleted
+export const destroyDeletedStores = createAsyncThunk(
+  'stores/destroyDeletedStores',
+  async (_, {rejectWithValue}) => {
+    try {
+      await appComponent.storesService().destroyDeletedStores();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+//#endregion
+
 //#region Restore store list
 export const restoreStoreList = createAsyncThunk<Store[], Store[]>(
   'stores/restoreStoreList',

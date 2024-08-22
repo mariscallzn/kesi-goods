@@ -17,6 +17,7 @@ export interface StoresService {
   createOrUpdate(store: Store): Promise<UIStore>;
   copyStoreList(stores: Store[], copyOption: CopyListOption): Promise<void>;
   markStoreListAsDelete(stores: Store[]): Promise<Store[]>;
+  destroyDeletedStores(): Promise<void>;
   restoreStoreList(stores: Store[]): Promise<Store[]>;
 }
 
@@ -125,6 +126,7 @@ export class StoresServiceImpl implements StoresService {
               newOrUpdatedStore.id,
               {
                 id: 'n/a',
+                cloudId: item.id,
                 checked: item.checked,
                 product: await this.productRepository.findOrCreateByName({
                   id: 'n/a',
@@ -214,6 +216,26 @@ export class StoresServiceImpl implements StoresService {
         updatedList.push(await this.storesRepository.markAsDelete(store));
       }
       return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async destroyDeletedStores(): Promise<void> {
+    try {
+      const user = await this.authRepo.getUser();
+      if (user) {
+        const deletedStores = await this.storesRepository.fetch(['deleted']);
+        await this.storeApi.deleteLists(deletedStores);
+        for (const store of deletedStores) {
+          const items = await this.shoppingListRepository.getByStoreId(
+            store.id,
+            ['active', 'deleted', 'draft', 'pinned', 'archived'],
+          );
+          await this.storeApi.deleteItems(items);
+        }
+      }
+      return await this.storesRepository.destroyRecords(['deleted']);
     } catch (error) {
       throw error;
     }
