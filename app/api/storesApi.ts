@@ -9,7 +9,7 @@ export interface StoreApi {
     items: ShoppingListItem[],
     user: KUser,
   ): Promise<Store>;
-
+  updateList(store: Store): Promise<void>;
   fetchListByUser(user: KUser): Promise<ListWithItems[]>;
   deleteLists(stores: Store[]): Promise<void>;
 }
@@ -63,6 +63,23 @@ export class AWSStoreApi implements StoreApi {
     } catch (error) {
       //We return the original store to no block the user for using the app
       return store;
+    }
+  }
+
+  async updateList(store: Store): Promise<void> {
+    try {
+      if (store.cloudId) {
+        await this.client.models.List.update({
+          id: store.cloudId,
+          name: store.name,
+        });
+      } else {
+        throw new Error(
+          'This is not a synced list, therefore we cannot attempt to delete it',
+        );
+      }
+    } catch (error) {
+      throw error;
     }
   }
 

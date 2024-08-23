@@ -44,6 +44,7 @@ const UpdateList: React.FC<UpdateListProps> = props => {
             metadata: {
               type: bottomSheetActions.update,
               value: {
+                ...store,
                 id: store.id,
                 name: listNameRef.current?.getText(),
               } as Store,

@@ -155,11 +155,16 @@ export class StoresServiceImpl implements StoresService {
 
   async createOrUpdate(store: Store): Promise<UIStore> {
     try {
-      //TODO: Add validations
+      const user = await this.authRepo.getUser();
+      const newOrUpdatedStore = await this.storesRepository.addOrUpdate(store);
+
+      if (user && newOrUpdatedStore.cloudId) {
+        await this.storeApi.updateList(newOrUpdatedStore);
+      }
 
       return {
         id: getUUID(),
-        store: await this.storesRepository.addOrUpdate(store),
+        store: newOrUpdatedStore,
         type: VIEW_ID.store,
         multiSelectionEnabled: false,
       };
