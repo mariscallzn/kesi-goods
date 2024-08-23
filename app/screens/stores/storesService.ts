@@ -64,6 +64,8 @@ export class StoresServiceImpl implements StoresService {
           user,
         );
 
+        await this.storesRepository.addOrUpdate(backedUpStore);
+
         return {
           id: getUUID(),
           multiSelectionEnabled: false,
@@ -227,13 +229,6 @@ export class StoresServiceImpl implements StoresService {
       if (user) {
         const deletedStores = await this.storesRepository.fetch(['deleted']);
         await this.storeApi.deleteLists(deletedStores);
-        for (const store of deletedStores) {
-          const items = await this.shoppingListRepository.getByStoreId(
-            store.id,
-            ['active', 'deleted', 'draft', 'pinned', 'archived'],
-          );
-          await this.storeApi.deleteItems(items);
-        }
       }
       return await this.storesRepository.destroyRecords(['deleted']);
     } catch (error) {

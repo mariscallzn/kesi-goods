@@ -9,7 +9,7 @@ import {
 } from 'react-native-paper';
 import {CONTENT_ACTIONS, UIStore} from '../../types';
 import {ShoppingListNavigationMetadata} from './types';
-import {safeDivision} from '../../../../utils/misc';
+import {safeDivision} from '@/utils/misc';
 
 const StoreItem: React.FC<UIStore> = ({
   store,

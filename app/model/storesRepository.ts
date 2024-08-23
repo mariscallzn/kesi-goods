@@ -2,7 +2,6 @@ import {Database, Q} from '@nozbe/watermelondb';
 import {DAOStores, Status} from '../database/models';
 import {Columns, Tables} from '../database/schema';
 import {Store} from './types';
-import {logger} from '@/utils/misc';
 
 export interface StoresRepository {
   getById(id: string): Promise<Store>;
@@ -58,6 +57,7 @@ export class DatabaseStoresRepository implements StoresRepository {
                 Q.sortBy(Columns.stores.status, Q.desc),
               )
               .fetch();
+
       for (const store of daoStores) {
         const daoItems = await store.shoppingListItems
           .extend(Q.where(Columns.shoppingListItems.status, Q.eq('active')))
@@ -145,8 +145,8 @@ export class DatabaseStoresRepository implements StoresRepository {
       const daoStore = await this.database
         .get<DAOStores>(Tables.stores)
         .find(store.id);
-      const updatedDaoStore = await daoStore.markAs('deleted');
-      return {id: updatedDaoStore.id, name: updatedDaoStore.name};
+      await daoStore.markAs('deleted');
+      return store;
     } catch (error) {
       throw error;
     }
@@ -157,8 +157,8 @@ export class DatabaseStoresRepository implements StoresRepository {
       const daoStore = await this.database
         .get<DAOStores>(Tables.stores)
         .find(store.id);
-      const updatedDaoStore = await daoStore.markAs('active');
-      return {id: updatedDaoStore.id, name: updatedDaoStore.name};
+      await daoStore.markAs('active');
+      return store;
     } catch (error) {
       throw error;
     }
@@ -166,27 +166,24 @@ export class DatabaseStoresRepository implements StoresRepository {
 
   async destroyRecords(statues?: Status[]): Promise<void> {
     try {
-      return await this.database.write(async () => {
-        const queries: Q.Where[] = [];
+      const queries: Q.Where[] = [];
 
-        if (statues) {
-          statues.forEach(s => queries.push(Q.where(Columns.stores.status, s)));
-        }
+      if (statues) {
+        statues.forEach(s => queries.push(Q.where(Columns.stores.status, s)));
+      }
 
-        const storesTable = this.database.get<DAOStores>(Tables.stores);
-        const stores =
-          queries.length >= 1
-            ? await storesTable.query(Q.or(queries)).fetch()
-            : await storesTable.query().fetch();
+      const storesTable = this.database.get<DAOStores>(Tables.stores);
+      const stores =
+        queries.length >= 1
+          ? await storesTable.query(Q.or(queries)).fetch()
+          : await storesTable.query().fetch();
 
-        for (const store of stores) {
-          await store.destroyWithChildren();
-        }
+      for (const store of stores) {
+        await store.destroyWithChildren();
+      }
 
-        return;
-      });
+      return;
     } catch (error) {
-      logger(error);
       throw error;
     }
   }
