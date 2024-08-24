@@ -1,6 +1,7 @@
 import {ActionCallback} from '@/inf/types';
+import {Store} from '@/model/types';
 
 export type FooterProps = {
-  listId: string;
+  store: Store;
   action: ActionCallback;
 };

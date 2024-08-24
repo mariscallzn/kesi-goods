@@ -36,7 +36,7 @@ import {
   AddStoreService,
   AddStoreServiceImpl,
 } from '../screens/add-store/addStoreService';
-import {AWSStoreApi, StoreApi} from '@/api/storesApi';
+import {AWSApiImpl, AWSApi} from '@/api/storesApi';
 import {
   GlobalSettingsService,
   GlobalSettingsServiceImpl,
@@ -106,8 +106,8 @@ class AppModule {
     return new SettingsRepositoryImpl();
   }
 
-  private providesStoreApi(): StoreApi {
-    return new AWSStoreApi();
+  private providesAWSApi(): AWSApi {
+    return new AWSApiImpl();
   }
 
   private providesAuthRepository(): AuthRepository {
@@ -126,7 +126,7 @@ class AppModule {
         this.providesProductsES(),
       ),
       this.providesCategoryRepository(this.providesDatabase()),
-      this.providesStoreApi(),
+      this.providesAWSApi(),
     );
   }
 
@@ -141,7 +141,8 @@ class AppModule {
       ),
       this.providesCategoryRepository(this.providesDatabase()),
       this.providesStoresRepository(this.providesDatabase()),
-      this.providesStoreApi(),
+      this.providesAWSApi(),
+      this.providesAuthRepository(),
     );
   }
 
@@ -155,7 +156,6 @@ class AppModule {
         this.providesProductsES(),
       ),
       this.providesCategoryRepository(this.providesDatabase()),
-      this.providesStoresRepository(this.providesDatabase()),
     );
   }
 

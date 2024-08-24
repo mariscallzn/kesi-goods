@@ -5,7 +5,7 @@ import {StoresRepository} from '@/model/storesRepository';
 import {ShoppingListRepository} from '@/model/shoppingListRepository';
 import {getUUID} from '@/utils/misc';
 import {AuthRepository} from '@/model/authRepository';
-import {StoreApi} from '@/api/storesApi';
+import {AWSApi} from '@/api/storesApi';
 import {ProductRepository} from '@/model/productRepository';
 import {CategoryRepository} from '@/model/categoryRepository';
 
@@ -27,7 +27,7 @@ export class StoresServiceImpl implements StoresService {
   private readonly authRepo: AuthRepository;
   private readonly productRepository: ProductRepository;
   private readonly categoryRepository: CategoryRepository;
-  private readonly storeApi: StoreApi;
+  private readonly storeApi: AWSApi;
 
   constructor(
     storesRepository: StoresRepository,
@@ -35,7 +35,7 @@ export class StoresServiceImpl implements StoresService {
     authRepo: AuthRepository,
     productRepository: ProductRepository,
     categoryRepository: CategoryRepository,
-    storeApi: StoreApi,
+    storeApi: AWSApi,
   ) {
     this.storesRepository = storesRepository;
     this.shoppingListRepository = shoppingListRepository;
@@ -112,6 +112,7 @@ export class StoresServiceImpl implements StoresService {
 
   async syncUp(): Promise<UIStore[]> {
     try {
+      //TODO: Delete everything and then save what ever comes from BE
       const user = await this.authRepo.getUser();
       if (user) {
         const lists = await this.storeApi.fetchListByUser(user);

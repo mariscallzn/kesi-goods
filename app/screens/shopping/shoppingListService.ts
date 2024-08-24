@@ -1,13 +1,14 @@
-import {StoreApi} from '@/api/storesApi';
-import {VIEW_ID} from './components/content/types';
-import {ListInfo, RESTORE_TYPE, UIUncheckedItem} from './types';
-import {ShoppingListRepository} from '@/model/shoppingListRepository';
-import {ProductRepository} from '@/model/productRepository';
+import {AWSApi} from '@/api/storesApi';
+import {AuthRepository} from '@/model/authRepository';
 import {CategoryRepository} from '@/model/categoryRepository';
+import {ProductRepository} from '@/model/productRepository';
+import {ShoppingListRepository} from '@/model/shoppingListRepository';
 import {StoresRepository} from '@/model/storesRepository';
 import {Category, Product, ShoppingListItem} from '@/model/types';
-import {UnknownMetadata} from '@/utils/types';
 import {getUUID, safeDivision} from '@/utils/misc';
+import {UnknownMetadata} from '@/utils/types';
+import {VIEW_ID} from './components/content/types';
+import {ListInfo, RESTORE_TYPE, UIUncheckedItem} from './types';
 
 export interface ShoppingListService {
   getShoppingListByStore(
@@ -27,6 +28,7 @@ export interface ShoppingListService {
   markCheckedItemsAsDeleted(storeId: string): Promise<ShoppingListItem[]>;
   uncheckAllListItems(storeId: string): Promise<ShoppingListItem[]>;
   restoreShoppingList(metadata: UnknownMetadata): Promise<void>;
+  syncUpShoppingList(storeId: string): Promise<void>;
 }
 
 export class ShoppingListServiceImpl implements ShoppingListService {
@@ -34,20 +36,38 @@ export class ShoppingListServiceImpl implements ShoppingListService {
   private readonly productRepository: ProductRepository;
   private readonly categoryRepository: CategoryRepository;
   private readonly storeRepository: StoresRepository;
-  private readonly storeApi: StoreApi;
+  private readonly awsApi: AWSApi;
+  private readonly authRepo: AuthRepository;
 
   constructor(
     shoppingListRepository: ShoppingListRepository,
     productRepository: ProductRepository,
     categoryRepository: CategoryRepository,
     storeRepository: StoresRepository,
-    storeApi: StoreApi,
+    awsApi: AWSApi,
+    authRepo: AuthRepository,
   ) {
     this.shoppingListRepository = shoppingListRepository;
     this.productRepository = productRepository;
     this.categoryRepository = categoryRepository;
     this.storeRepository = storeRepository;
-    this.storeApi = storeApi;
+    this.awsApi = awsApi;
+    this.authRepo = authRepo;
+  }
+
+  async syncUpShoppingList(storeId: string): Promise<void> {
+    try {
+      const user = await this.authRepo.getUser();
+      if (user) {
+        //TODO: HERE
+        const items = await this.shoppingListRepository.getByStoreId(storeId, [
+          'active',
+          'deleted',
+        ]);
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getShoppingListByStore(

@@ -9,7 +9,7 @@ import {useSelector} from 'react-redux';
 import {useAppDispatch} from '../../../../redux/store';
 import {search} from '../../redux-slice/productsSlice';
 
-const Header: React.FC<HeaderProps> = ({action, listId}) => {
+const Header: React.FC<HeaderProps> = ({action, store}) => {
   const selectHederInfo = useSelector(headerInfoSelector);
   const dispatch = useAppDispatch();
   const {colors} = useTheme();
@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({action, listId}) => {
           placeholder={translate('common.search')}
           value={selectHederInfo.searchTerm ?? ''}
           onChangeText={e => {
-            dispatch(search({term: e, listId: listId}));
+            dispatch(search({term: e, listId: store.id}));
           }}
         />
       </View>

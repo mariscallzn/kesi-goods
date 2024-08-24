@@ -14,7 +14,10 @@ import {
   UserActionArgs,
   initialState,
 } from './types';
-import {fetchListInfo} from '../../shopping/redux-slice/shoppingListSlice';
+import {
+  fetchListInfo,
+  syncUpShoppingList,
+} from '../../shopping/redux-slice/shoppingListSlice';
 import {fetchLocalData} from '../../stores/redux-slice/storesSlice';
 import {IView} from '../components/content/types';
 
@@ -148,18 +151,19 @@ const draftChangeReducer = (
 //#endregion
 
 //#region Add selection
-export const addSelection = createAsyncThunk<void, string>(
-  'products/addSelection',
-  async (listId, {rejectWithValue, dispatch}) => {
-    try {
-      await appComponent.productService().addSelection(listId);
-      dispatch(fetchListInfo({listId: listId}));
-      dispatch(fetchLocalData());
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
+export const addSelection = createAsyncThunk<
+  void,
+  {listId: string; listCloudId?: string}
+>('products/addSelection', async (args, {rejectWithValue, dispatch}) => {
+  try {
+    await appComponent.productService().addSelection(args.listId);
+    dispatch(fetchListInfo({listId: args.listId}));
+    dispatch(syncUpShoppingList(args.listId));
+    dispatch(fetchLocalData());
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
 const addSelectionReducer = (
   builder: ActionReducerMapBuilder<ProductsState>,
 ) => {

@@ -10,16 +10,17 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import Login from '@/screens/login/Login';
+import {Store} from '@/model/types';
 
 //#region Types
 export type RootStackParamList = {
   AddStore: undefined;
   Stores: undefined;
   ShoppingList: {
-    listId: string;
+    store: Store;
   };
   Products: {
-    listId: string;
+    store: Store;
   };
   GlobalSettings: undefined;
   Login: undefined;

@@ -21,19 +21,43 @@ import {
 import {CONTENT_ACTIONS} from './types';
 import {ViewStyle} from 'react-native';
 import {RootStackScreenProps} from '@/routes/RootNavigator';
+import {generateClient} from 'aws-amplify/data';
+import {type Schema} from 'amplify/data/resource';
+import {logger} from '@/utils/misc';
 
 const ShoppingListScreen: FC<RootStackScreenProps<'ShoppingList'>> = ({
   route,
   navigation,
 }) => {
+  const awsClient = generateClient<Schema>();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchListInfo({listId: route.params.listId}));
+    dispatch(fetchListInfo({listId: route.params.store.id}));
     return () => {
       dispatch(resetState());
     };
   }, [dispatch, route]);
+
+  useEffect(() => {
+    if (route.params.store.cloudId) {
+      const sub = awsClient.models.Item.observeQuery({
+        filter: {
+          listId: {
+            eq: route.params.store.cloudId,
+          },
+        },
+      }).subscribe({
+        next: ({isSynced, items}) => {
+          if (isSynced) {
+            logger(items, 'Subs Items');
+            // dispatch();
+          }
+        },
+      });
+      return () => sub.unsubscribe();
+    }
+  }, [awsClient, route.params]);
 
   //#region Actions
   const actions: ActionCallback = (action: Action) => {
@@ -43,12 +67,12 @@ const ShoppingListScreen: FC<RootStackScreenProps<'ShoppingList'>> = ({
         break;
 
       case CONTENT_ACTIONS.header.navigateToProducts:
-        navigation.navigate('Products', {listId: route.params.listId});
+        navigation.navigate('Products', {store: route.params.store});
         break;
 
       case CONTENT_ACTIONS.header.disableSearchMode:
         dispatch(toggleSearch(false));
-        dispatch(fetchListInfo({listId: route.params.listId}));
+        dispatch(fetchListInfo({listId: route.params.store.id}));
         break;
 
       case CONTENT_ACTIONS.header.listMenu:
@@ -63,7 +87,7 @@ const ShoppingListScreen: FC<RootStackScreenProps<'ShoppingList'>> = ({
         const onCheckPressData = action.metadata.value as OnCheckPressType;
         dispatch(
           handleToggle({
-            listId: route.params.listId,
+            listId: route.params.store.id,
             interaction: {
               checked: onCheckPressData.checked,
               itemId: onCheckPressData.itemId,
@@ -76,7 +100,7 @@ const ShoppingListScreen: FC<RootStackScreenProps<'ShoppingList'>> = ({
           openBottomSheet({
             type: bottomSheetTypes.addOrUpdateItem,
             value: {
-              listId: route.params.listId,
+              listId: route.params.store.id,
               shoppingListItem: action.metadata.value,
             } as AddOrUpdateBSMetadata,
           }),
@@ -92,17 +116,17 @@ const ShoppingListScreen: FC<RootStackScreenProps<'ShoppingList'>> = ({
   //#region return Render
   return (
     <Screen safeAreaEdges={['top', 'bottom']}>
-      <Header action={actions} listId={route.params.listId} />
+      <Header action={actions} listId={route.params.store.id} />
       <BottomSheetCoordinator
         maxHeight={85}
         action={actions}
-        storeId={route.params.listId}
+        storeId={route.params.store.id}
       />
       <Content action={actions} />
       <Footer
         style={$footer}
         action={actions}
-        storeListId={route.params.listId}
+        storeListId={route.params.store.id}
       />
     </Screen>
   );

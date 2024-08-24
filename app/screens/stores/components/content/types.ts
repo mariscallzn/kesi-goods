@@ -3,6 +3,7 @@ import {ActionCallback} from '../../../../inf/multiViewRenderer';
 import {NavigationMetadata} from '../../../../routes/types';
 import {UIStore} from '../../types';
 import StoreItem from './StoreItem';
+import {Store} from '@/model/types';
 
 export type ContentProps = {
   action: ActionCallback;
@@ -24,5 +25,5 @@ export const VIEW_ID = {
 };
 
 export interface ShoppingListNavigationMetadata extends NavigationMetadata {
-  storeId: string;
+  store: Store;
 }

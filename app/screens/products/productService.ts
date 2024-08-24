@@ -2,7 +2,6 @@ import {Action} from '../../inf/types';
 import {CategoryRepository} from '../../model/categoryRepository';
 import {ProductRepository} from '../../model/productRepository';
 import {ShoppingListRepository} from '../../model/shoppingListRepository';
-import {StoresRepository} from '../../model/storesRepository';
 import {Product, ShoppingListItem} from '../../model/types';
 import {getUUID} from '../../utils/misc';
 import {IView} from './components/content/types';
@@ -29,18 +28,15 @@ export class ProductServiceImpl implements ProductService {
   private readonly shoppingListRepository: ShoppingListRepository;
   private readonly productRepository: ProductRepository;
   private readonly categoryRepository: CategoryRepository;
-  private readonly storeRepository: StoresRepository;
 
   constructor(
     shoppingListRepository: ShoppingListRepository,
     productRepository: ProductRepository,
     categoryRepository: CategoryRepository,
-    storeRepository: StoresRepository,
   ) {
     this.shoppingListRepository = shoppingListRepository;
     this.productRepository = productRepository;
     this.categoryRepository = categoryRepository;
-    this.storeRepository = storeRepository;
   }
 
   async init(listId: string): Promise<InitData> {
@@ -167,6 +163,7 @@ export class ProductServiceImpl implements ProductService {
             quantity: incomingItem.quantity ?? 0,
             unit: incomingItem.selectedUnit ?? '',
             category: incomingItem.selectedCategory,
+            // cloudId: incomingItem. TODO:
             status: this.shallowEqual(incomingItem, snapshotFound)
               ? 'active'
               : 'draft',
@@ -198,8 +195,21 @@ export class ProductServiceImpl implements ProductService {
 
       for (const item of shoppingListItems) {
         if (item.quantity === 0) {
-          await this.shoppingListRepository.destroy(item.id);
+          // if (user && item.cloudId) {
+          //   //TODO: I have to do this on the shoppinglist screen
+          //   await this.awsApi.deleteItem(item);
+          // }
+          await this.shoppingListRepository.markAsDeleted(item);
         } else {
+          // let updatedCloudId: string | undefined;
+          // if (user && listCloudId) {
+          //   //TODO: I have to do this on the shoppinglist screen
+          //   const {cloudId} = await this.awsApi.saveItemsByListId(
+          //     item,
+          //     listCloudId,
+          //   );
+          //   updatedCloudId = cloudId;
+          // }
           await this.shoppingListRepository.addOrUpdate(listId, {
             ...item,
             status: 'active',

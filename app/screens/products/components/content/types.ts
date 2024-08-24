@@ -1,11 +1,11 @@
 import {ActionCallback, ComponentMap, UIModel} from '@/inf/types';
 import ProductItem from './ProductItem';
-import {Category} from '@/model/types';
+import {Category, Store} from '@/model/types';
 import {UIProduct} from '../../types';
 
 export type ContentProps = {
   action: ActionCallback;
-  listId: string;
+  store: Store;
 };
 
 export type CategoryProps = {

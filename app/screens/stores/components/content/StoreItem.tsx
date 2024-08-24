@@ -57,7 +57,7 @@ const StoreItem: React.FC<UIStore> = ({
               type: CONTENT_ACTIONS.navigateToShoppingList,
               value: {
                 route: 'ShoppingList',
-                storeId: store.id,
+                store: store,
               } as ShoppingListNavigationMetadata,
             },
           });

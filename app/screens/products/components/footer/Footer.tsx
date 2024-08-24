@@ -24,7 +24,12 @@ const Footer: React.FC<FooterProps> = props => {
         style={$fab}
         icon="check"
         onPress={() => {
-          dispatch(addSelection(props.listId));
+          dispatch(
+            addSelection({
+              listId: props.store.id,
+              listCloudId: props.store.cloudId,
+            }),
+          );
         }}
       />
     </View>

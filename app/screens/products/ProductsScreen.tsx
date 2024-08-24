@@ -17,9 +17,9 @@ const ProductsScreen: FC<RootStackScreenProps<'Products'>> = ({
 
   //#region UseEffects
   useEffect(() => {
-    dispatch(initialize(route.params.listId));
+    dispatch(initialize(route.params.store.id));
     return () => {
-      dispatch(cleanUp(route.params.listId));
+      dispatch(cleanUp(route.params.store.id));
     };
   }, [dispatch, route]);
   //#endregion
@@ -40,9 +40,9 @@ const ProductsScreen: FC<RootStackScreenProps<'Products'>> = ({
   //#region Render
   return (
     <Screen safeAreaEdges={['top', 'bottom']}>
-      <Header action={actions} listId={route.params.listId} />
-      <Content action={actions} listId={route.params.listId} />
-      <Footer action={actions} listId={route.params.listId} />
+      <Header action={actions} store={route.params.store} />
+      <Content action={actions} store={route.params.store} />
+      <Footer action={actions} store={route.params.store} />
     </Screen>
   );
   //#endregion

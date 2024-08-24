@@ -3,7 +3,7 @@ import {type Schema} from 'amplify/data/resource';
 import {generateClient} from 'aws-amplify/data';
 import {ListWithItems, personListsSet} from './types';
 
-export interface StoreApi {
+export interface AWSApi {
   backupList(
     store: Store,
     items: ShoppingListItem[],
@@ -12,9 +12,14 @@ export interface StoreApi {
   updateList(store: Store): Promise<void>;
   fetchListByUser(user: KUser): Promise<ListWithItems[]>;
   deleteLists(stores: Store[]): Promise<void>;
+  saveItemsByListId(
+    item: ShoppingListItem,
+    listId: string,
+  ): Promise<ShoppingListItem>;
+  deleteItem(item: ShoppingListItem): Promise<void>;
 }
 
-export class AWSStoreApi implements StoreApi {
+export class AWSApiImpl implements AWSApi {
   private readonly client = generateClient<Schema>();
 
   async backupList(
@@ -154,6 +159,54 @@ export class AWSStoreApi implements StoreApi {
             'This is not a synced list, therefore we cannot attempt to delete it',
           );
         }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async saveItemsByListId(
+    item: ShoppingListItem,
+    listId: string,
+  ): Promise<ShoppingListItem> {
+    try {
+      let cloudId: string | undefined;
+      if (item.cloudId) {
+        const {data: updatedItem} = await this.client.models.Item.update({
+          id: item.cloudId,
+          listId: listId,
+          name: item.product.name,
+          checked: item.checked,
+          category: item.category?.color,
+          quantity: item.quantity,
+          unit: item.unit,
+        });
+        cloudId = updatedItem?.id;
+      } else {
+        const {data: createdItem} = await this.client.models.Item.create({
+          listId: listId,
+          name: item.product.name,
+          checked: item.checked,
+          category: item.category?.color,
+          quantity: item.quantity,
+          unit: item.unit,
+        });
+        cloudId = createdItem?.id;
+      }
+      return {...item, cloudId: cloudId};
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteItem(item: ShoppingListItem): Promise<void> {
+    try {
+      if (item.cloudId) {
+        await this.client.models.Item.delete({id: item.cloudId});
+      } else {
+        throw new Error(
+          'This is not a synced list, therefore we cannot attempt to delete it',
+        );
       }
     } catch (error) {
       throw error;

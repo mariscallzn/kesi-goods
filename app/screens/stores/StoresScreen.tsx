@@ -37,7 +37,7 @@ const StoresScreen: FC<RootStackScreenProps<'Stores'>> = ({navigation}) => {
 
         //@ts-expect-error
         navigation.navigate(shoppingListMetadata.route, {
-          listId: shoppingListMetadata.storeId,
+          store: shoppingListMetadata.store,
         });
         break;
 

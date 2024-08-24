@@ -1,3 +1,9 @@
+import {appComponent} from '@/di/appComponent';
+import {translate} from '@/i18n/translate';
+import {ShoppingListItem} from '@/model/types';
+import {AppDispatch, RootState, ThunkResult} from '@/redux/store';
+import {fetchLocalData} from '@/screens/stores/redux-slice/storesSlice';
+import {UnknownMetadata} from '@/utils/types';
 import {
   ActionReducerMapBuilder,
   PayloadAction,
@@ -5,12 +11,6 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import {debounce} from 'lodash';
-import {appComponent} from '../../../di/appComponent';
-import {translate} from '../../../i18n/translate';
-import {ShoppingListItem} from '../../../model/types';
-import {AppDispatch, RootState, ThunkResult} from '../../../redux/store';
-import {UnknownMetadata} from '../../../utils/types';
-import {fetchLocalData} from '../../stores/redux-slice/storesSlice';
 import {
   AddOrUpdateBSMetadata,
   bottomSheetTypes,
@@ -102,8 +102,30 @@ const shoppingListSlice = createSlice({
     restoreShoppingListReducer(builder);
     deleteShoppingListReducer(builder);
     deleteShoppingListItemReducer(builder);
+    syncUpShoppingListReducer(builder);
   },
 });
+//#endregion
+
+//#region Sync up shopping list
+export const syncUpShoppingList = createAsyncThunk<void, string>(
+  'shopping/syncUpShoppingList',
+  async (args, {rejectWithValue}) => {
+    try {
+      await appComponent.shoppingListService().syncUpShoppingList(args);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+const syncUpShoppingListReducer = (
+  builder: ActionReducerMapBuilder<ShoppingListState>,
+) => {
+  builder.addCase(syncUpShoppingList.pending, () => {});
+  builder.addCase(syncUpShoppingList.fulfilled, () => {});
+  builder.addCase(syncUpShoppingList.rejected, () => {});
+};
 //#endregion
 
 //#region Fetch ListInfo

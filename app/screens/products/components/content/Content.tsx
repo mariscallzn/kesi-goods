@@ -17,7 +17,7 @@ const Content: React.FC<ContentProps> = props => {
   const actions = (action: Action) => {
     switch (action.type) {
       case PRODUCT_ITEM_ACTION.update:
-        dispatch(draftChange({action: action, listId: props.listId}));
+        dispatch(draftChange({action: action, listId: props.store.id}));
         break;
 
       default:
