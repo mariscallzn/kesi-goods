@@ -102,7 +102,7 @@ Data access is abstracted through repository interfaces, enabling the applicatio
 The application prioritizes local-first data access for instant responsiveness:
 
 1. **Local Database (WatermelonDB)**
-   - SQLite adapter with JSI (JavaScript Interface) for iOS, enabling native performance
+   - SQLite adapter with JSI (React Native's JavaScript Interface) for iOS, enabling direct native performance
    - Reactive queries for real-time UI updates
    - Optimized for mobile with lazy loading
 
@@ -288,7 +288,7 @@ Configuration is managed through `amplify/backend.ts` with TypeScript definition
 
 ## Performance Optimizations
 
-1. **JSI Integration**: WatermelonDB uses JSI (JavaScript Interface) on iOS for native performance
+1. **JSI Integration**: WatermelonDB leverages React Native's JSI (JavaScript Interface) on iOS for direct native performance
 2. **Lazy Loading**: Product autocomplete with debounced queries
 3. **Memoization**: Redux selectors with reselect for computed values
 4. **Gesture Handler**: Native gesture system for smooth interactions
